@@ -1,12 +1,10 @@
 /**
- * Blob cursor — site-wide. Include this script and the blob-cursor markup on every page
- * for consistent cursor effect (desktop only; hidden on touch devices).
+ * Blob cursor — desktop only. Position follows the pointer 1:1 (no smoothing lag).
+ * Scale/feedback still uses hover/down state; updates on mousemove and when state changes.
  */
 (function () {
   "use strict";
-  function $(sel) {
-    return document.querySelector(sel);
-  }
+
   function setupBlobCursor() {
     var container = document.getElementById("blobCursor");
     var blob = container ? container.querySelector(".blob-cursor__blob") : null;
@@ -19,53 +17,78 @@
     document.documentElement.classList.add("custom-cursor-active");
     document.body.classList.add("custom-cursor-active");
 
-    var x = 0,
-      y = 0;
-    var rx = 0,
-      ry = 0;
-    var lerpRate = 0.72;
+    var x = 0;
+    var y = 0;
     var visible = false;
     var hovering = false;
     var down = false;
     var activeHoverEl = null;
 
+    function scale() {
+      return down ? 0.9 : hovering ? 1.24 : 1;
+    }
+
+    /** Direct pixel positioning — same frame as mousemove, feels like the system cursor */
+    function paintBlob() {
+      if (!visible) return;
+      blob.style.transform =
+        "translate3d(" +
+        x +
+        "px," +
+        y +
+        "px,0) translate(-50%,-50%) scale(" +
+        scale() +
+        ")";
+    }
+
     function setVisible(v) {
       visible = v;
       container.classList.toggle("is-visible", v);
+      if (v) paintBlob();
     }
+
     function updateClasses() {
       container.classList.toggle("is-hover", hovering);
       container.classList.toggle("is-down", down);
+      paintBlob();
     }
 
     var textSelector =
       "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .section__title, .section__subtitle, .cart-page__title, .cart-step__heading";
     var hoverSelector =
       'a, button, .btn, input, textarea, [role="button"], .room-card, .gallery__item, .gallery-card, .cart__item-remove, .terms__accept, .modal__close';
+
     window.addEventListener(
       "mousemove",
       function (e) {
         x = e.clientX;
         y = e.clientY;
         setVisible(true);
+        paintBlob();
       },
       { passive: true }
     );
+
     window.addEventListener("mouseleave", function () {
       setVisible(false);
     });
+
     window.addEventListener("mousedown", function () {
       down = true;
       updateClasses();
     });
+
     window.addEventListener("mouseup", function () {
       down = false;
       updateClasses();
     });
+
     var headerSelector = ".nav, .admin__header, .footer";
+
     function isOverHeader(el) {
       return el && el.closest && el.closest(headerSelector);
     }
+
     document.addEventListener("mouseover", function (e) {
       var target =
         e.target && e.target.closest && e.target.closest(hoverSelector);
@@ -83,6 +106,7 @@
       }
       updateClasses();
     });
+
     document.addEventListener("mouseout", function (e) {
       if (!e.relatedTarget) {
         hovering = false;
@@ -106,24 +130,8 @@
       }
       updateClasses();
     });
-    function tick() {
-      if (visible) {
-        rx += (x - rx) * lerpRate;
-        ry += (y - ry) * lerpRate;
-        var scale = down ? 0.9 : hovering ? 1.24 : 1;
-        blob.style.transform =
-          "translate(" +
-          rx +
-          "px," +
-          ry +
-          "px) translate(-50%,-50%) scale(" +
-          scale +
-          ")";
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
   }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", setupBlobCursor);
   } else {

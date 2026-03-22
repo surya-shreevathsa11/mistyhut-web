@@ -23,8 +23,8 @@
     });
   }
 
-  /* 2. Staggered hero content — after page starts revealing */
-  if (heroContent) {
+  /* 2. Staggered hero content — only when GSAP entry is not used (animations.js handles hero otherwise) */
+  if (heroContent && typeof gsap === "undefined") {
     heroContent.classList.add("stagger-reveal");
     setTimeout(function () {
       heroContent.classList.add("stagger-reveal--done");

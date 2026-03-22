@@ -47,8 +47,6 @@
   will-change: transform, opacity;
 }
 
-/* Activity cards are animated by GSAP in animations.js (bottom-to-top on scroll) */
-
 .card-grid-reveal.is-visible .terms-card:nth-child(1),
 .card-grid-reveal.is-visible .review-card:nth-child(1),
 .card-grid-reveal.is-visible .room-card:nth-child(1) { transition-delay: 0ms; }

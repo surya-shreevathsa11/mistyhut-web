@@ -36,7 +36,7 @@
 
   /* ----- 2. Card grid horizontal slide ----- */
   var cardGrids = document.querySelectorAll(
-    ".terms-cards, .reviews__grid, .activities__grid, .rooms__grid"
+    ".terms-cards, .reviews__grid, .rooms__grid"
   );
   cardGrids.forEach(function (grid) {
     grid.classList.add("card-grid-reveal");
@@ -102,10 +102,8 @@
     requestAnimationFrame(updateParallax);
   }
 
-  /* ----- 4. Cinematic zoom (hero & feature images) ----- */
-  var heroActive = document.querySelector(".hero__slide.is-active");
-  if (heroActive) heroActive.classList.add("cinematic-zoom-scroll");
-  document.querySelectorAll(".about__img, .events__img-single").forEach(function (img) {
+  /* ----- 4. Cinematic zoom — about images only (hero stays full-bleed) ----- */
+  document.querySelectorAll(".about__img").forEach(function (img) {
     img.classList.add("cinematic-zoom-scroll");
   });
 

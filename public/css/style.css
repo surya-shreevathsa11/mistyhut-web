@@ -77,6 +77,7 @@ body {
   box-shadow: var(--cursor-blob-shadow, 0 2px 10px rgba(0,0,0,0.25)),
     0 0 0 1px rgba(15, 113, 115, 0.2);
   will-change: transform;
+  backface-visibility: hidden;
   transition: box-shadow 0.2s ease, opacity 0.2s ease, background 0.25s ease;
   opacity: 1;
 }
@@ -88,8 +89,7 @@ body {
 }
 .blob-cursor.is-hover-text .blob-cursor__blob {
   background: var(--cursor-blob-fill, rgba(15, 113, 115, 0.92));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* No backdrop-filter here — it repaints every move and makes the cursor feel laggy */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 0 0 1px rgba(15, 113, 115, 0.22);
 }
@@ -562,10 +562,17 @@ body[data-auth-disabled] [data-auth-ui] {
 }
 .nav.scrolled .nav__toggle span { background: var(--text-on-dark); }
 
-/* ========== HERO — full image + slight dark overlay ========== */
+/* ========== HERO — full-bleed viewport (no bottom rule / no letterboxing) ========== */
 .hero {
+  width: 100%;
+  max-width: none;
+  /* One full viewport — no gap above main; stable for image or video */
   min-height: 100vh;
+  min-height: 100svh;
   min-height: 100dvh;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -575,28 +582,34 @@ body[data-auth-disabled] [data-auth-ui] {
   background: var(--color-obsidian);
   background-size: cover;
   background-position: center;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: none;
+  box-sizing: border-box;
 }
 .hero__slides {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
+  overflow: hidden;
 }
 .hero__slide {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   background-size: cover;
-  background-position: center;
+  background-repeat: no-repeat;
+  background-position: center center;
   opacity: 0;
-  transform: scale(1.06);
-  transition:
-    opacity 1.2s ease,
-    transform 2.8s ease;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: opacity 1.2s ease;
   filter: saturate(0.95) contrast(1.05);
 }
 .hero__slide.is-active {
   opacity: 1;
-  transform: scale(1.02);
+  transform: scale(1);
 }
 .hero::before {
   content: "";
@@ -644,7 +657,8 @@ body[data-auth-disabled] [data-auth-ui] {
 main {
   position: relative;
   z-index: 2;
-  margin-top: -3rem;
+  /* No negative overlap — avoids cream section painting over hero bottom */
+  margin-top: 0;
   padding: 0 0 4rem;
 }
 
@@ -979,143 +993,6 @@ main {
   font-family: "Playfair Display", serif;
   font-size: 1.35rem;
   font-weight: 600;
-}
-
-/* ========== EVENTS — photos left, description right ========== */
-.section--events {
-  padding: 5rem 0;
-}
-
-/* Inset content so nav arrows don’t overlap text or image */
-.section--events .container {
-  padding-left: 4rem;
-  padding-right: 4rem;
-}
-
-.events__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  margin-top: 2rem;
-}
-
-.events__media {
-  position: static;
-}
-
-.events__img-single {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 360px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.2);
-  transition:
-    transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    opacity 0.6s ease-out,
-    filter 0.6s ease-out;
-}
-.events__media:hover .events__img-single {
-  transform: scale(1.04);
-}
-
-.section--events {
-  position: relative;
-}
-
-/* Events nav — same look and behaviour as gallery reel nav (colour change only, no jump) */
-.events__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(15, 77, 71, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--text-heading-on-dark, #E6E2D3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-.events__nav:hover {
-  background: rgba(200, 169, 106, 0.35);
-  border-color: rgba(200, 169, 106, 0.5);
-  color: #fff;
-}
-.events__nav:focus-visible {
-  outline: 2px solid var(--color-orange);
-  outline-offset: 3px;
-}
-.events__nav--prev {
-  left: 1.25rem;
-}
-.events__nav--next {
-  right: 1.25rem;
-}
-.events__nav svg {
-  display: block;
-}
-
-.events__content {
-  text-align: left;
-}
-
-.events__content .section__subtitle {
-  margin-bottom: 0.5rem;
-}
-
-.events__content .section__title {
-  margin-bottom: 0.5rem;
-}
-
-.events__text {
-  font-size: 0.95rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-.events__text:last-child {
-  margin-bottom: 1.25rem;
-}
-
-.events__brochure-btn {
-  margin-top: 0.5rem;
-}
-
-.events__book-btn {
-  margin-top: 0.75rem;
-}
-
-@media (max-width: 900px) {
-  .section--events .container {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
-  .events__grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .events__img-single {
-    aspect-ratio: 4 / 3;
-  }
-}
-
-@media (max-width: 600px) {
-  .section--events .container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
 }
 
 /* ========== SECTION BANNER (Experiences style) ========== */

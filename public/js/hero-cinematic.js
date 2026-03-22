@@ -13,54 +13,34 @@ window.initHeroCinematic = function () {
   if (prefersReducedMotion) return;
 
   var hero = document.querySelector(".hero");
+  var heroContent = document.querySelector(".hero__content");
   var heroSlides = document.querySelector(".hero__slides");
   var heroVideo = document.querySelector(".hero__video");
-  var activeSlide = document.querySelector(".hero__slide.is-active");
-  var heroContent = document.querySelector(".hero__content");
 
   if (!hero) return;
 
-  /* Subtle parallax on scroll: no pin, no scrub. Uses scroll position for a one-way tween. */
   var scrubDuration = 0.6;
-  if (heroSlides) {
-    gsap.to(heroSlides, {
-      y: "-12%",
-      ease: "none",
-      force3D: true,
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom top",
-        scrub: scrubDuration,
-      },
-    });
-  }
-  if (heroVideo) {
-    gsap.to(heroVideo, {
-      y: "-12%",
-      ease: "none",
-      force3D: true,
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom top",
-        scrub: scrubDuration,
-      },
-    });
-  }
-  if (activeSlide && activeSlide !== heroSlides) {
-    gsap.to(activeSlide, {
-      y: "-8%",
-      ease: "none",
-      force3D: true,
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom top",
-        scrub: scrubDuration,
-      },
-    });
-  }
+
+  /* Subtle scroll-linked scale on media layers (works with CSS ken-burns on slides) */
+  [heroSlides, heroVideo].forEach(function (layer) {
+    if (!layer) return;
+    gsap.fromTo(
+      layer,
+      { scale: 1, transformOrigin: "center center", force3D: true },
+      {
+        scale: 1.05,
+        ease: "none",
+        force3D: true,
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "bottom top",
+          scrub: scrubDuration,
+        },
+      }
+    );
+  });
+
   if (heroContent) {
     gsap.to(heroContent, {
       y: "-4%",

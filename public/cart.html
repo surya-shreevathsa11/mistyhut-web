@@ -10,13 +10,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/theme-yankees.css" />
+    <link rel="stylesheet" href="/css/luxury.css" />
+    <link rel="stylesheet" href="/css/lux-surfaces.css" />
   </head>
-  <body class="page-cart">
+  <body class="page-cart lux-site">
     <!-- Blob cursor (desktop only) -->
     <div class="blob-cursor" id="blobCursor" aria-hidden="true">
       <div class="blob-cursor__main">
@@ -26,7 +27,7 @@
       </div>
     </div>
     <nav class="nav nav--scrolled" id="nav">
-      <div class="nav__inner container">
+      <div class="nav__inner container lux-nav-pill">
         <a href="/" class="nav__logo" aria-label="Prathibhimba Retreat">
           <img src="/img/summary%20green.jpeg" alt="Prathibhimba Retreat" class="nav__logo-img" />
         </a>
@@ -83,7 +84,7 @@
             </p>
             <button
               type="button"
-              class="btn btn--primary btn--full cursor-target"
+              class="btn btn--primary btn--full lux-btn-booking cursor-target"
               id="cartCheckoutBtn"
             >
               Proceed to checkout
@@ -127,7 +128,7 @@
             <p class="form__error" id="checkoutError"></p>
             <button
               type="submit"
-              class="btn btn--primary btn--full cursor-target"
+              class="btn btn--primary btn--full lux-btn-booking cursor-target"
               id="checkoutSubmitBtn"
             >
               Proceed to payment
@@ -180,7 +181,7 @@
         </label>
         <button
           type="button"
-          class="btn btn--primary btn--full cursor-target"
+          class="btn btn--primary btn--full lux-btn-booking cursor-target"
           id="termsProceedBtn"
           disabled
           style="margin-top: 1rem"

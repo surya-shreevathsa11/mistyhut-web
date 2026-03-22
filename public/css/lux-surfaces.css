@@ -1,0 +1,642 @@
+/**
+ * Luxury resort surfaces — editorial dark/light rhythm, no warm cream/beige.
+ * Scopes to .lux-site; keeps existing BEM hooks for JS.
+ */
+
+.lux-site {
+  --lux-dark: #2b2b2b;
+  --lux-darker: #1f1f1f;
+  --lux-light: #f5f5f5;
+  --lux-card: #ffffff;
+  --lux-brown: #8b5e3c;
+  --lux-coral: #d16a5a;
+  --lux-text-dark: #1a1a1a;
+  --lux-text-muted: rgba(26, 26, 26, 0.62);
+  --lux-text-on-dark: rgba(255, 255, 255, 0.92);
+}
+
+/* ----- Film grain (premium texture) ----- */
+.lux-site::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lux-site::after {
+    opacity: 0;
+  }
+}
+
+/* ----- Shell ----- */
+.lux-site {
+  background: var(--lux-darker);
+  color: var(--lux-text-dark);
+}
+
+.lux-site main {
+  position: relative;
+  z-index: 2;
+}
+
+/* Soft blend between stacked sections */
+.lux-site main > section {
+  position: relative;
+}
+
+.lux-site main > section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 72px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.07) 0%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  z-index: 0;
+}
+
+.lux-site main > section:first-of-type::before,
+.lux-site main > section.section--lux-skip-blend::before {
+  display: none;
+}
+
+.lux-site main > .section--alt::before {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.035) 0%, transparent 100%);
+  opacity: 1;
+}
+
+/* ----- Navigation (glass pill, white type, coral hover) ----- */
+.lux-site .nav {
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.lux-site .nav .nav__inner {
+  padding: 0.5rem 1.25rem;
+}
+
+.lux-site .nav .nav__links a,
+.lux-site .nav .nav__cart,
+.lux-site .nav .nav__toggle span,
+.lux-site .nav .nav__auth,
+.lux-site .nav .nav__profile-trigger,
+.lux-site .nav.scrolled .nav__links a,
+.lux-site .nav.scrolled .nav__cart,
+.lux-site .nav.scrolled .nav__toggle span,
+.lux-site .nav.scrolled .nav__auth,
+.lux-site .nav.scrolled .nav__profile-trigger,
+.lux-site .nav.scrolled.nav--over-dark .nav__links a,
+.lux-site .nav.scrolled.nav--over-light .nav__links a {
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.lux-site .nav .nav__links a:hover,
+.lux-site .nav.scrolled .nav__links a:hover {
+  color: var(--lux-coral) !important;
+}
+
+.lux-site .nav .nav__links a::after,
+.lux-site .nav.scrolled .nav__links a::after {
+  background: var(--lux-coral) !important;
+}
+
+.lux-site .nav .nav__auth {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
+}
+
+.lux-site .nav .nav__auth:hover,
+.lux-site .nav.scrolled .nav__auth:hover {
+  background: var(--lux-coral) !important;
+  border-color: var(--lux-coral) !important;
+  color: #ffffff !important;
+}
+
+.lux-site .nav__cart-count {
+  background: var(--lux-coral) !important;
+  color: #ffffff !important;
+}
+
+.lux-site .nav__profile-dropdown {
+  background: rgba(31, 31, 31, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
+}
+
+.lux-site .nav__profile-item {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.lux-site .nav__profile-item:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--lux-coral) !important;
+}
+
+/* Stronger pill on light sections (scroll theme) */
+.lux-site .nav.scrolled.nav--over-light .lux-nav-pill,
+.lux-site .nav.scrolled.nav--over-light .nav__inner {
+  background-color: rgba(0, 0, 0, 0.48) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* ----- Hero ----- */
+.lux-site .hero {
+  background: var(--lux-darker) !important;
+}
+
+.lux-site .hero::before {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.72) 55%,
+    rgba(0, 0, 0, 0.75) 100%
+  ) !important;
+}
+
+.lux-site .hero__subtitle {
+  color: rgba(255, 255, 255, 0.78) !important;
+  letter-spacing: 0.28em;
+}
+
+.lux-site .hero__title {
+  color: #ffffff !important;
+}
+
+.lux-site .hero__desc {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.lux-site .hero .divider {
+  background: linear-gradient(90deg, var(--lux-brown), rgba(209, 106, 90, 0.5)) !important;
+}
+
+/* Slow zoom on active slide (immersive) */
+@keyframes lux-hero-kenburns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lux-site .hero__slide.is-active {
+    animation: lux-hero-kenburns 32s ease-in-out infinite alternate;
+  }
+
+  .lux-site .hero__video video {
+    animation: lux-hero-kenburns 36s ease-in-out infinite alternate;
+    transform-origin: center center;
+  }
+}
+
+/* ----- Sections: alternating dark / light (#f5f5f5 only, no cream) ----- */
+.lux-site .section {
+  background: var(--lux-dark);
+  color: var(--lux-text-on-dark);
+}
+
+.lux-site .section--alt {
+  background: var(--lux-light);
+  color: var(--lux-text-dark);
+}
+
+.lux-site .section--gallery {
+  background: var(--lux-dark) !important;
+  color: var(--lux-text-on-dark);
+}
+
+.lux-site .section--reviews {
+  background: var(--lux-dark);
+  color: var(--lux-text-on-dark);
+}
+
+/* About: editorial dark canvas (overrides .section--alt light) */
+.lux-site .section--about {
+  background: var(--lux-dark) !important;
+  color: var(--lux-text-on-dark);
+}
+
+/* Typography on dark bands */
+.lux-site .section:not(.section--alt) .section__subtitle {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.lux-site .section:not(.section--alt) .section__title {
+  color: #ffffff !important;
+}
+
+.lux-site .section:not(.section--alt) .section__desc {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.lux-site .section:not(.section--alt) .divider {
+  background: linear-gradient(90deg, var(--lux-brown), rgba(209, 106, 90, 0.45)) !important;
+}
+
+/* Typography on light bands */
+.lux-site .section--alt .section__subtitle {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .section--alt .section__title {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .section--alt .section__desc {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .section--alt .divider {
+  background: linear-gradient(90deg, var(--lux-brown), rgba(139, 94, 60, 0.25)) !important;
+}
+
+/* ----- About split + floating card ----- */
+.lux-site .section--about .about__text p {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.lux-site .boutique-floating-panel {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.lux-site .boutique-floating-panel .section__subtitle {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .boutique-floating-panel .section__title {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .boutique-floating-panel .about__text p {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .stat__num {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .stat__label {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .about__media-card {
+  background: var(--lux-card) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2) !important;
+}
+
+.lux-site .about__media-overline {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .about__media-title {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .about__media-text {
+  color: var(--lux-text-muted) !important;
+}
+
+/* ----- Room cards ----- */
+.lux-site .room-card {
+  background: var(--lux-card) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.45s ease;
+}
+
+.lux-site .room-card:hover {
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+  transform: translateY(-6px);
+}
+
+/* Image motion handled by GSAP in main.js (initRoomCardHover) */
+
+.lux-site .room-card__number {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .room-card__name {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .room-card__desc {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .room-card__price span {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .room-card__actions .btn--outline {
+  border-color: var(--lux-brown) !important;
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .room-card__actions .btn--outline:hover {
+  background: var(--lux-brown) !important;
+  color: #ffffff !important;
+  border-color: var(--lux-brown) !important;
+}
+
+.lux-site .room-card__overlay {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+/* ----- Gallery intro + reel (dark section) ----- */
+.lux-site .section--gallery .gallery-intro__eyebrow {
+  color: var(--lux-coral) !important;
+}
+
+.lux-site .section--gallery .gallery-intro__title,
+.lux-site .section--gallery .gallery-intro__desc {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.lux-site .gallery-reel__slide {
+  border-radius: 18px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.lux-site .gallery-reel__img-wrap img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lux-site .gallery-reel__slide:hover .gallery-reel__img-wrap img {
+  transform: scale(1.05);
+}
+
+.lux-site .gallery-reel__overlay {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.75) 100%) !important;
+}
+
+.lux-site .gallery-reel__nav {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(12px);
+}
+
+.lux-site .gallery-reel__nav:hover {
+  border-color: var(--lux-coral) !important;
+  color: var(--lux-coral) !important;
+}
+
+/* ----- Directions ----- */
+.lux-site .directions__heading {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .directions__text {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .directions__card {
+  border-radius: 18px !important;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+}
+
+/* ----- Reviews ----- */
+.lux-site .review-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 18px !important;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.lux-site .review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.lux-site .review-card__text {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.lux-site .review-card__author {
+  color: var(--lux-coral) !important;
+}
+
+/* ----- Terms cards ----- */
+.lux-site .terms-card {
+  background: var(--lux-card) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+}
+
+.lux-site .terms-card__title {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .terms-card li,
+.lux-site .terms-card p {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .terms-card a {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .terms-card a:hover {
+  color: var(--lux-coral) !important;
+}
+
+/* ----- Footer ----- */
+.lux-site .footer {
+  background: var(--lux-darker) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.lux-site .footer__tagline,
+.lux-site .footer__copyright {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.lux-site .footer a:hover {
+  opacity: 1;
+  color: var(--lux-coral) !important;
+}
+
+/* ----- Admin (matches public site tokens) ----- */
+.lux-site .admin__header {
+  background: var(--lux-darker) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.lux-site .admin__header-title span,
+.lux-site .admin__back:hover,
+.lux-site .admin__header .admin__logout:hover {
+  color: var(--lux-coral) !important;
+}
+
+.lux-site.admin-body::after {
+  opacity: 0.02;
+}
+
+.lux-site .blob-cursor.is-over-header .blob-cursor__blob {
+  background: var(--lux-coral) !important;
+}
+
+.lux-site .blob-cursor.is-over-header .blob-cursor__inner {
+  background: var(--lux-darker) !important;
+}
+
+/* ----- Modals & booking form ----- */
+.lux-site .modal__content {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2) !important;
+}
+
+.lux-site .modal__title,
+.lux-site .rooms-modal__title {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .form__group label {
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .form__group input,
+.lux-site .form__group textarea,
+.lux-site .form__group select {
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 10px !important;
+  background: #fafafa !important;
+  color: var(--lux-dark) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lux-site .form__group input:focus,
+.lux-site .form__group textarea:focus {
+  outline: none !important;
+  border-color: var(--lux-brown) !important;
+  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.2) !important;
+}
+
+.lux-site .modal .btn--primary:not(.lux-hero-cta) {
+  background: var(--lux-brown) !important;
+  color: #ffffff !important;
+  border-color: var(--lux-brown) !important;
+}
+
+.lux-site .modal .btn--primary:not(.lux-hero-cta):hover {
+  filter: brightness(1.05);
+}
+
+/* ----- Float buttons ----- */
+.lux-site .whatsapp-float {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.lux-site .chatbot-float {
+  background: var(--lux-brown) !important;
+  box-shadow: 0 10px 30px rgba(139, 94, 60, 0.35);
+}
+
+/* ----- Cart page ----- */
+.lux-site.page-cart {
+  background-image: none !important;
+  background: linear-gradient(165deg, var(--lux-dark) 0%, var(--lux-darker) 100%) !important;
+  background-attachment: fixed;
+}
+
+.lux-site.page-cart .nav {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.lux-site.page-cart .nav .nav__inner {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 9999px !important;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+}
+
+.lux-site.page-cart .cart-page .container {
+  background: var(--lux-card) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ----- Reviews page banner ----- */
+.lux-site .lux-reviews-banner {
+  position: relative;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(31, 31, 31, 0.9) 100%),
+    url("/img/designarena_image_1eyd2uq8.png") center / cover no-repeat;
+}
+
+.lux-site .lux-reviews-banner__back {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--lux-coral);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.lux-site .lux-reviews-banner__back:hover {
+  color: #ffffff;
+}
+
+.lux-site .lux-reviews-banner__title {
+  color: #ffffff;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 600;
+  margin: 0;
+  max-width: 36rem;
+  line-height: 1.25;
+}
+
+/* ----- Mobile nav drawer ----- */
+@media (max-width: 768px) {
+  .lux-site .nav__links {
+    background: rgba(31, 31, 31, 0.96) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(16px);
+  }
+
+  .lux-site .nav__links a {
+    color: rgba(255, 255, 255, 0.92) !important;
+  }
+}

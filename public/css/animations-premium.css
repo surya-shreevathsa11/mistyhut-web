@@ -118,6 +118,33 @@
 .reveal.reveal--stagger.is-visible > *:nth-child(11) { transition-delay: 800ms; }
 .reveal.reveal--stagger.is-visible > *:nth-child(12) { transition-delay: 880ms; }
 
+/* ----- Hero text reveal (GSAP in animations.js) ----- */
+.hero__title .hero-title__track {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.hero__title .hero-title__inner {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  will-change: transform;
+}
+
+.hero__desc .hero-desc__word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  margin-right: 0.28em;
+  vertical-align: top;
+}
+
+.hero__desc .hero-desc__word {
+  display: inline-block;
+  transform: translate3d(0, 115%, 0);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .page-load-reveal,
@@ -128,7 +155,9 @@
   .reveal,
   .reveal.is-visible,
   .reveal.reveal--stagger > *,
-  .reveal.reveal--stagger.is-visible > * {
+  .reveal.reveal--stagger.is-visible > *,
+  .hero__title .hero-title__inner,
+  .hero__desc .hero-desc__word {
     opacity: 1;
     transform: none;
     transition: none;

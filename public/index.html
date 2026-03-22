@@ -14,8 +14,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/style.css" />
-    <!-- Prathibhimba boutique retreat theme. Comment out the next line to revert to default theme. -->
-    <link rel="stylesheet" href="/css/theme-yankees.css" />
+    <link rel="stylesheet" href="/css/luxury.css" />
+    <link rel="stylesheet" href="/css/lux-surfaces.css" />
     <link rel="stylesheet" href="/css/immersive-gallery.css" />
     <link rel="stylesheet" href="/css/animations-premium.css" />
     <link rel="stylesheet" href="/css/scroll-animations.css" />
@@ -30,7 +30,7 @@
       if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     </script>
   </head>
-  <body>
+  <body class="lux-site">
     <!-- Blob cursor (desktop only) -->
     <div class="blob-cursor" id="blobCursor" aria-hidden="true">
       <div class="blob-cursor__main">
@@ -42,7 +42,7 @@
 
     <!-- Navigation -->
     <nav class="nav" id="nav">
-      <div class="nav__inner container">
+      <div class="nav__inner container lux-nav-pill">
         <a href="#" class="nav__logo" aria-label="Prathibhimba Retreat">
           <img src="/img/summary%20green.jpeg" alt="Prathibhimba Retreat" class="nav__logo-img" />
         </a>
@@ -52,10 +52,8 @@
         <ul class="nav__links" id="navLinks">
           <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
-          <li><a href="#events">Events</a></li>
           <li><a href="#rooms" id="navRoomsLink">Rooms</a></li>
           <li><a href="#gallery">Gallery</a></li>
-          <li><a href="#activities">Activities</a></li>
           <li>
             <a
               href="https://wa.me/919008188595"
@@ -156,7 +154,7 @@
           muted
           loop
           playsinline
-          poster="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=3840&h=2160&q=80"
+          poster="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&h=1350&q=80"
         >
           <!-- Add your drone video sources here -->
           <!-- <source src="/video/drone.mp4" type="video/mp4" /> -->
@@ -168,7 +166,7 @@
         <div
           class="hero__slide is-active"
           style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=3840&h=2160&q=80&quot;);
+            background-image: url(&quot;https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&h=1350&q=80&quot;);
           "
         ></div>
         <div
@@ -180,7 +178,7 @@
         <div
           class="hero__slide"
           style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=3840&h=2160&q=80&quot;);
+            background-image: url(&quot;https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&h=1350&q=80&quot;);
           "
         ></div>
         <div
@@ -200,14 +198,14 @@
           meets warm hospitality and timeless comfort.
         </p>
         <div class="hero__cta" data-reveal="fade-up" data-reveal-delay="220">
-          <a href="#rooms" class="btn btn--primary">Explore Our Retreat</a>
+          <a href="#rooms" class="btn btn--primary lux-hero-cta">Explore Our Retreat</a>
         </div>
       </div>
     </header>
 
     <main>
       <!-- About — Sanctuary split layout: image left, text right -->
-      <section class="section section--split section--about" id="about" data-nav-theme="dark">
+      <section class="section section--alt section--split section--about" id="about" data-nav-theme="light">
         <div class="container container--wide">
           <div class="about__grid">
             <div class="about__media" data-reveal="fade-up">
@@ -241,7 +239,7 @@
                 </div>
               </article>
             </div>
-            <div class="about__content">
+            <div class="about__content boutique-floating-panel">
               <p class="section__subtitle" data-reveal="fade-up">About Us</p>
               <h2 class="section__title section__title--left" data-reveal="clip">
                 A Sanctuary for the Soul
@@ -292,42 +290,6 @@
         </div>
       </section>
 
-      <!-- Events — content left, single photo right -->
-      <section class="section section--events" id="events" data-nav-theme="light">
-        <div class="container container--wide">
-          <div class="events__grid">
-            <div class="events__content" data-reveal="fade-up">
-              <span class="section__subtitle">What We Offer</span>
-              <h2 class="section__title section__title--left events__title">Events at Prathibhimba</h2>
-              <div class="divider divider--left"></div>
-              <p class="events__text">
-                Host your special moments amid the serene hills of Coorg. From intimate gatherings to small celebrations, our retreat provides a peaceful backdrop and personalised support to make your event memorable.
-              </p>
-              <p class="events__text">
-                Whether it's a family reunion, a quiet anniversary, or a small corporate offsite, we work with you to arrange space, meals, and the little touches that matter. Get in touch to discuss your plans.
-              </p>
-              <a href="/brochure.pdf" download class="btn btn--primary events__brochure-btn">Download Brochure</a>
-              <a href="#contact" class="btn btn--outline events__book-btn">Book an Event</a>
-            </div>
-            <div class="events__media" data-reveal="fade-up" data-reveal-delay="120">
-              <div
-                class="events__img-single"
-                id="eventsImage"
-                data-event-idx="0"
-                style="background-image: url(https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&h=1000&q=80);"
-                aria-hidden="true"
-              ></div>
-            </div>
-          </div>
-        </div>
-<button type="button" class="events__nav events__nav--prev" id="eventsPrev" aria-label="Previous event">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              </button>
-<button type="button" class="events__nav events__nav--next" id="eventsNext" aria-label="Next event">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-      </section>
-
       <!-- Rooms — Select Your Sanctuary -->
       <section class="section section--alt section--sanctuary" id="rooms" data-nav-theme="light">
         <div class="container">
@@ -357,7 +319,7 @@
           <div class="gallery-reel__track" id="galleryReelTrack">
             <article class="gallery-reel__slide" data-gallery-idx="0" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&h=600&q=80" alt="Courtyard" />
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&h=600&q=80" alt="Courtyard" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Courtyard</span>
@@ -366,7 +328,7 @@
             </article>
             <article class="gallery-reel__slide" data-gallery-idx="1" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&h=600&q=80" alt="Suite Interior" />
+                <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&h=600&q=80" alt="Suite Interior" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Suite Interior</span>
@@ -375,7 +337,7 @@
             </article>
             <article class="gallery-reel__slide" data-gallery-idx="2" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=900&h=600&q=80" alt="Breakfast Terrace" />
+                <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=900&h=600&q=80" alt="Breakfast Terrace" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Breakfast Terrace</span>
@@ -384,7 +346,7 @@
             </article>
             <article class="gallery-reel__slide" data-gallery-idx="3" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=900&h=600&q=80" alt="Garden Path" />
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=900&h=600&q=80" alt="Garden Path" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Garden Path</span>
@@ -393,7 +355,7 @@
             </article>
             <article class="gallery-reel__slide" data-gallery-idx="4" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&h=600&q=80" alt="Room Detail" />
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&h=600&q=80" alt="Room Detail" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Room Detail</span>
@@ -402,7 +364,7 @@
             </article>
             <article class="gallery-reel__slide" data-gallery-idx="5" tabindex="0">
               <div class="gallery-reel__img-wrap">
-                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&h=600&q=80" alt="Wine Cellar" />
+                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&h=600&q=80" alt="Wine Cellar" loading="lazy" decoding="async" />
               </div>
               <div class="gallery-reel__overlay">
                 <span class="gallery-reel__title">Wine Cellar</span>
@@ -416,31 +378,8 @@
         </div>
       </section>
 
-      <!-- Activities — Estate walk, Boating, Fishing -->
-      <section class="section section--activities" id="activities" data-nav-theme="dark">
-        <div class="container">
-          <p class="section__subtitle" data-reveal="fade-up">What to Do</p>
-          <h2 class="section__title" data-reveal="clip">Activities</h2>
-          <div class="divider" data-reveal="flow" data-reveal-delay="80"></div>
-          <div class="activities__grid" data-reveal="fade-up" data-reveal-delay="120">
-            <div class="activity-card">
-              <h3 class="activity-card__title">Estate Walk</h3>
-              <p class="activity-card__desc">Explore the estate grounds and surrounding nature at your own pace.</p>
-            </div>
-            <div class="activity-card">
-              <h3 class="activity-card__title">Boating</h3>
-              <p class="activity-card__desc">Enjoy a peaceful boating experience on the property's water body.</p>
-            </div>
-            <div class="activity-card">
-              <h3 class="activity-card__title">Fishing</h3>
-              <p class="activity-card__desc">Spend a relaxing time fishing in the serene setting of Coorg.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- Directions — left: how to get there; right: location photo card -->
-      <section class="section" id="directions" data-nav-theme="light">
+      <section class="section section--alt" id="directions" data-nav-theme="light">
         <div class="container container--wide">
           <p class="section__subtitle" data-reveal="fade-up">How To Find Us</p>
           <h2 class="section__title" data-reveal="clip">Directions</h2>
@@ -736,7 +675,7 @@
           <p class="form__error" id="bookRoomError"></p>
           <button
             type="submit"
-            class="btn btn--primary btn--full"
+            class="btn btn--primary btn--full lux-btn-booking"
             id="bookRoomSubmitBtn"
           >
             Add to cart

@@ -1,0 +1,63 @@
+/**
+ * Luxury resort design system — Tailwind @layer components.
+ * Built to: public/css/luxury.css (`npm run build:css`)
+ * Motion: GSAP + CSS (site is static HTML — no Framer Motion).
+ */
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* —— Navbar (floating pill; pairs with .nav__inner in lux-surfaces.css) —— */
+  .lux-nav-pill {
+    @apply rounded-full border border-white/20 transition-all duration-300 ease-lux;
+    background-color: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .lux-nav-pill--scrolled {
+    background-color: rgba(0, 0, 0, 0.32);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.22);
+    -webkit-backdrop-filter: blur(28px) saturate(1.25);
+    backdrop-filter: blur(28px) saturate(1.25);
+  }
+
+  /* —— Hero CTA (coral pill) —— */
+  .lux-hero-cta {
+    @apply inline-flex items-center justify-center rounded-full px-10 py-3.5 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 ease-lux;
+    background-color: #d16a5a;
+    box-shadow: 0 6px 28px rgba(209, 106, 90, 0.4);
+  }
+
+  .lux-hero-cta:hover {
+    transform: scale(1.04);
+    box-shadow: 0 10px 40px rgba(209, 106, 90, 0.55);
+  }
+
+  /* —— Booking / primary actions in modals —— */
+  .lux-btn-booking {
+    @apply inline-flex items-center justify-center rounded-full px-8 py-3 font-sans text-sm font-semibold text-white transition-all duration-300 ease-lux;
+    background-color: #8b5e3c;
+    box-shadow: 0 4px 20px rgba(139, 94, 60, 0.35);
+  }
+
+  .lux-btn-booking:hover {
+    transform: scale(1.02);
+    filter: brightness(1.06);
+    box-shadow: 0 8px 28px rgba(139, 94, 60, 0.45);
+  }
+
+  /* —— Card shell (rooms / editorial cards) —— */
+  .lux-card {
+    @apply overflow-hidden rounded-lux bg-lux-card shadow-lux-card transition-all duration-500 ease-lux;
+  }
+
+  .lux-card:hover {
+    @apply shadow-lux-card-hover;
+    transform: translateY(-4px);
+  }
+}

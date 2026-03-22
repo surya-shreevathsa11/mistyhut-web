@@ -1,3 +1,7 @@
+/**
+ * Site motion: Lenis smooth scroll + GSAP / ScrollTrigger.
+ * (Static HTML — Framer Motion is not used; micro-interactions are CSS + GSAP.)
+ */
 (function () {
   "use strict";
 
@@ -90,11 +94,9 @@
         return;
       }
 
-      /* Card-level stagger for grids (activity cards handled separately below) */
+      /* Card-level stagger for grids (matches prathibhimba-web) */
       var cardSelector =
-        section.id === "activities"
-          ? ".room-card, .review-card, .terms-card, .gallery-reel__slide"
-          : ".room-card, .review-card, .activity-card, .terms-card, .gallery-reel__slide";
+        ".room-card, .review-card, .terms-card, .gallery-reel__slide";
       var cards = gsap.utils.toArray(cardSelector, section);
 
       var trigger = st.create({
@@ -143,42 +145,6 @@
       revealTriggers.push(trigger);
     });
 
-    /* Activities section: activity cards reveal from bottom to top (GSAP + ScrollTrigger) */
-    var activitiesSection = document.getElementById("activities");
-    if (activitiesSection) {
-      var activityCards = gsap.utils.toArray(".activity-card", activitiesSection);
-      if (activityCards.length > 0) {
-        gsap.set(activityCards, {
-          y: 120,
-          opacity: 0,
-          scale: 0.96,
-          force3D: true,
-        });
-
-        activityCards.forEach(function (card, index) {
-          var stInstance = ScrollTrigger.create({
-            trigger: activitiesSection,
-            start: "top 80%",
-            once: true,
-            onEnter: function () {
-              gsap.to(activityCards, {
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                duration: 0.8,
-                stagger: 0.12,
-                ease: "power3.out",
-                force3D: true,
-                overwrite: "auto",
-                delay: 0.05,
-              });
-            },
-          });
-          revealTriggers.push(stInstance);
-        });
-      }
-    }
-
     ScrollTrigger.refresh();
   }
 
@@ -187,25 +153,102 @@
     enableScrollAnimations();
   };
 
+  function escapeHtmlText(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  /** Editorial title reveal (prathibhimba-web style) — overflow hidden + inner rise */
+  function prepareHeroTitle(titleEl) {
+    if (!titleEl || titleEl.querySelector(".hero-title__inner")) return null;
+    var t = titleEl.textContent.trim();
+    titleEl.innerHTML =
+      '<span class="hero-title__track"><span class="hero-title__inner">' +
+      escapeHtmlText(t) +
+      "</span></span>";
+    return titleEl.querySelector(".hero-title__inner");
+  }
+
+  /** Word-by-word description reveal */
+  function prepareHeroDesc(descEl) {
+    if (!descEl || descEl.querySelector(".hero-desc__word")) return [];
+    var text = descEl.textContent.trim();
+    var words = text.split(/\s+/).filter(Boolean);
+    descEl.innerHTML = words
+      .map(function (w) {
+        return (
+          '<span class="hero-desc__word-wrap"><span class="hero-desc__word">' +
+          escapeHtmlText(w) +
+          "</span></span>"
+        );
+      })
+      .join(" ");
+    return gsap.utils.toArray(descEl.querySelectorAll(".hero-desc__word"));
+  }
+
   function runWithGSAP() {
     var main = document.querySelector("main");
     var heroSlidesEl = document.querySelector(".hero__slides");
+    var prefersReducedMotion =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (main) gsap.set(main, { opacity: 0, y: 20 });
-
-    /* 5. Text stagger intro: opacity 0→1, translateY 40→0, blur 6→0, 0.8s, stagger 0.05s, power3.out */
-    gsap.set(heroEls, { opacity: 0, y: 40, filter: "blur(6px)" });
-
-    /* 4. Masked image reveal: clip-path inset(100% 0 0 0) → inset(0 0 0 0), 1.2s power4.out on load */
-    if (heroSlidesEl) {
-      gsap.set(heroSlidesEl, { clipPath: "inset(100% 0 0 0)" });
-    }
 
     var tl = gsap.timeline({
       defaults: { ease: "cubic-bezier(0.22, 1, 0.36, 1)" },
     });
 
-    /* Masked reveal first */
+    /* Reduced motion: instant readable hero, same flow as prathibhimba-web without motion */
+    if (prefersReducedMotion) {
+      gsap.set(heroEls, { opacity: 1, y: 0, filter: "none" });
+      if (heroSlidesEl) gsap.set(heroSlidesEl, { clipPath: "inset(0% 0 0 0)" });
+      if (main) gsap.set(main, { opacity: 1, y: 0 });
+      tl.add(function () {
+        var hero = document.querySelector(".hero.hero--entry");
+        if (hero) hero.classList.add("hero--entry-done");
+        lenisInstance = initLenis();
+        enableScrollAnimations();
+        if (window.initHeroCinematic) window.initHeroCinematic();
+        if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+      });
+      return;
+    }
+
+    var subtitle = document.querySelector(".hero__subtitle");
+    var titleEl = document.querySelector(".hero__title");
+    var divider = document.querySelector(".hero__content .divider");
+    var descEl = document.querySelector(".hero__desc");
+    var cta = document.querySelector(".hero__cta");
+
+    var titleInner = prepareHeroTitle(titleEl);
+    var descWords = prepareHeroDesc(descEl);
+
+    /* Parent opacity must be 1 while children animate (hero--entry CSS hides section) */
+    if (titleEl) gsap.set(titleEl, { opacity: 1 });
+    if (descEl && descWords.length) gsap.set(descEl, { opacity: 1 });
+
+    gsap.set([subtitle, divider, cta].filter(Boolean), {
+      opacity: 0,
+      y: 40,
+      filter: "blur(8px)",
+    });
+
+    if (titleInner) {
+      gsap.set(titleInner, { yPercent: 110, force3D: true });
+    }
+
+    if (descWords.length) {
+      gsap.set(descWords, { yPercent: 85, opacity: 0, force3D: true });
+    } else if (descEl) {
+      gsap.set(descEl, { opacity: 0, y: 36, filter: "blur(8px)" });
+    }
+
+    /* Masked hero slides */
+    if (heroSlidesEl) {
+      gsap.set(heroSlidesEl, { clipPath: "inset(100% 0 0 0)" });
+    }
+
     if (heroSlidesEl) {
       tl.to(heroSlidesEl, {
         clipPath: "inset(0% 0 0 0)",
@@ -215,23 +258,89 @@
       });
     }
 
-    /* Text stagger intro: subtitle → title → divider → desc → CTA */
-    tl.to(
-      heroEls,
-      {
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 0.8,
-        stagger: 0.05,
-        ease: "power3.out",
-        force3D: true,
-        clearProps: "transform",
-      },
-      heroSlidesEl ? "-=0.6" : 0
-    );
+    var textStart = heroSlidesEl ? "-=0.6" : 0;
 
-    /* Page fade-in */
+    if (titleInner) {
+      tl.to(
+        titleInner,
+        {
+          yPercent: 0,
+          duration: 1.05,
+          ease: "power4.out",
+          force3D: true,
+        },
+        textStart
+      );
+    }
+
+    if (subtitle) {
+      tl.to(
+        subtitle,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.75,
+          ease: "power3.out",
+        },
+        heroSlidesEl ? "-=0.55" : 0
+      );
+    }
+
+    if (divider) {
+      tl.to(
+        divider,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.65,
+          ease: "power3.out",
+        },
+        "-=0.35"
+      );
+    }
+
+    if (descWords.length) {
+      tl.to(
+        descWords,
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.038,
+          ease: "power3.out",
+        },
+        "-=0.35"
+      );
+    } else if (descEl) {
+      tl.to(
+        descEl,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.75,
+          ease: "power3.out",
+        },
+        "-=0.3"
+      );
+    }
+
+    if (cta) {
+      tl.to(
+        cta,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.75,
+          ease: "power3.out",
+        },
+        "-=0.25"
+      );
+    }
+
     if (main) {
       tl.to(
         main,
@@ -250,6 +359,8 @@
     tl.add(function () {
       var hero = document.querySelector(".hero.hero--entry");
       if (hero) hero.classList.add("hero--entry-done");
+      if (titleInner) gsap.set(titleInner, { clearProps: "transform" });
+      if (descWords.length) gsap.set(descWords, { clearProps: "opacity" });
       lenisInstance = initLenis();
       enableScrollAnimations();
       if (window.initHeroCinematic) window.initHeroCinematic();
