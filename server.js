@@ -25,13 +25,13 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json({ limit: "128kb" }));
 app.use(
   "/api/payment/razorpay-webhook",
-  express.raw({ type: "application/json" })
+  express.raw({ type: "application/json" }),
 );
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/cart", (_req, res) => {
@@ -60,7 +60,7 @@ app.use(
       secure: false, // true in production (HTTPS)
       sameSite: "lax",
     },
-  })
+  }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -70,7 +70,6 @@ import bookingRouter from "./routes/booking.route.js";
 import razorpayRouter from "./routes/razorpay.route.js";
 import adminLoginRouter from "./routes/admin.auth.route.js";
 import adminRouter from "./routes/admin.route.js";
-import adminEventRouter from "./routes/admin.events.route.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/booking", bookingRouter);
@@ -83,7 +82,6 @@ app.use("/api/payment", razorpayRouter);
 /////////admin routes
 app.use("/api/admin", adminLoginRouter);
 app.use("/api/admin", adminRouter);
-app.use("/api/admin/events", adminEventRouter);
 
 import { addInitalPrices } from "./config/addInitialRoom.js";
 addInitalPrices();
