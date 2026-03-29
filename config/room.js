@@ -1,9 +1,9 @@
 export const rooms = {
   R1: {
     id: "01",
-    name: "Sunflower",
+    name: "ROOM-1",
     type: "Room",
-    description: "Warm tones with olive wood accents",
+    description: "room-1 description",
     price: 3500,
     capacity: {
       minAdults: 1,
@@ -15,9 +15,9 @@ export const rooms = {
 
   R2: {
     id: "02",
-    name: "Lily",
+    name: "ROOM-2",
     type: "Room",
-    description: "Sun-drenched citrus palette",
+    description: "Room-2 descriptoin",
     price: 3500,
     capacity: {
       minAdults: 1,
@@ -29,9 +29,9 @@ export const rooms = {
 
   R3: {
     id: "03",
-    name: "Marigold",
+    name: "ROOM-3",
     type: "Dormitory",
-    description: "Earthy sage and linen textures",
+    description: "room-3 description",
     price: 10000,
     capacity: {
       minAdults: 1,
@@ -43,9 +43,9 @@ export const rooms = {
 
   R4: {
     id: "04",
-    name: "Lavender",
+    name: "ROOM-4",
     type: "Dormitory",
-    description: "Rich clay and rustic warmth",
+    description: "room-4 description",
     price: 10000,
     capacity: {
       minAdults: 1,
