@@ -30,21 +30,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Hero: initial hidden (GSAP timeline or .hero--entry-done reveals) */
-.hero--entry .hero__subtitle,
-.hero--entry .hero__title,
-.hero--entry .hero__content .divider,
-.hero--entry .hero__desc,
-.hero--entry .hero__cta {
-  opacity: 0;
-}
-.hero--entry.hero--entry-done .hero__subtitle,
-.hero--entry.hero--entry-done .hero__title,
-.hero--entry.hero--entry-done .hero__content .divider,
-.hero--entry.hero--entry-done .hero__desc,
-.hero--entry.hero--entry-done .hero__cta {
-  opacity: 1;
-}
+/* Hero copy stays visible — do not gate with opacity (GSAP + CSS race caused blank hero). */
 
 /* ========== BLOB CURSOR ========== */
 .blob-cursor {
@@ -593,6 +579,26 @@ body[data-auth-disabled] [data-auth-ui] {
   z-index: 0;
   overflow: hidden;
 }
+
+/* Video must be taken out of flex flow — otherwise it covers / displaces .hero__content */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero__video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
 .hero__slide {
   position: absolute;
   inset: 0;
@@ -621,7 +627,10 @@ body[data-auth-disabled] [data-auth-ui] {
 }
 .hero__content {
   position: relative;
-  z-index: 2;
+  z-index: 5;
+  width: 100%;
+  max-width: 100%;
+  pointer-events: auto;
 }
 .hero__subtitle {
   font-size: 0.75rem;

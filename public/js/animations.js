@@ -153,193 +153,79 @@
     enableScrollAnimations();
   };
 
-  function escapeHtmlText(s) {
-    var d = document.createElement("div");
-    d.textContent = s;
-    return d.innerHTML;
+  function finishHeroEntry() {
+    var hero = document.querySelector(".hero.hero--entry");
+    if (hero) hero.classList.add("hero--entry-done");
+    lenisInstance = initLenis();
+    enableScrollAnimations();
+    if (window.initHeroCinematic) window.initHeroCinematic();
+    if (typeof ScrollTrigger !== "undefined") {
+      ScrollTrigger.refresh();
+    }
   }
 
-  /** Editorial title reveal (prathibhimba-web style) — overflow hidden + inner rise */
-  function prepareHeroTitle(titleEl) {
-    if (!titleEl || titleEl.querySelector(".hero-title__inner")) return null;
-    var t = titleEl.textContent.trim();
-    titleEl.innerHTML =
-      '<span class="hero-title__track"><span class="hero-title__inner">' +
-      escapeHtmlText(t) +
-      "</span></span>";
-    return titleEl.querySelector(".hero-title__inner");
-  }
-
-  /** Word-by-word description reveal */
-  function prepareHeroDesc(descEl) {
-    if (!descEl || descEl.querySelector(".hero-desc__word")) return [];
-    var text = descEl.textContent.trim();
-    var words = text.split(/\s+/).filter(Boolean);
-    descEl.innerHTML = words
-      .map(function (w) {
-        return (
-          '<span class="hero-desc__word-wrap"><span class="hero-desc__word">' +
-          escapeHtmlText(w) +
-          "</span></span>"
-        );
-      })
-      .join(" ");
-    return gsap.utils.toArray(descEl.querySelectorAll(".hero-desc__word"));
-  }
-
+  /**
+   * Hero: smooth reveal from above (y + opacity), staggered; background clip optional.
+   * Modest y offset avoids clipping under .hero { overflow: hidden }.
+   */
   function runWithGSAP() {
     var main = document.querySelector("main");
     var heroSlidesEl = document.querySelector(".hero__slides");
     var prefersReducedMotion =
       window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (main) gsap.set(main, { opacity: 0, y: 20 });
-
-    var tl = gsap.timeline({
-      defaults: { ease: "cubic-bezier(0.22, 1, 0.36, 1)" },
-    });
-
-    /* Reduced motion: instant readable hero, same flow as prathibhimba-web without motion */
     if (prefersReducedMotion) {
+      if (main) gsap.set(main, { opacity: 1, y: 0 });
       gsap.set(heroEls, { opacity: 1, y: 0, filter: "none" });
       if (heroSlidesEl) gsap.set(heroSlidesEl, { clipPath: "inset(0% 0 0 0)" });
-      if (main) gsap.set(main, { opacity: 1, y: 0 });
-      tl.add(function () {
-        var hero = document.querySelector(".hero.hero--entry");
-        if (hero) hero.classList.add("hero--entry-done");
-        lenisInstance = initLenis();
-        enableScrollAnimations();
-        if (window.initHeroCinematic) window.initHeroCinematic();
-        if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
-      });
+      finishHeroEntry();
       return;
     }
 
-    var subtitle = document.querySelector(".hero__subtitle");
-    var titleEl = document.querySelector(".hero__title");
-    var divider = document.querySelector(".hero__content .divider");
-    var descEl = document.querySelector(".hero__desc");
-    var cta = document.querySelector(".hero__cta");
+    if (main) gsap.set(main, { opacity: 0, y: 18 });
 
-    var titleInner = prepareHeroTitle(titleEl);
-    var descWords = prepareHeroDesc(descEl);
-
-    /* Parent opacity must be 1 while children animate (hero--entry CSS hides section) */
-    if (titleEl) gsap.set(titleEl, { opacity: 1 });
-    if (descEl && descWords.length) gsap.set(descEl, { opacity: 1 });
-
-    gsap.set([subtitle, divider, cta].filter(Boolean), {
+    gsap.set(heroEls, {
       opacity: 0,
-      y: 40,
-      filter: "blur(8px)",
+      y: -32,
+      filter: "blur(4px)",
+      force3D: true,
     });
 
-    if (titleInner) {
-      gsap.set(titleInner, { yPercent: 110, force3D: true });
-    }
-
-    if (descWords.length) {
-      gsap.set(descWords, { yPercent: 85, opacity: 0, force3D: true });
-    } else if (descEl) {
-      gsap.set(descEl, { opacity: 0, y: 36, filter: "blur(8px)" });
-    }
-
-    /* Masked hero slides */
     if (heroSlidesEl) {
       gsap.set(heroSlidesEl, { clipPath: "inset(100% 0 0 0)" });
     }
 
+    var tl = gsap.timeline({
+      defaults: { ease: "power3.out" },
+      onComplete: function () {
+        gsap.set(heroEls, { clearProps: "filter" });
+        finishHeroEntry();
+      },
+    });
+
     if (heroSlidesEl) {
       tl.to(heroSlidesEl, {
         clipPath: "inset(0% 0 0 0)",
-        duration: 1.2,
-        ease: "power4.out",
+        duration: 0.85,
+        ease: "power3.out",
         force3D: true,
       });
     }
 
-    var textStart = heroSlidesEl ? "-=0.6" : 0;
-
-    if (titleInner) {
-      tl.to(
-        titleInner,
-        {
-          yPercent: 0,
-          duration: 1.05,
-          ease: "power4.out",
-          force3D: true,
-        },
-        textStart
-      );
-    }
-
-    if (subtitle) {
-      tl.to(
-        subtitle,
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        heroSlidesEl ? "-=0.55" : 0
-      );
-    }
-
-    if (divider) {
-      tl.to(
-        divider,
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.65,
-          ease: "power3.out",
-        },
-        "-=0.35"
-      );
-    }
-
-    if (descWords.length) {
-      tl.to(
-        descWords,
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.038,
-          ease: "power3.out",
-        },
-        "-=0.35"
-      );
-    } else if (descEl) {
-      tl.to(
-        descEl,
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        "-=0.3"
-      );
-    }
-
-    if (cta) {
-      tl.to(
-        cta,
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        "-=0.25"
-      );
-    }
+    tl.to(
+      heroEls,
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.92,
+        stagger: 0.1,
+        ease: "power3.out",
+        force3D: true,
+        clearProps: "transform",
+      },
+      heroSlidesEl ? "-=0.55" : 0
+    );
 
     if (main) {
       tl.to(
@@ -347,48 +233,106 @@
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.65,
           ease: "cubic-bezier(0.22, 1, 0.36, 1)",
-          force3D: true,
           clearProps: "transform",
         },
-        "-=0.35"
+        "-=0.45"
       );
     }
-
-    tl.add(function () {
-      var hero = document.querySelector(".hero.hero--entry");
-      if (hero) hero.classList.add("hero--entry-done");
-      if (titleInner) gsap.set(titleInner, { clearProps: "transform" });
-      if (descWords.length) gsap.set(descWords, { clearProps: "opacity" });
-      lenisInstance = initLenis();
-      enableScrollAnimations();
-      if (window.initHeroCinematic) window.initHeroCinematic();
-      if (typeof ScrollTrigger !== "undefined") {
-        ScrollTrigger.refresh();
-      }
-    });
   }
 
   function runWithoutGSAP() {
     var hero = document.querySelector(".hero.hero--entry");
     if (hero) hero.classList.add("hero--entry-done");
     lenisInstance = initLenis();
+    enableScrollAnimations();
+    if (window.initHeroCinematic) window.initHeroCinematic();
+    if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+  }
+
+  /**
+   * If the entry timeline throws or never completes, hero copy must not stay
+   * at CSS opacity:0 or clipped under .hero-title__track (overflow hidden).
+   */
+  function forceHeroReadable() {
+    var hero = document.querySelector(".hero.hero--entry");
+    if (hero) hero.classList.add("hero--entry-done");
+
+    var main = document.querySelector("main");
+    if (main && typeof gsap !== "undefined") {
+      gsap.set(main, { opacity: 1, y: 0, clearProps: "opacity,transform" });
+    } else if (main) {
+      main.style.opacity = "1";
+      main.style.transform = "";
+    }
+
+    var subtitle = document.querySelector(".hero__subtitle");
+    var titleEl = document.querySelector(".hero__title");
+    var divider = document.querySelector(".hero__content .divider");
+    var descEl = document.querySelector(".hero__desc");
+    var cta = document.querySelector(".hero__cta");
+    var els = [subtitle, titleEl, divider, descEl, cta].filter(Boolean);
+
+    if (typeof gsap !== "undefined") {
+      gsap.set(els, { opacity: 1, y: 0, filter: "none" });
+      var titleInner = document.querySelector(".hero-title__inner");
+      if (titleInner) {
+        gsap.set(titleInner, { yPercent: 0, clearProps: "transform" });
+      }
+      var descWords = document.querySelectorAll(".hero-desc__word");
+      if (descWords.length) {
+        gsap.set(descWords, { opacity: 1, yPercent: 0, clearProps: "transform,opacity" });
+      }
+    } else {
+      els.forEach(function (el) {
+        el.style.opacity = "1";
+        el.style.transform = "";
+        el.style.filter = "none";
+      });
+      document.querySelectorAll(".hero-title__inner").forEach(function (el) {
+        el.style.transform = "";
+      });
+      document.querySelectorAll(".hero-desc__word").forEach(function (el) {
+        el.style.opacity = "1";
+        el.style.transform = "";
+      });
+    }
   }
 
   function init() {
     var hasGSAP = typeof gsap !== "undefined";
 
+    function runEntry() {
+      if (hasGSAP) {
+        try {
+          runWithGSAP();
+        } catch (e) {
+          forceHeroReadable();
+          finishHeroEntry();
+        }
+      } else {
+        runWithoutGSAP();
+      }
+    }
+
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", function onReady() {
         document.removeEventListener("DOMContentLoaded", onReady);
-        if (hasGSAP) runWithGSAP();
-        else runWithoutGSAP();
+        runEntry();
       });
     } else {
-      if (hasGSAP) runWithGSAP();
-      else runWithoutGSAP();
+      runEntry();
     }
+
+    /* If intro never completes, restore readable hero (no stuck opacity:0) */
+    window.setTimeout(function () {
+      var h = document.querySelector(".hero.hero--entry");
+      if (h && !h.classList.contains("hero--entry-done")) {
+        forceHeroReadable();
+        if (!lenisInstance) finishHeroEntry();
+      }
+    }, 5000);
   }
   init();
 })();
