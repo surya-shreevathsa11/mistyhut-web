@@ -551,6 +551,26 @@
   color: var(--lux-coral) !important;
 }
 
+.lux-site .section--reviews-showcase .review-card--showcase {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.lux-site .section--reviews-showcase .review-card--showcase:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.lux-site .section--reviews-showcase .review-card--showcase .review-card__inner {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.lux-site .section--reviews-showcase .reviews-showcase__hint {
+  color: rgba(26, 26, 26, 0.4) !important;
+}
+
 /* ----- Terms zen (accordions — dark #terms; base in style.css) ----- */
 .lux-site .section--terms-zen .terms-zen__contact-link:hover {
   color: var(--lux-coral) !important;

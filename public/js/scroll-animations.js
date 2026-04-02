@@ -56,6 +56,15 @@
     cardGridObserver.observe(el);
   });
 
+  /* Reviews marquee: only first strip gets scroll-in (duplicate row is for loop only) */
+  var reviewsMarqueeFirst = document.querySelector(
+    "#reviews .reviews-showcase__track > .reviews-marquee-group:first-of-type"
+  );
+  if (reviewsMarqueeFirst) {
+    reviewsMarqueeFirst.classList.add("card-grid-reveal");
+    cardGridObserver.observe(reviewsMarqueeFirst);
+  }
+
   /* Dynamically added room cards: observe #roomsGrid for new children */
   var roomsGrid = document.getElementById("roomsGrid");
   if (roomsGrid && roomsGrid.classList.contains("card-grid-reveal")) {

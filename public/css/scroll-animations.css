@@ -66,18 +66,22 @@
 .card-grid-reveal.is-visible .room-card:nth-child(7) { transition-delay: 720ms; }
 .card-grid-reveal.is-visible .room-card:nth-child(8) { transition-delay: 840ms; }
 
-/* Review section: cards reveal from bottom to top together (no stagger) */
+/* Review section: cards rise in with stagger (showcase marquee; stay visible for marquee) */
 .section--reviews .card-grid-reveal .review-card {
-  transform: translateY(60px);
+  opacity: 1;
+  transform: translateY(56px) scale(0.94);
 }
 .section--reviews .card-grid-reveal.is-visible .review-card {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+}
+.section--reviews .card-grid-reveal.is-visible .review-card:nth-child(1) {
   transition-delay: 0ms;
 }
-.section--reviews .card-grid-reveal.is-visible .review-card:nth-child(1),
-.section--reviews .card-grid-reveal.is-visible .review-card:nth-child(2),
+.section--reviews .card-grid-reveal.is-visible .review-card:nth-child(2) {
+  transition-delay: 100ms;
+}
 .section--reviews .card-grid-reveal.is-visible .review-card:nth-child(3) {
-  transition-delay: 0ms;
+  transition-delay: 200ms;
 }
 
 /* Rooms section: cards reveal symmetrically from bottom (all together) */

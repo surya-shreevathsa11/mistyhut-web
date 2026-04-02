@@ -679,6 +679,22 @@ main {
   padding: 6rem 0;
   text-align: center;
 }
+
+/* Main sections: same viewport depth as header.hero (100vh / svh / dvh) */
+main > section.section {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: calc(env(safe-area-inset-top, 0px) + clamp(4.25rem, 10vh, 6.25rem));
+  padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+  padding-left: 0;
+  padding-right: 0;
+}
 .section--alt {
   background: var(--color-cool-mist);
 }
@@ -1042,7 +1058,6 @@ main {
   text-align: left;
 }
 .about-story--compact.section {
-  padding: clamp(2.5rem, 5.5vh, 4rem) 0;
   scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 5rem);
 }
 .about-story__shell {
