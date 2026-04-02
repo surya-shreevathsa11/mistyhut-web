@@ -429,92 +429,69 @@
         </div>
       </section>
 
-      <!-- Terms and Conditions (4-card format) -->
-      <section class="section section--terms-cards" id="terms" data-nav-theme="dark">
-        <div class="container container--wide">
-          <p class="section__subtitle" data-reveal="fade-up">
-            Legal &amp; Info
-          </p>
-          <h2 class="section__title" data-reveal="clip">
-            Terms &amp; Conditions
-          </h2>
+      <!-- Terms — narrow editorial + contact strip + accordions -->
+      <section class="section section--terms-cards section--terms-zen" id="terms" data-nav-theme="dark">
+        <div class="container terms-zen__wrap">
+          <p class="section__subtitle" data-reveal="fade-up">Legal &amp; Info</p>
+          <h2 class="section__title" data-reveal="clip">Terms &amp; Conditions</h2>
           <div class="divider" data-reveal="flow" data-reveal-delay="80"></div>
-          <div
-            class="terms-cards"
-            data-reveal="fade-up"
-            data-reveal-delay="120"
-          >
-            <div class="terms-card">
-              <h3 class="terms-card__title">Terms &amp; Conditions</h3>
-              <ul>
-                <li>100% refund for cancellations made 15+ days before check-in. No refund after.</li>
-                <li>Cancellation requests must be made through admin.</li>
-                <li>₹1500 charged per additional guest beyond confirmed booking.</li>
-                <li>Only registered guests are allowed on the property.</li>
-                <li>Guests are responsible for any damages caused during their stay.</li>
-                <li>Management is not liable for accidents, injuries, or loss of belongings.</li>
-                <li>Smoking and alcohol are not allowed inside rooms.</li>
-                <li>No loud music or parties after 10 PM.</li>
-                <li>Pets are not allowed.</li>
-                <li>Children aged 5 and below are considered kids.</li>
-              </ul>
-            </div>
-            <div class="terms-card">
-              <h3 class="terms-card__title">Payments</h3>
-              <ul>
-                <li>
-                  A 50% advance payment is required to confirm your booking.
-                </li>
-                <li>
-                  The remaining 50% balance must be paid upon arrival at the
-                  property.
-                </li>
-                <li>All payments are processed securely through Razorpay.</li>
-                <li>
-                  In case of cancellation, the advance payment refund will be
-                  subject to our cancellation policy.
-                </li>
-              </ul>
-            </div>
-            <div class="terms-card">
-              <h3 class="terms-card__title">Amenities &amp; notes</h3>
-              <ul>
-                <li>Complimentary Wi-Fi available.</li>
-                <li>Homemade meals available at extra cost (inform at least 4 hours in advance).</li>
-                <li>Meals available only for Sunflower, Lily, Marigold, and Lavender rooms.</li>
-                <li>Courtyard access only for Sunflower, Lily, Marigold, and Lavender guests.</li>
-                <li>Sunflower &amp; Lily rooms include AC.</li>
-                <li>Marigold &amp; Lavender rooms include a refrigerator.</li>
-                <li>Dahlia, Gardenia, Petunia, and Zinnia are budget rooms with basic amenities.</li>
-              </ul>
-            </div>
-            <div class="terms-card">
-              <h3 class="terms-card__title">Need assistance?</h3>
-              <ul>
-                <li>
-                  Reach us: <a href="tel:+919008188595">+91 90081 88595</a>
-                </li>
-                <li>
-                  <a
-                    href="https://wa.me/919008188595"
-                    target="_blank"
-                    rel="noopener"
-                    >WhatsApp</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com/summergreen_stays?igsh=MWhpb2d1ZDB1cDAxNQ%3D%3D&utm_source=qr"
-                    target="_blank"
-                    rel="noopener"
-                    >Instagram</a
-                  >
-                </li>
-                <li>
-                    Email us: <a href="dineshkumarmercara@gmail.com">dineshkumarmercara@gmail.com</a>
-                </li>
-              </ul>
-            </div>
+
+          <p class="terms-zen__lede" data-reveal="fade-up" data-reveal-delay="60">
+            The important details—open a topic when you need it. Nothing extra on the page.
+          </p>
+
+          <nav class="terms-zen__contact" aria-label="Contact options" data-reveal="fade-up" data-reveal-delay="90">
+            <a class="terms-zen__contact-link" href="tel:+919008188595">+91 90081 88595</a>
+            <span class="terms-zen__contact-sep" aria-hidden="true"></span>
+            <a class="terms-zen__contact-link" href="https://wa.me/919008188595" target="_blank" rel="noopener">WhatsApp</a>
+            <span class="terms-zen__contact-sep" aria-hidden="true"></span>
+            <a class="terms-zen__contact-link" href="mailto:dineshkumarmercara@gmail.com">Email</a>
+            <span class="terms-zen__contact-sep" aria-hidden="true"></span>
+            <a
+              class="terms-zen__contact-link"
+              href="https://www.instagram.com/summergreen_stays?igsh=MWhpb2d1ZDB1cDAxNQ%3D%3D&utm_source=qr"
+              target="_blank"
+              rel="noopener"
+              >Instagram</a
+            >
+          </nav>
+
+          <div class="terms-cards terms-zen__accordions" data-reveal="fade-up" data-reveal-delay="110">
+            <details class="terms-panel">
+              <summary class="terms-panel__summary">Booking, cancellation &amp; house rules</summary>
+              <div class="terms-panel__body">
+                <ul class="terms-panel__list">
+                  <li>Full refund if you cancel <strong>15+ days</strong> before check-in; no refund after that. Cancellations go through admin.</li>
+                  <li><strong>₹1,500</strong> per extra guest beyond your confirmed booking. Only registered guests may stay.</li>
+                  <li>You’re responsible for any damage during your stay. We’re not liable for accidents, injury, or lost items.</li>
+                  <li>No smoking or alcohol in rooms; keep noise down after <strong>10 PM</strong>. No pets. Children <strong>5 and under</strong> count as kids.</li>
+                </ul>
+              </div>
+            </details>
+            <details class="terms-panel">
+              <summary class="terms-panel__summary">Payments</summary>
+              <div class="terms-panel__body">
+                <ul class="terms-panel__list">
+                  <li><strong>50% advance</strong> confirms your booking; the rest is due when you arrive.</li>
+                  <li>Payments run through <strong>Razorpay</strong> (secure checkout).</li>
+                  <li>If you cancel, any refund of the advance follows the cancellation rules above.</li>
+                </ul>
+              </div>
+            </details>
+            <details class="terms-panel">
+              <summary class="terms-panel__summary">Rooms, meals &amp; amenities</summary>
+              <div class="terms-panel__body">
+                <ul class="terms-panel__list">
+                  <li>Complimentary <strong>Wi-Fi</strong> across the stay.</li>
+                  <li>
+                    <strong>Homemade meals</strong> (extra charge) need <strong>4 hours’ notice</strong>. Meals and <strong>courtyard access</strong> apply to
+                    Sunflower, Lily, Marigold, and Lavender only.
+                  </li>
+                  <li><strong>Sunflower &amp; Lily</strong> include AC. <strong>Marigold &amp; Lavender</strong> include a refrigerator.</li>
+                  <li><strong>Dahlia, Gardenia, Petunia, and Zinnia</strong> are budget rooms with essentials.</li>
+                </ul>
+              </div>
+            </details>
           </div>
         </div>
       </section>

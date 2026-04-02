@@ -551,29 +551,14 @@
   color: var(--lux-coral) !important;
 }
 
-/* ----- Terms cards (home — dark #terms band) ----- */
-.lux-site .section--terms-cards .terms-card {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22) !important;
-}
-
-.lux-site .section--terms-cards .terms-card__title {
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.lux-site .section--terms-cards .terms-card li,
-.lux-site .section--terms-cards .terms-card p {
-  color: rgba(255, 255, 255, 0.72) !important;
-}
-
-.lux-site .section--terms-cards .terms-card a {
+/* ----- Terms zen (accordions — dark #terms; base in style.css) ----- */
+.lux-site .section--terms-zen .terms-zen__contact-link:hover {
   color: var(--lux-coral) !important;
+  text-decoration: none !important;
 }
 
-.lux-site .section--terms-cards .terms-card a:hover {
-  color: var(--lux-lime) !important;
+.lux-site .section--terms-zen .terms-panel:focus-within {
+  border-color: rgba(226, 255, 99, 0.25) !important;
 }
 
 /* ----- Footer (light — same cream as section--alt) ----- */
