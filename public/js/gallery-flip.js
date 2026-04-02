@@ -1,72 +1,37 @@
 /**
- * Gallery horizontal reel: prev/next navigation + lightbox on slide click
+ * Gallery marquee: lightbox on slide click (first row only; duplicate row is visual-only)
  */
 (function () {
-  'use strict';
+  "use strict";
 
-  var track = document.getElementById('galleryReelTrack');
-  var prevBtn = document.getElementById('galleryReelPrev');
-  var nextBtn = document.getElementById('galleryReelNext');
+  var firstGroup = document.querySelector(
+    "#gallery .gallery-marquee__track > .gallery-marquee__group:first-child"
+  );
+  if (!firstGroup) return;
 
-  if (!track) return;
-
-  var slides = [].slice.call(track.querySelectorAll('.gallery-reel__slide'));
+  var slides = [].slice.call(firstGroup.querySelectorAll(".gallery-reel__slide"));
   if (!slides.length) return;
 
-  function scrollToIndex(index) {
-    var slide = slides[Math.max(0, Math.min(index, slides.length - 1))];
-    if (slide) track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
-  }
-
-  function getCurrentIndex() {
-    var scrollLeft = track.scrollLeft;
-    var best = 0;
-    var bestDist = Infinity;
-    for (var i = 0; i < slides.length; i++) {
-      var d = Math.abs(slides[i].offsetLeft - scrollLeft);
-      if (d < bestDist) { bestDist = d; best = i; }
-    }
-    return best;
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', function () {
-      var i = getCurrentIndex();
-      var next = Math.max(0, i - 1);
-      scrollToIndex(next);
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', function () {
-      var i = getCurrentIndex();
-      var next = Math.min(slides.length - 1, i + 1);
-      scrollToIndex(next);
-    });
-  }
-
-  /* ---- Lightbox ---- */
-  var lightbox = document.getElementById('galleryLightbox');
-  var lightboxImg = document.getElementById('galleryLightboxImg');
+  var lightbox = document.getElementById("galleryLightbox");
+  var lightboxImg = document.getElementById("galleryLightboxImg");
 
   if (lightbox && lightboxImg) {
     slides.forEach(function (slide) {
       function openLightbox(e) {
-        if (e.target.closest('.gallery-reel__nav')) return;
-        var img = slide.querySelector('.gallery-reel__img-wrap img');
-        if (!img) return;
+        var img = slide.querySelector(".gallery-reel__img-wrap img");
+        if (!img || !img.src) return;
         var src = img.src
-          .replace(/w=\d+/, 'w=2400')
-          .replace(/h=\d+/, 'h=1600');
+          .replace(/w=\d+/, "w=2400")
+          .replace(/h=\d+/, "h=1350");
         lightboxImg.src = src;
-        lightboxImg.alt = img.alt;
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        lightboxImg.alt = img.alt || "";
+        lightbox.classList.add("active");
+        document.body.style.overflow = "hidden";
       }
 
-      slide.addEventListener('click', openLightbox);
-      slide.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
+      slide.addEventListener("click", openLightbox);
+      slide.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openLightbox(e);
         }
@@ -74,21 +39,21 @@
     });
 
     function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-      lightboxImg.src = '';
+      lightbox.classList.remove("active");
+      document.body.style.overflow = "";
+      lightboxImg.src = "";
     }
 
-    var closeEls = lightbox.querySelectorAll('[data-close]');
+    var closeEls = lightbox.querySelectorAll("[data-close]");
     for (var i = 0; i < closeEls.length; i++) {
-      closeEls[i].addEventListener('click', closeLightbox);
+      closeEls[i].addEventListener("click", closeLightbox);
     }
 
-    var overlay = lightbox.querySelector('.modal__overlay');
-    if (overlay) overlay.addEventListener('click', closeLightbox);
+    var overlay = lightbox.querySelector(".modal__overlay");
+    if (overlay) overlay.addEventListener("click", closeLightbox);
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && lightbox.classList.contains("active")) {
         closeLightbox();
       }
     });

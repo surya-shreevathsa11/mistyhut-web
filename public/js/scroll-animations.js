@@ -178,10 +178,12 @@
 
   /* ----- 6. Card stack (gallery slides move at different speeds) ----- */
   var gallerySection = document.querySelector(".section--gallery");
-  var gallerySlides = document.querySelectorAll(".gallery-reel__slide");
+  var gallerySlides = document.querySelectorAll(
+    "#gallery .gallery-marquee__track > .gallery-marquee__group:first-child .gallery-reel__slide"
+  );
   if (gallerySection && gallerySlides.length) {
     var stackTicking = false;
-    var depthFactors = [0.6, 0.4, 0.2, 0.15, 0.1, 0.08];
+    var depthFactors = [0.6, 0.4, 0.2, 0.15, 0.1, 0.08, 0.06, 0.05];
 
     function updateCardStack() {
       var scrollY = window.scrollY || document.documentElement.scrollTop;
