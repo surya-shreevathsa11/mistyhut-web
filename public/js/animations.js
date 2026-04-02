@@ -5,7 +5,8 @@
 (function () {
   "use strict";
 
-  var heroEls = ".hero__subtitle, .hero__title, .hero__content .divider, .hero__desc, .hero__cta";
+  var heroEls =
+    ".about-impact__label, .about-impact__headline, .about-impact__subhead, .about-impact__cta-wrap";
   var revealTriggers = [];
   var scrubTriggers = [];
   var scrubEntries = [];
@@ -273,9 +274,15 @@
     var descEl = document.querySelector(".hero__desc");
     var cta = document.querySelector(".hero__cta");
     var els = [subtitle, titleEl, divider, descEl, cta].filter(Boolean);
+    var impactEls = Array.prototype.slice.call(
+      document.querySelectorAll(
+        ".about-impact__label, .about-impact__headline, .about-impact__subhead, .about-impact__cta-wrap"
+      )
+    );
 
     if (typeof gsap !== "undefined") {
       gsap.set(els, { opacity: 1, y: 0, filter: "none" });
+      if (impactEls.length) gsap.set(impactEls, { opacity: 1, y: 0, filter: "none" });
       var titleInner = document.querySelector(".hero-title__inner");
       if (titleInner) {
         gsap.set(titleInner, { yPercent: 0, clearProps: "transform" });
@@ -286,6 +293,11 @@
       }
     } else {
       els.forEach(function (el) {
+        el.style.opacity = "1";
+        el.style.transform = "";
+        el.style.filter = "none";
+      });
+      impactEls.forEach(function (el) {
         el.style.opacity = "1";
         el.style.transform = "";
         el.style.filter = "none";

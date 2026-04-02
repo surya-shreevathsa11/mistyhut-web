@@ -907,18 +907,6 @@ body.page-cart .nav .nav__inner {
   box-shadow: 0 12px 32px rgba(37, 211, 102, 0.3);
 }
 
-.chatbot-float {
-  background: var(--rust-wood);
-  color: #ffffff;
-  box-shadow: 0 8px 24px rgba(139, 94, 60, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.chatbot-float:hover {
-  transform: scale(1.03) translateY(-2px);
-  box-shadow: 0 12px 32px rgba(139, 94, 60, 0.38);
-}
-
 /* Motion */
 [data-reveal],
 .room-card,

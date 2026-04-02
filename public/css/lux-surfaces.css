@@ -13,6 +13,55 @@
   --lux-text-dark: #1a1a1a;
   --lux-text-muted: rgba(26, 26, 26, 0.62);
   --lux-text-on-dark: rgba(255, 255, 255, 0.92);
+  /* Primary CTA — neon lime (hero / modals / booking) */
+  --lux-lime: #e2ff63;
+  --lux-lime-hover: #edff85;
+  --lux-lime-active: #d4f054;
+  --lux-lime-text: #000000;
+  --lux-lime-glow: rgba(226, 255, 99, 0.38);
+}
+
+/* ----- Primary buttons (site-wide, .lux-site) ----- */
+.lux-site .btn--primary:not(.btn--google),
+.lux-site .lux-hero-cta,
+.lux-site .lux-btn-booking {
+  background-color: var(--lux-lime) !important;
+  color: var(--lux-lime-text) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  box-shadow:
+    0 0 0 1px rgba(226, 255, 99, 0.35),
+    0 0 42px var(--lux-lime-glow),
+    0 10px 28px rgba(0, 0, 0, 0.28) !important;
+}
+
+.lux-site .btn--primary:not(.btn--google):hover,
+.lux-site .lux-hero-cta:hover,
+.lux-site .lux-btn-booking:hover {
+  background-color: var(--lux-lime-hover) !important;
+  color: var(--lux-lime-text) !important;
+  filter: none !important;
+  box-shadow:
+    0 0 0 1px rgba(237, 255, 133, 0.45),
+    0 0 52px rgba(226, 255, 99, 0.42),
+    0 14px 36px rgba(0, 0, 0, 0.32) !important;
+}
+
+.lux-site .btn--primary:not(.btn--google):hover,
+.lux-site .lux-btn-booking:hover {
+  transform: translateY(-2px);
+}
+
+.lux-site .lux-hero-cta:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.lux-site .btn--primary:not(.btn--google):active,
+.lux-site .lux-hero-cta:active,
+.lux-site .lux-btn-booking:active {
+  background-color: var(--lux-lime-active) !important;
+  transform: translateY(0);
 }
 
 /* ----- Film grain (premium texture) ----- */
@@ -186,6 +235,12 @@
     rgba(0, 0, 0, 0.75) 100%
   ) !important;
 }
+.lux-site .hero.about-impact::before {
+  display: none !important;
+}
+.lux-site .hero.about-impact {
+  background: transparent !important;
+}
 
 .lux-site .hero__content {
   position: relative;
@@ -197,7 +252,11 @@
 .lux-site .hero.hero--entry-done .hero__title,
 .lux-site .hero.hero--entry-done .hero__desc,
 .lux-site .hero.hero--entry-done .hero .divider,
-.lux-site .hero.hero--entry-done .hero__cta {
+.lux-site .hero.hero--entry-done .hero__cta,
+.lux-site .hero.hero--entry-done .about-impact__label,
+.lux-site .hero.hero--entry-done .about-impact__headline,
+.lux-site .hero.hero--entry-done .about-impact__subhead,
+.lux-site .hero.hero--entry-done .about-impact__cta-wrap {
   visibility: visible;
 }
 
@@ -251,12 +310,23 @@
 }
 
 .lux-site .section--gallery {
+  background: var(--lux-light) !important;
+  color: var(--lux-text-dark);
+}
+
+.lux-site .section--reviews {
+  background: var(--lux-light) !important;
+  color: var(--lux-text-dark);
+}
+
+.lux-site .section--terms-cards {
   background: var(--lux-dark) !important;
   color: var(--lux-text-on-dark);
 }
 
-.lux-site .section--reviews {
-  background: var(--lux-dark);
+/* Rooms — dark canvas (default .section) */
+.lux-site .section--sanctuary {
+  background: var(--lux-dark) !important;
   color: var(--lux-text-on-dark);
 }
 
@@ -351,6 +421,14 @@
   color: var(--lux-text-muted) !important;
 }
 
+/* About story (light editorial band) */
+.lux-site .about-story__title {
+  color: var(--lux-dark) !important;
+}
+.lux-site .about-story__dek {
+  color: var(--lux-text-muted) !important;
+}
+
 /* ----- Room cards ----- */
 .lux-site .room-card {
   background: var(--lux-card) !important;
@@ -398,116 +476,139 @@
   background: rgba(0, 0, 0, 0.55) !important;
 }
 
-/* ----- Gallery intro + reel (dark section) ----- */
-.lux-site .section--gallery .gallery-intro__eyebrow {
-  color: var(--lux-coral) !important;
+/* ----- Gallery mast + reel (light band, same as section--alt) ----- */
+.lux-site .gallery-mast__eyebrow {
+  color: var(--lux-brown) !important;
 }
 
-.lux-site .section--gallery .gallery-intro__title,
-.lux-site .section--gallery .gallery-intro__desc {
-  color: rgba(255, 255, 255, 0.92) !important;
-}
-
-.lux-site .gallery-reel__slide {
-  border-radius: 18px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-
-.lux-site .gallery-reel__img-wrap img {
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.lux-site .gallery-reel__slide:hover .gallery-reel__img-wrap img {
-  transform: scale(1.05);
-}
-
-.lux-site .gallery-reel__overlay {
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.75) 100%) !important;
-}
-
-.lux-site .gallery-reel__nav {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(12px);
-}
-
-.lux-site .gallery-reel__nav:hover {
-  border-color: var(--lux-coral) !important;
-  color: var(--lux-coral) !important;
-}
-
-/* ----- Directions ----- */
-.lux-site .directions__heading {
+.lux-site .gallery-mast__title {
   color: var(--lux-dark) !important;
 }
 
-.lux-site .directions__text {
+.lux-site .gallery-mast__desc {
   color: var(--lux-text-muted) !important;
+}
+
+.lux-site .gallery-mast__rule {
+  background: linear-gradient(
+    90deg,
+    var(--lux-brown),
+    rgba(209, 106, 90, 0.35)
+  ) !important;
+}
+
+.lux-site .gallery-reel__slide {
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14) !important;
+}
+
+.lux-site .gallery-reel__nav:hover {
+  background: var(--lux-lime) !important;
+  border-color: var(--lux-lime) !important;
+  color: var(--lux-lime-text) !important;
+  box-shadow:
+    0 0 0 1px rgba(226, 255, 99, 0.35),
+    0 0 32px rgba(226, 255, 99, 0.28) !important;
+}
+
+/* ----- Directions (dark band: copy + embedded map) ----- */
+.lux-site #directions .directions__heading {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.lux-site #directions .directions__text {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .lux-site .directions__card {
   border-radius: 18px !important;
   overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
 }
 
-/* ----- Reviews ----- */
+.lux-site #directions .directions__map-wrap--light.directions__card {
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.lux-site #directions .directions__map-link--light:hover {
+  background: var(--lux-lime) !important;
+  color: var(--lux-lime-text) !important;
+}
+
+/* ----- Reviews (light band) ----- */
 .lux-site .review-card {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: var(--lux-card) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
   border-radius: 18px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06) !important;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .lux-site .review-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.1) !important;
 }
 
 .lux-site .review-card__text {
-  color: rgba(255, 255, 255, 0.82) !important;
+  color: var(--lux-text-muted) !important;
 }
 
 .lux-site .review-card__author {
   color: var(--lux-coral) !important;
 }
 
-/* ----- Terms cards ----- */
-.lux-site .terms-card {
-  background: var(--lux-card) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+/* ----- Terms cards (home — dark #terms band) ----- */
+.lux-site .section--terms-cards .terms-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 18px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22) !important;
 }
 
-.lux-site .terms-card__title {
-  color: var(--lux-dark) !important;
+.lux-site .section--terms-cards .terms-card__title {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
-.lux-site .terms-card li,
-.lux-site .terms-card p {
-  color: var(--lux-text-muted) !important;
+.lux-site .section--terms-cards .terms-card li,
+.lux-site .section--terms-cards .terms-card p {
+  color: rgba(255, 255, 255, 0.72) !important;
 }
 
-.lux-site .terms-card a {
-  color: var(--lux-brown) !important;
-}
-
-.lux-site .terms-card a:hover {
+.lux-site .section--terms-cards .terms-card a {
   color: var(--lux-coral) !important;
 }
 
-/* ----- Footer ----- */
+.lux-site .section--terms-cards .terms-card a:hover {
+  color: var(--lux-lime) !important;
+}
+
+/* ----- Footer (light — same cream as section--alt) ----- */
 .lux-site .footer {
-  background: var(--lux-darker) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: rgba(255, 255, 255, 0.65) !important;
+  background: var(--lux-light) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: var(--lux-text-muted) !important;
 }
 
 .lux-site .footer__tagline,
 .lux-site .footer__copyright {
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: var(--lux-text-muted) !important;
+}
+
+.lux-site .footer__heading {
+  color: var(--lux-brown) !important;
+}
+
+.lux-site .footer__links a,
+.lux-site .footer__contact-item a {
+  color: var(--lux-dark) !important;
+}
+
+.lux-site .footer__links a:hover,
+.lux-site .footer__contact-item a:hover {
+  color: var(--lux-coral) !important;
+}
+
+.lux-site .footer__contact-item {
+  color: var(--lux-text-muted) !important;
 }
 
 .lux-site .footer a:hover {
@@ -572,24 +673,32 @@
   box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.2) !important;
 }
 
-.lux-site .modal .btn--primary:not(.lux-hero-cta) {
-  background: var(--lux-brown) !important;
-  color: #ffffff !important;
-  border-color: var(--lux-brown) !important;
+.lux-site .modal .btn--primary:not(.btn--google) {
+  background: var(--lux-lime) !important;
+  color: var(--lux-lime-text) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  box-shadow:
+    0 0 0 1px rgba(226, 255, 99, 0.3),
+    0 0 36px var(--lux-lime-glow),
+    0 8px 24px rgba(0, 0, 0, 0.25) !important;
 }
 
-.lux-site .modal .btn--primary:not(.lux-hero-cta):hover {
-  filter: brightness(1.05);
+.lux-site .modal .btn--primary:not(.btn--google):hover {
+  background: var(--lux-lime-hover) !important;
+  color: var(--lux-lime-text) !important;
+  filter: none !important;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(237, 255, 133, 0.4),
+    0 0 48px rgba(226, 255, 99, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* ----- Float buttons ----- */
 .lux-site .whatsapp-float {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.lux-site .chatbot-float {
-  background: var(--lux-brown) !important;
-  box-shadow: 0 10px 30px rgba(139, 94, 60, 0.35);
 }
 
 /* ----- Cart page ----- */

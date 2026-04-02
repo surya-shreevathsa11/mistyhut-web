@@ -70,7 +70,7 @@
   }
 
   /* ----- 3. Image parallax (hero handled by hero-cinematic.js; only non-hero here) ----- */
-  var parallaxEls = document.querySelectorAll(".about__img-wrap");
+  var parallaxEls = document.querySelectorAll(".about__img-wrap, .about-impact__bg-parallax");
   parallaxEls.forEach(function (el) {
     el.classList.add("parallax-img");
   });
@@ -103,7 +103,7 @@
   }
 
   /* ----- 4. Cinematic zoom — about images only (hero stays full-bleed) ----- */
-  document.querySelectorAll(".about__img").forEach(function (img) {
+  document.querySelectorAll(".about__img, .about-impact__bg-photo").forEach(function (img) {
     img.classList.add("cinematic-zoom-scroll");
   });
 

@@ -13,7 +13,7 @@
       navEl.classList.toggle("scrolled", window.scrollY > 60);
     });
 
-    var sections = $$("section[data-nav-theme]");
+    var sections = $$("section[data-nav-theme], footer[data-nav-theme]");
     var heroEl = $(".hero");
     function updateNavTheme() {
       if (!navEl.classList.contains("scrolled")) {
@@ -70,7 +70,7 @@
   }
 
   $$(
-    ".nav__links a, .hero .btn, .footer__links a, .section__actions a",
+    ".nav__links a, .hero .btn, .footer__links a, .section__actions a, .about-impact__cta, .about-story__link",
   ).forEach((link) => {
     link.addEventListener("click", (e) => {
       const href = link.getAttribute("href");
@@ -899,7 +899,7 @@
     });
 
     var textSelector =
-      "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .section__title, .section__subtitle";
+      "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .about-impact__headline, .section__title, .section__subtitle";
     var hoverSelector =
       'a, button, .btn, input, textarea, [role="button"], .room-card, .gallery__item, .gallery-card';
     var headerSelector = ".nav, .admin__header, .footer";
