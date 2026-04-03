@@ -17,6 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import connectDB from "./db.js";
+import { renderIndexHtml } from "./config/seo-index-pages.js";
 
 const app = express();
 app.use(cookieParser());
@@ -33,15 +34,34 @@ app.use(
   "/api/payment/razorpay-webhook",
   express.raw({ type: "application/json" }),
 );
-app.use(express.static(path.join(__dirname, "public")));
+
+const publicDir = path.join(__dirname, "public");
+
+app.get(["/", "/about", "/rooms", "/gallery", "/contact"], (req, res, next) => {
+  try {
+    const html = renderIndexHtml(req.path);
+    if (html == null) return next();
+    res.type("html").send(html);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Avoid serving public/index.html with unreplaced %%SEO_HEAD%%; canonical is /
+app.get("/index.html", (_req, res) => {
+  res.redirect(301, "/");
+});
+
+app.use(express.static(publicDir));
+
 app.get("/cart", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "cart.html"));
+  res.sendFile(path.join(publicDir, "cart.html"));
 });
 app.get("/admin", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+  res.sendFile(path.join(publicDir, "admin.html"));
 });
 app.get("/reviews", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "reviews.html"));
+  res.sendFile(path.join(publicDir, "reviews.html"));
 });
 
 app.use(
