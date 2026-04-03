@@ -125,7 +125,7 @@
   opacity: 1;
 }
 
-/* ----- Navigation (glass pill, white type, coral hover) ----- */
+/* ----- Navigation (glass pill, white type, lime hover — matches .lux-hero-cta) ----- */
 .lux-site .nav {
   background: transparent !important;
   border-bottom: none !important;
@@ -153,12 +153,12 @@
 
 .lux-site .nav .nav__links a:hover,
 .lux-site .nav.scrolled .nav__links a:hover {
-  color: var(--lux-coral) !important;
+  color: var(--lux-lime) !important;
 }
 
 .lux-site .nav .nav__links a::after,
 .lux-site .nav.scrolled .nav__links a::after {
-  background: var(--lux-coral) !important;
+  background: var(--lux-lime) !important;
 }
 
 .lux-site .nav .nav__auth {
@@ -169,9 +169,9 @@
 
 .lux-site .nav .nav__auth:hover,
 .lux-site .nav.scrolled .nav__auth:hover {
-  background: var(--lux-coral) !important;
-  border-color: var(--lux-coral) !important;
-  color: #ffffff !important;
+  background: var(--lux-lime) !important;
+  border-color: var(--lux-lime) !important;
+  color: var(--lux-lime-text) !important;
 }
 
 .lux-site .nav__cart-count {

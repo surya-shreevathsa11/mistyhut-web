@@ -2155,6 +2155,7 @@ main > section.section {
 .footer__brand {
   margin-bottom: 0.5rem;
   display: flex;
+  justify-content: center;
 }
 .footer__logo-img {
   display: block;
@@ -2164,8 +2165,8 @@ main > section.section {
   border-radius: 50%;
 }
 .footer--compact .footer__logo-img {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
 }
 .footer__tagline {
   font-size: 0.85rem;
