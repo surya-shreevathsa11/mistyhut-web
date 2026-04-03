@@ -56,15 +56,6 @@
     cardGridObserver.observe(el);
   });
 
-  /* Reviews marquee: only first strip gets scroll-in (duplicate row is for loop only) */
-  var reviewsMarqueeFirst = document.querySelector(
-    "#reviews .reviews-showcase__track > .reviews-marquee-group:first-of-type"
-  );
-  if (reviewsMarqueeFirst) {
-    reviewsMarqueeFirst.classList.add("card-grid-reveal");
-    cardGridObserver.observe(reviewsMarqueeFirst);
-  }
-
   /* Dynamically added room cards: observe #roomsGrid for new children */
   var roomsGrid = document.getElementById("roomsGrid");
   if (roomsGrid && roomsGrid.classList.contains("card-grid-reveal")) {
@@ -185,39 +176,4 @@
     counterObserver.observe(el);
   });
 
-  /* ----- 6. Card stack (gallery slides move at different speeds) ----- */
-  var gallerySection = document.querySelector(".section--gallery");
-  var gallerySlides = document.querySelectorAll(
-    "#gallery .gallery-marquee__track > .gallery-marquee__group:first-child .gallery-reel__slide"
-  );
-  if (gallerySection && gallerySlides.length) {
-    var stackTicking = false;
-    var depthFactors = [0.6, 0.4, 0.2, 0.15, 0.1, 0.08, 0.06, 0.05];
-
-    function updateCardStack() {
-      var scrollY = window.scrollY || document.documentElement.scrollTop;
-      var rect = gallerySection.getBoundingClientRect();
-      var sectionTop = scrollY + rect.top - window.innerHeight;
-      var sectionHeight = rect.height + window.innerHeight;
-      var progress = (scrollY - sectionTop) / sectionHeight;
-      progress = Math.max(0, Math.min(1, progress));
-      var basePx = 50;
-      gallerySlides.forEach(function (slide, i) {
-        var factor = depthFactors[i] != null ? depthFactors[i] : 0.05;
-        var y = progress * basePx * factor;
-        slide.style.transform = "translateY(" + y + "px)";
-      });
-      stackTicking = false;
-    }
-
-    function onScrollStack() {
-      if (!stackTicking) {
-        requestAnimationFrame(updateCardStack);
-        stackTicking = true;
-      }
-    }
-
-    window.addEventListener("scroll", onScrollStack, { passive: true });
-    updateCardStack();
-  }
 })();

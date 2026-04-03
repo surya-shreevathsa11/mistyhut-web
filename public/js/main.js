@@ -860,22 +860,37 @@
 
     let x = 0,
       y = 0;
-    let rx = 0,
-      ry = 0;
-    const lerpRate = 0.42;
     let visible = false;
     let hovering = false;
     let down = false;
     let activeHoverEl = null;
 
+    function scale() {
+      return down ? 0.9 : hovering ? 1.24 : 1;
+    }
+
+    function paintBlob() {
+      if (!visible) return;
+      blob.style.transform =
+        "translate3d(" +
+        x +
+        "px," +
+        y +
+        "px,0) translate(-50%,-50%) scale(" +
+        scale() +
+        ")";
+    }
+
     function setVisible(v) {
       visible = v;
       container.classList.toggle("is-visible", v);
+      if (v) paintBlob();
     }
 
     function updateClasses() {
       container.classList.toggle("is-hover", hovering);
       container.classList.toggle("is-down", down);
+      paintBlob();
     }
 
     window.addEventListener(
@@ -884,6 +899,7 @@
         x = e.clientX;
         y = e.clientY;
         setVisible(true);
+        paintBlob();
       },
       { passive: true },
     );
@@ -948,23 +964,6 @@
       updateClasses();
     });
 
-    function tick() {
-      if (visible) {
-        rx += (x - rx) * lerpRate;
-        ry += (y - ry) * lerpRate;
-        var scale = down ? 0.9 : hovering ? 1.24 : 1;
-        blob.style.transform =
-          "translate(" +
-          rx +
-          "px," +
-          ry +
-          "px) translate(-50%,-50%) scale(" +
-          scale +
-          ")";
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
   }
 
   // --- Init ---

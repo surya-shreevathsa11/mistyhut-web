@@ -149,7 +149,6 @@ body.lux-site .reviews-showcase__line--2 {
   overflow: hidden;
   width: 100%;
   padding: 0.5rem 0 1rem;
-  perspective: 1400px;
   mask-image: linear-gradient(
     90deg,
     transparent,
@@ -185,6 +184,7 @@ body.lux-site .reviews-showcase__line--2 {
   align-items: stretch;
 }
 
+/* Track moves left → cards drift right-to-left across the viewport (duplicate row = seamless loop) */
 @keyframes reviews-marquee-scroll {
   0% {
     transform: translateX(0);
@@ -233,37 +233,10 @@ body.lux-site .reviews-showcase__line--2 {
     0 20px 48px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transform-style: preserve-3d;
-  transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.45s ease,
-    border-color 0.35s ease;
-  animation: reviews-card-float 6.5s ease-in-out infinite;
-}
-
-.review-card--showcase:nth-child(1) .review-card__inner {
-  animation-delay: 0s;
-}
-.review-card--showcase:nth-child(2) .review-card__inner {
-  animation-delay: -2.1s;
-}
-.review-card--showcase:nth-child(3) .review-card__inner {
-  animation-delay: -4.2s;
-}
-
-@keyframes reviews-card-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
+  transition: box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 .review-card--showcase:hover .review-card__inner {
-  animation-play-state: paused;
-  transform: translateY(-12px) rotateX(4deg) rotateY(-4deg) scale(1.02);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.08),
     0 28px 56px rgba(0, 0, 0, 0.12),

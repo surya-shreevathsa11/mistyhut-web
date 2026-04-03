@@ -501,8 +501,8 @@
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.12) !important;
 }
 
-.lux-site .gallery-marquee__slide.gallery-reel__slide:hover {
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16) !important;
+.lux-site .gallery-marquee__slide.gallery-reel__slide:focus-visible {
+  outline-color: var(--lux-coral) !important;
 }
 
 /* ----- Directions (dark band: copy + embedded map) ----- */
@@ -632,12 +632,14 @@
   opacity: 0.02;
 }
 
-.lux-site .blob-cursor.is-over-header .blob-cursor__blob {
-  background: var(--lux-coral) !important;
+.lux-site .blob-cursor.is-over-header .blob-cursor__ring {
+  border-color: var(--lux-coral) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 2px 14px rgba(255, 107, 107, 0.35) !important;
 }
 
-.lux-site .blob-cursor.is-over-header .blob-cursor__inner {
+.lux-site .blob-cursor.is-over-header .blob-cursor__dot {
   background: var(--lux-darker) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 1px 5px rgba(0, 0, 0, 0.35) !important;
 }
 
 /* ----- Modals & booking form ----- */

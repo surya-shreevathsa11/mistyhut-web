@@ -951,12 +951,14 @@ body.page-cart .nav .nav__inner {
   border-color: rgba(0, 0, 0, 0.06);
 }
 
-.blob-cursor.is-over-header .blob-cursor__blob {
-  background: var(--rust-coral);
+.blob-cursor.is-over-header .blob-cursor__ring {
+  border-color: var(--rust-coral);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 2px 12px rgba(139, 94, 60, 0.35);
 }
 
-.blob-cursor.is-over-header .blob-cursor__inner {
+.blob-cursor.is-over-header .blob-cursor__dot {
   background: var(--rust-charcoal);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 1px 5px rgba(0, 0, 0, 0.35);
 }
 
 .admin__header {

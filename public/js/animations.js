@@ -97,7 +97,7 @@
 
       /* Card-level stagger for grids (matches prathibhimba-web) */
       var cardSelector =
-        ".room-card, .review-card:not(.review-card--marquee-clone), .terms-panel, .gallery-marquee__track > .gallery-marquee__group:first-child .gallery-reel__slide";
+        ".room-card, .review-card:not(.review-card--marquee-clone):not(.review-card--showcase), .terms-panel, .gallery-marquee__track > .gallery-marquee__group:first-child .gallery-reel__slide";
       var cards = gsap.utils.toArray(cardSelector, section);
 
       var trigger = st.create({
