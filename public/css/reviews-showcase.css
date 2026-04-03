@@ -71,11 +71,11 @@
 .reviews-showcase__headline {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.15rem;
-  margin: 0 0 1rem;
+  margin: 0 auto 1rem;
   line-height: 1.05;
-  text-align: left;
+  text-align: center;
 }
 
 .reviews-showcase__line {

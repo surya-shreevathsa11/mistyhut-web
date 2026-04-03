@@ -240,7 +240,7 @@ function buildEmailHtml(booking) {
                   <td width="1" style="background:#ddd8cc;">&nbsp;</td>
                   <td width="33%" align="center" style="padding:8px;">
                     <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;color:#a89878;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;">WhatsApp</p>
-                    <p style="margin:0;font-family:'Georgia',serif;font-size:14px;color:#5a7080;">+91 99455 62887</p>
+                    <p style="margin:0;font-family:'Georgia',serif;font-size:14px;color:#5a7080;">+91 89714 25151</p>
                   </td>
                 </tr>
               </table>
@@ -371,7 +371,7 @@ function buildPaymentFailedHtml(booking) {
               <table cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;">
                 <tr>
                   <td style="background:#8ba68f;border-radius:6px;padding:12px 28px;">
-                    <a href="https://wa.me/919945562887" style="font-size:13px;color:#4a5f6b;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">Contact Us on WhatsApp</a>
+                    <a href="https://wa.me/918971425151" style="font-size:13px;color:#4a5f6b;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">Contact Us on WhatsApp</a>
                   </td>
                 </tr>
               </table>
@@ -634,7 +634,7 @@ function buildCancellationHtml(booking) {
               <table cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
                 <tr>
                   <td style="background:#8ba68f;border-radius:6px;padding:12px 28px;">
-                    <a href="https://wa.me/919945562887" style="font-size:13px;color:#4a5f6b;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">Contact Us on WhatsApp</a>
+                    <a href="https://wa.me/918971425151" style="font-size:13px;color:#4a5f6b;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">Contact Us on WhatsApp</a>
                   </td>
                 </tr>
               </table>

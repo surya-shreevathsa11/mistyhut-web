@@ -2150,8 +2150,6 @@ main > section.section {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   text-align: center;
 }
-.footer__col { }
-.footer__col--brand { }
 .footer__brand {
   margin-bottom: 0.5rem;
   display: flex;
@@ -2771,6 +2769,10 @@ body.page-cart .nav {
   .modal__content--wide {
     max-width: min(480px, 94vw);
   }
+  /* Compact footer: nudge Misty Hut block left; Vara logo position unchanged */
+  .footer__wrap--compact .footer__brand-block {
+    transform: translateX(-1.5cm);
+  }
 }
 
 /* Tablet portrait / large phones */
@@ -2797,6 +2799,9 @@ body.page-cart .nav {
   }
   .nav__toggle {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
   .cart-page {
     padding: 3rem 0 2.5rem;
