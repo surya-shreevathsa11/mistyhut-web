@@ -7,7 +7,7 @@ const generateAccessToken = () => {
   return jwt.sign(
     { username: process.env.ADMIN_USERNAME },
     process.env.ACCESSTOKEN_SECRET,
-    { expiresIn: process.env.ACCESSTOKEN_EXPIRY || "24h" }
+    { expiresIn: process.env.ACCESSTOKEN_EXPIRY || "24h" },
   );
 };
 export const login = async (req, res) => {
@@ -29,6 +29,7 @@ export const login = async (req, res) => {
     }
 
     const otp = generateOTP();
+    console.log(otp);
     const otpHash = hashOTP(otp);
 
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
