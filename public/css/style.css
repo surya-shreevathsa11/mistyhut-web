@@ -2068,7 +2068,7 @@ main > section.section {
 }
 
 .footer--compact {
-  padding: 1.25rem 0;
+  padding: calc(1.25rem + 0.5cm) 0;
 }
 
 .footer__wrap {
@@ -2092,6 +2092,20 @@ main > section.section {
   align-items: center;
   gap: 0.5rem 1.5rem;
   min-height: 0;
+}
+
+.footer--compact .footer__wrap--compact {
+  position: relative;
+}
+
+@media (min-width: 1025px) {
+  /* Compact footer: keep Vara left, center Misty Hut block in the footer width */
+  .footer--compact .footer__brand-block {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .footer__vara-logo {
@@ -2769,9 +2783,11 @@ body.page-cart .nav {
   .modal__content--wide {
     max-width: min(480px, 94vw);
   }
-  /* Compact footer: nudge Misty Hut block left; Vara logo position unchanged */
+  /* Compact footer: Misty Hut block centers on its own row; Vara stays untouched */
   .footer__wrap--compact .footer__brand-block {
-    transform: translateX(-1.5cm);
+    position: static;
+    transform: none;
+    flex: 1 1 100%;
   }
 }
 
