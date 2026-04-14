@@ -30,19 +30,19 @@
   .lux-hero-cta {
     @apply inline-flex items-center justify-center rounded-full border border-black/[0.08] px-10 py-3.5 font-sans text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ease-lux;
     color: #000000;
-    background-color: #e2ff63;
+    background-color: #FF9E6D;
     box-shadow:
-      0 0 0 1px rgba(226, 255, 99, 0.35),
-      0 0 40px rgba(226, 255, 99, 0.38),
+      0 0 0 1px rgba(255, 158, 109, 0.35),
+      0 0 40px rgba(255, 158, 109, 0.38),
       0 10px 28px rgba(0, 0, 0, 0.28);
   }
 
   .lux-hero-cta:hover {
-    background-color: #edff85;
+    background-color: #ffb892;
     transform: translateY(-2px) scale(1.02);
     box-shadow:
-      0 0 0 1px rgba(237, 255, 133, 0.45),
-      0 0 52px rgba(226, 255, 99, 0.42),
+      0 0 0 1px rgba(255, 184, 146, 0.45),
+      0 0 52px rgba(255, 158, 109, 0.42),
       0 14px 36px rgba(0, 0, 0, 0.32);
   }
 
@@ -50,19 +50,19 @@
   .lux-btn-booking {
     @apply inline-flex items-center justify-center rounded-full border border-black/[0.08] px-8 py-3 font-sans text-sm font-bold transition-all duration-300 ease-lux;
     color: #000000;
-    background-color: #e2ff63;
+    background-color: #FF9E6D;
     box-shadow:
-      0 0 0 1px rgba(226, 255, 99, 0.35),
-      0 0 40px rgba(226, 255, 99, 0.38),
+      0 0 0 1px rgba(255, 158, 109, 0.35),
+      0 0 40px rgba(255, 158, 109, 0.38),
       0 8px 24px rgba(0, 0, 0, 0.28);
   }
 
   .lux-btn-booking:hover {
-    background-color: #edff85;
+    background-color: #ffb892;
     transform: translateY(-2px);
     box-shadow:
-      0 0 0 1px rgba(237, 255, 133, 0.45),
-      0 0 48px rgba(226, 255, 99, 0.4),
+      0 0 0 1px rgba(255, 184, 146, 0.45),
+      0 0 48px rgba(255, 158, 109, 0.4),
       0 12px 32px rgba(0, 0, 0, 0.3);
   }
 

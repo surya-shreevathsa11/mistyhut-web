@@ -4,21 +4,21 @@
  */
 
 .lux-site {
-  --lux-dark: #2b2b2b;
-  --lux-darker: #1f1f1f;
-  --lux-light: #f5f5f5;
-  --lux-card: #ffffff;
-  --lux-brown: #8b5e3c;
-  --lux-coral: #d16a5a;
-  --lux-text-dark: #1a1a1a;
-  --lux-text-muted: rgba(26, 26, 26, 0.62);
-  --lux-text-on-dark: rgba(255, 255, 255, 0.92);
+  --lux-dark: #5B0E14;
+  --lux-darker: #5B0E14;
+  --lux-light: #F1E194;
+  --lux-card: #F1E194;
+  --lux-brown: #F1E194;
+  --lux-coral: #F1E194;
+  --lux-text-dark: #5B0E14;
+  --lux-text-muted: rgba(91, 14, 20, 0.68);
+  --lux-text-on-dark: rgba(241, 225, 148, 0.94);
   /* Primary CTA — neon lime (hero / modals / booking) */
-  --lux-lime: #e2ff63;
-  --lux-lime-hover: #edff85;
-  --lux-lime-active: #d4f054;
-  --lux-lime-text: #000000;
-  --lux-lime-glow: rgba(226, 255, 99, 0.38);
+  --lux-lime: #F1E194;
+  --lux-lime-hover: #f6eab0;
+  --lux-lime-active: #e4d37e;
+  --lux-lime-text: #5B0E14;
+  --lux-lime-glow: rgba(241, 225, 148, 0.38);
 }
 
 /* ----- Primary buttons (site-wide, .lux-site) ----- */
@@ -31,7 +31,7 @@
   border-radius: 9999px !important;
   font-weight: 700 !important;
   box-shadow:
-    0 0 0 1px rgba(226, 255, 99, 0.35),
+    0 0 0 1px rgba(241, 225, 148, 0.35),
     0 0 42px var(--lux-lime-glow),
     0 10px 28px rgba(0, 0, 0, 0.28) !important;
 }
@@ -43,8 +43,8 @@
   color: var(--lux-lime-text) !important;
   filter: none !important;
   box-shadow:
-    0 0 0 1px rgba(237, 255, 133, 0.45),
-    0 0 52px rgba(226, 255, 99, 0.42),
+    0 0 0 1px rgba(246, 234, 176, 0.45),
+    0 0 52px rgba(241, 225, 148, 0.42),
     0 14px 36px rgba(0, 0, 0, 0.32) !important;
 }
 
@@ -180,7 +180,7 @@
 }
 
 .lux-site .nav__profile-dropdown {
-  background: rgba(31, 31, 31, 0.92) !important;
+  background: rgba(91, 14, 20, 0.92) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
@@ -274,7 +274,7 @@
 }
 
 .lux-site .hero .divider {
-  background: linear-gradient(90deg, var(--lux-brown), rgba(209, 106, 90, 0.5)) !important;
+  background: linear-gradient(90deg, var(--lux-brown), rgba(241, 225, 148, 0.5)) !important;
 }
 
 /* Slow zoom on active slide (immersive) */
@@ -355,7 +355,7 @@
 }
 
 .lux-site .section:not(.section--alt) .divider {
-  background: linear-gradient(90deg, var(--lux-brown), rgba(209, 106, 90, 0.45)) !important;
+  background: linear-gradient(90deg, var(--lux-brown), rgba(241, 225, 148, 0.45)) !important;
 }
 
 /* Typography on light bands */
@@ -372,7 +372,7 @@
 }
 
 .lux-site .section--alt .divider {
-  background: linear-gradient(90deg, var(--lux-brown), rgba(139, 94, 60, 0.25)) !important;
+  background: linear-gradient(90deg, var(--lux-brown), rgba(241, 225, 148, 0.25)) !important;
 }
 
 /* ----- About split + floating card ----- */
@@ -498,7 +498,7 @@
   background: linear-gradient(
     90deg,
     var(--lux-brown),
-    rgba(209, 106, 90, 0.35)
+    rgba(241, 225, 148, 0.35)
   ) !important;
 }
 
@@ -583,7 +583,7 @@
 }
 
 .lux-site .section--terms-zen .terms-panel:focus-within {
-  border-color: rgba(226, 255, 99, 0.25) !important;
+  border-color: rgba(241, 225, 148, 0.25) !important;
 }
 
 /* ----- Footer (light — same cream as section--alt) ----- */
@@ -639,7 +639,7 @@
 
 .lux-site .blob-cursor.is-over-header .blob-cursor__ring {
   border-color: var(--lux-coral) !important;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 2px 14px rgba(255, 107, 107, 0.35) !important;
+  box-shadow: 0 0 0 1px rgba(241, 225, 148, 0.2), 0 2px 14px rgba(241, 225, 148, 0.35) !important;
 }
 
 .lux-site .blob-cursor.is-over-header .blob-cursor__dot {
@@ -649,7 +649,7 @@
 
 /* ----- Modals & booking form ----- */
 .lux-site .modal__content {
-  background: #ffffff !important;
+  background: #F1E194 !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2) !important;
 }
@@ -677,7 +677,7 @@
 .lux-site .form__group textarea:focus {
   outline: none !important;
   border-color: var(--lux-brown) !important;
-  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(241, 225, 148, 0.2) !important;
 }
 
 .lux-site .modal .btn--primary:not(.btn--google) {
@@ -687,7 +687,7 @@
   border-radius: 9999px !important;
   font-weight: 700 !important;
   box-shadow:
-    0 0 0 1px rgba(226, 255, 99, 0.3),
+    0 0 0 1px rgba(241, 225, 148, 0.3),
     0 0 36px var(--lux-lime-glow),
     0 8px 24px rgba(0, 0, 0, 0.25) !important;
 }
@@ -698,8 +698,8 @@
   filter: none !important;
   transform: translateY(-2px);
   box-shadow:
-    0 0 0 1px rgba(237, 255, 133, 0.4),
-    0 0 48px rgba(226, 255, 99, 0.4),
+    0 0 0 1px rgba(246, 234, 176, 0.4),
+    0 0 48px rgba(241, 225, 148, 0.4),
     0 12px 32px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -750,7 +750,7 @@
   text-align: center;
   padding: 3rem 1rem;
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(31, 31, 31, 0.9) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(91, 14, 20, 0.9) 100%),
     url("/img/designarena_image_1eyd2uq8.png") center / cover no-repeat;
 }
 
@@ -784,7 +784,7 @@
 /* ----- Mobile nav drawer ----- */
 @media (max-width: 768px) {
   .lux-site .nav__links {
-    background: rgba(31, 31, 31, 0.96) !important;
+    background: rgba(91, 14, 20, 0.96) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(16px);
   }

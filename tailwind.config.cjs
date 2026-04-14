@@ -9,12 +9,12 @@ module.exports = {
     extend: {
       colors: {
         lux: {
-          dark: "#2b2b2b",
-          darker: "#1f1f1f",
+          dark: "#1A2238",
+          darker: "#1A2238",
           light: "#f5f5f5",
           card: "#ffffff",
-          brown: "#8b5e3c",
-          coral: "#d16a5a",
+          brown: "#FF9E6D",
+          coral: "#FF9E6D",
         },
       },
       fontFamily: {

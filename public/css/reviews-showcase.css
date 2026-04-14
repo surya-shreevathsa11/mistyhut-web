@@ -33,7 +33,7 @@
 .reviews-showcase__orb--1 {
   width: min(55vw, 420px);
   height: min(55vw, 420px);
-  background: radial-gradient(circle, rgba(226, 255, 99, 0.45) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 158, 109, 0.3) 0%, transparent 70%);
   top: -8%;
   left: -12%;
   animation-delay: 0s;
@@ -42,7 +42,7 @@
 .reviews-showcase__orb--2 {
   width: min(48vw, 360px);
   height: min(48vw, 360px);
-  background: radial-gradient(circle, rgba(209, 106, 90, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 158, 109, 0.35) 0%, transparent 70%);
   bottom: 5%;
   right: -10%;
   animation-delay: -7s;
@@ -76,10 +76,17 @@
   margin: 0 auto 1rem;
   line-height: 1.05;
   text-align: center;
+  max-width: none;
 }
 
 .reviews-showcase__line {
   display: block;
+}
+
+.reviews-showcase__line--hero {
+  font-family: "Saudagar", serif !important;
+  white-space: nowrap;
+  color: inherit;
 }
 
 .reviews-showcase__line--1 {
@@ -99,7 +106,7 @@
 }
 
 body.lux-site .reviews-showcase__line--2 {
-  color: var(--lux-brown, #8b5e3c);
+  color: var(--lux-brown, #F1E194);
   opacity: 1;
 }
 
@@ -137,7 +144,7 @@ body.lux-site .reviews-showcase__line--2 {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(26, 26, 26, 0.45);
+  color: rgba(26, 34, 56, 0.45);
   margin: 0 0 1.25rem;
 }
 
@@ -215,7 +222,7 @@ body.lux-site .reviews-showcase__line--2 {
   font-family: "Playfair Display", serif;
   font-size: clamp(3.5rem, 12vw, 5.5rem);
   line-height: 1;
-  color: rgba(26, 26, 26, 0.06);
+  color: rgba(26, 34, 56, 0.08);
   pointer-events: none;
   z-index: 0;
 }
@@ -240,15 +247,15 @@ body.lux-site .reviews-showcase__line--2 {
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.08),
     0 28px 56px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(226, 255, 99, 0.35);
-  border-color: rgba(226, 255, 99, 0.5);
+    0 0 0 1px rgba(255, 158, 109, 0.35);
+  border-color: rgba(255, 158, 109, 0.5);
 }
 
 .review-card__stars {
   font-size: 0.65rem;
   letter-spacing: 0.35em;
-  color: var(--lux-lime, #e2ff63);
-  text-shadow: 0 0 12px rgba(226, 255, 99, 0.35);
+  color: var(--lux-lime, #F1E194);
+  text-shadow: 0 0 12px rgba(255, 158, 109, 0.35);
   margin-bottom: 0.65rem;
   line-height: 1;
 }
@@ -311,4 +318,15 @@ body.lux-site .reviews-showcase__line--2 {
   .review-card--showcase:hover .review-card__inner {
     transform: none;
   }
+}
+
+.reviews-showcase__eyebrow,
+.reviews-showcase__headline,
+.review-card__author {
+  font-family: "SwissNow", sans-serif;
+}
+
+.reviews-showcase__hint,
+.review-card__text {
+  font-family: "SwissNow", sans-serif;
 }
