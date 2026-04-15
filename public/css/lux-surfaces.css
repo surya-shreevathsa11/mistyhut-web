@@ -444,8 +444,8 @@
 }
 
 .lux-site .room-card:hover {
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.06) !important;
-  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transform: none;
 }
 
 /* Image motion handled by GSAP in main.js (initRoomCardHover) */
@@ -467,14 +467,19 @@
 }
 
 .lux-site .room-card__actions .btn--outline {
-  border-color: var(--lux-brown) !important;
-  color: var(--lux-brown) !important;
+  border-color: var(--lux-dark, #5B0E14) !important;
+  color: #ffffff !important;
+  background: var(--lux-dark, #5B0E14) !important;
+  transition: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  border-radius: 999px !important;
 }
 
 .lux-site .room-card__actions .btn--outline:hover {
-  background: var(--lux-brown) !important;
+  background: var(--lux-dark, #5B0E14) !important;
   color: #ffffff !important;
-  border-color: var(--lux-brown) !important;
+  border-color: var(--lux-dark, #5B0E14) !important;
 }
 
 .lux-site .room-card__overlay {
