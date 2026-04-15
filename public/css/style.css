@@ -2520,6 +2520,9 @@ main > section#terms {
 .modal__content--sm {
   max-width: 340px;
 }
+#bookRoomModal .modal__content {
+  max-width: 420px;
+}
 .modal__content--room-added {
   display: flex;
   flex-direction: column;
