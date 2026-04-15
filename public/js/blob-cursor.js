@@ -53,90 +53,6 @@
       paintBlob();
     }
 
-    function parseColor(color) {
-      if (!color) return null;
-      var c = String(color).trim();
-      if (c[0] === "#") {
-        var hex = c.slice(1);
-        if (hex.length === 3) {
-          hex = hex.split("").map(function (ch) { return ch + ch; }).join("");
-        }
-        if (hex.length === 6) {
-          return {
-            r: parseInt(hex.slice(0, 2), 16),
-            g: parseInt(hex.slice(2, 4), 16),
-            b: parseInt(hex.slice(4, 6), 16),
-            a: 1
-          };
-        }
-      }
-      var nums = c.match(/[\d.]+/g);
-      if (!nums || nums.length < 3) return null;
-      return {
-        r: Number(nums[0]),
-        g: Number(nums[1]),
-        b: Number(nums[2]),
-        a: nums.length > 3 ? Number(nums[3]) : 1
-      };
-    }
-
-    function channelToLinear(v) {
-      var x = v / 255;
-      return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
-    }
-
-    function getLuminance(rgb) {
-      return (
-        0.2126 * channelToLinear(rgb.r) +
-        0.7152 * channelToLinear(rgb.g) +
-        0.0722 * channelToLinear(rgb.b)
-      );
-    }
-
-    function resolveBackgroundColor(el) {
-      var cur = el;
-      while (cur && cur !== document.documentElement) {
-        var bg = parseColor(window.getComputedStyle(cur).backgroundColor);
-        if (bg && bg.a > 0.02) return bg;
-        cur = cur.parentElement;
-      }
-      return { r: 241, g: 225, b: 148, a: 1 };
-    }
-
-    function applyContrastPalette(luminance) {
-      var onLight = luminance > 0.55;
-      container.style.setProperty(
-        "--cursor-ring-color",
-        onLight ? "rgba(91, 14, 20, 0.95)" : "rgba(241, 225, 148, 0.95)"
-      );
-      container.style.setProperty(
-        "--cursor-ring-color-hover",
-        onLight ? "rgba(91, 14, 20, 1)" : "rgba(241, 225, 148, 1)"
-      );
-      container.style.setProperty(
-        "--cursor-ring-color-text",
-        onLight ? "rgba(91, 14, 20, 0.8)" : "rgba(241, 225, 148, 0.8)"
-      );
-      container.style.setProperty("--cursor-dot-fill", onLight ? "#5B0E14" : "#F1E194");
-      container.style.setProperty(
-        "--cursor-dot-halo",
-        onLight
-          ? "0 0 0 2px rgba(255, 255, 255, 0.95), 0 1px 5px rgba(0, 0, 0, 0.25)"
-          : "0 0 0 2px rgba(0, 0, 0, 0.35), 0 1px 5px rgba(0, 0, 0, 0.45)"
-      );
-    }
-
-    function updateContrastState(targetEl, textEl) {
-      var ref = null;
-      if (textEl) {
-        ref = parseColor(window.getComputedStyle(textEl).color);
-      }
-      if (!ref) {
-        ref = resolveBackgroundColor(targetEl || document.body);
-      }
-      applyContrastPalette(getLuminance(ref));
-    }
-
     var textSelector =
       "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .section__title, .section__subtitle, .cart-page__title, .cart-step__heading";
     var hoverSelector =
@@ -147,11 +63,6 @@
       function (e) {
         x = e.clientX;
         y = e.clientY;
-        var atPoint = document.elementFromPoint(x, y);
-        var textAtPoint =
-          atPoint && atPoint.closest && atPoint.closest(textSelector);
-        updateContrastState(atPoint, textAtPoint);
-        container.classList.toggle("is-over-header", isOverHeader(atPoint));
         setVisible(true);
         paintBlob();
       },
@@ -186,7 +97,6 @@
       hovering = Boolean(target);
       container.classList.toggle("is-hover-text", Boolean(textEl));
       container.classList.toggle("is-over-header", isOverHeader(e.target));
-      updateContrastState(e.target, textEl);
       if (activeHoverEl && activeHoverEl !== target) {
         activeHoverEl.classList.remove("cursor-target");
       }
@@ -214,7 +124,6 @@
       hovering = Boolean(stillHover);
       container.classList.toggle("is-hover-text", Boolean(stillText));
       container.classList.toggle("is-over-header", isOverHeader(e.relatedTarget));
-      updateContrastState(e.relatedTarget, stillText);
       if (!hovering && activeHoverEl) {
         activeHoverEl.classList.remove("cursor-target");
         activeHoverEl = null;
