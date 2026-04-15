@@ -1183,7 +1183,7 @@ main > section.section {
 }
 .about-story--compact .about-story__dek {
   font-family: "Montserrat", sans-serif;
-  font-size: clamp(1.02rem, 2.05vw, 1.15rem);
+  font-size: 1rem;
   line-height: 1.72;
   color: var(--text-secondary);
   margin: 0 0 1.4rem;
@@ -1831,7 +1831,7 @@ main > section.section {
   margin-top: 0;
 }
 .directions__text {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.75;
   color: var(--text-secondary);
   margin-bottom: 1rem;
@@ -1934,6 +1934,14 @@ main > section.section {
 
 #directions {
   scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 5rem);
+}
+
+main > section#directions {
+  justify-content: flex-start;
+}
+
+main > section#terms {
+  justify-content: flex-start;
 }
 
 /* ========== LOCATION CARD ========== */

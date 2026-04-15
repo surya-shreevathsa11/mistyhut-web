@@ -483,7 +483,7 @@
 
 /* ----- Gallery mast + reel (light band, same as section--alt) ----- */
 .lux-site .gallery-mast__eyebrow {
-  color: var(--lux-brown) !important;
+  color: var(--lux-dark) !important;
 }
 
 .lux-site .gallery-mast__title {

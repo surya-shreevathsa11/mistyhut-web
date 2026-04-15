@@ -8,6 +8,12 @@
   padding: 0;
 }
 
+main > section.section--reviews-showcase {
+  justify-content: flex-start;
+  min-height: auto;
+  padding-bottom: 2rem;
+}
+
 .section--reviews-showcase .container {
   position: relative;
   z-index: 2;
@@ -65,7 +71,17 @@
 /* ----- Headline ----- */
 .reviews-showcase__eyebrow {
   display: block;
+  color: var(--lux-dark, #1a1a1a);
+  opacity: 1 !important;
+  transform: none !important;
   margin-bottom: 0.65rem;
+}
+
+.section.section--reviews.section--reviews-showcase .section__subtitle.reviews-showcase__eyebrow {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: var(--lux-dark, #1a1a1a) !important;
 }
 
 .reviews-showcase__headline {
