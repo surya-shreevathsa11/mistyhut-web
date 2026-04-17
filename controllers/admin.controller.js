@@ -62,7 +62,7 @@ export const updateBooking = async (req, res) => {
     const updatedBooking = await Booking.findByIdAndUpdate(
       bookingId,
       { status },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     );
 
     if (updatedBooking.status === "cancelled") {
@@ -114,9 +114,9 @@ export const updateBasePrices = async (req, res) => {
         return Room.findOneAndUpdate(
           { roomId: r.roomId },
           { pricePerNight: r.pricePerNight },
-          { returnDocument: "after" }
+          { returnDocument: "after" },
         );
-      })
+      }),
     );
 
     const failed = updates.filter((u) => !u);
@@ -319,7 +319,7 @@ export const updateRoomImages = async (req, res) => {
     const room = await Room.findOneAndUpdate(
       { roomId },
       { $set: update },
-      { new: true }
+      { new: true },
     );
 
     if (!room) return res.status(404).json({ message: "Room not found" });
@@ -345,7 +345,7 @@ export const addGalleryImage = async (req, res) => {
     const room = await Room.findOneAndUpdate(
       { roomId },
       { $push: { "images.gallery": url } },
-      { new: true }
+      { new: true },
     );
 
     if (!room) return res.status(404).json({ message: "Room not found" });
@@ -369,7 +369,7 @@ export const removeGalleryImage = async (req, res) => {
     const room = await Room.findOneAndUpdate(
       { roomId },
       { $pull: { "images.gallery": url } },
-      { new: true }
+      { new: true },
     );
 
     if (!room) return res.status(404).json({ message: "Room not found" });
@@ -411,12 +411,12 @@ cloudinary.config({
 // GET /api/admin/cloudinary-signature
 export const getCloudinarySignature = (req, res) => {
   const timestamp = Math.round(Date.now() / 1000);
-  const folder = "summer-green";
+  const folder = "misty-hut";
   const source = "uw";
 
   const signature = cloudinary.utils.api_sign_request(
     { timestamp, folder, source },
-    process.env.CLOUDINARY_API_SECRET
+    process.env.CLOUDINARY_API_SECRET,
   );
 
   return res.status(200).json({
