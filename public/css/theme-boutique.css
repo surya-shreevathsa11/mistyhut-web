@@ -961,17 +961,6 @@ body.page-cart .nav .nav__inner {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 1px 5px rgba(0, 0, 0, 0.35);
 }
 
-.admin__header {
-  background: var(--rust-charcoal);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.admin__header-title span,
-.admin__back:hover,
-.admin__header .admin__logout:hover {
-  color: var(--rust-coral);
-}
-
 @media (max-width: 768px) {
   .section {
     padding: var(--sp-8) 0;

@@ -3,13 +3,13 @@ import { Room, VariablePrice } from "../models/pricing.model.js";
 import { Cart } from "../models/cart.model.js";
 import { BlockedDate } from "../models/blocked-date.model.js";
 
-function parseDateOnly(str) {
+export function parseDateOnly(str) {
   // Parse as YYYY-MM-DD and create at UTC midnight
   const [y, m, d] = str.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d, 0, 0, 0, 0)); // UTC midnight
 }
 
-async function calculateBookingPrice(roomId, checkIn, checkOut) {
+export async function calculateBookingPrice(roomId, checkIn, checkOut) {
   const start = parseDateOnly(checkIn);
   const end = parseDateOnly(checkOut);
 
@@ -386,6 +386,61 @@ export const deleteRoomFromCart = async (req, res) => {
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
+/**
+ * Validates cart lines and returns totals for checkout (session or guest JWT).
+ * @returns {{ empty?: true, error?: string, message?: string, totalBookingPrice?: number, totalBreakDown?: object[] }}
+ */
+export async function buildCartCheckoutTotals(userId) {
+  const rooms = await Cart.findOne({ userId });
+  if (!rooms || !rooms.roomInfo?.length) {
+    return { empty: true };
+  }
+  let totalBookingPrice = 0;
+  const totalBreakDown = [];
+
+  for (const room of rooms.roomInfo) {
+    const { roomId, checkIn, checkOut, children, adults } = room;
+
+    const booking = {
+      roomId: roomId,
+      checkIn: checkIn.toISOString().split("T")[0],
+      checkOut: checkOut.toISOString().split("T")[0],
+    };
+
+    const isRoomAvailable = await checkAvailability(booking);
+    if (!Number(Object.keys(isRoomAvailable)[0])) {
+      return { error: "availability", message: isRoomAvailable[0] };
+    }
+
+    const { totalPrice, breakdown } = await calculateBookingPrice(
+      roomId,
+      checkIn.toISOString().split("T")[0],
+      checkOut.toISOString().split("T")[0],
+    );
+
+    totalBookingPrice += totalPrice;
+
+    const roomName = await Room.findOne({ roomId });
+
+    totalBreakDown.push({
+      roomId: roomId,
+      roomName: roomName.name,
+      price: totalPrice,
+      type: roomName.type,
+      priceBreakdown: breakdown,
+      adults: Number(adults),
+      children: Number(children),
+      checkIn: checkIn,
+      checkOut: checkOut,
+    });
+  }
+
+  if (!totalBookingPrice) {
+    return { error: "calc", message: "Unable to calculate total price" };
+  }
+  return { totalBookingPrice, totalBreakDown };
+}
+
 export const bookRooms = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -395,57 +450,18 @@ export const bookRooms = async (req, res) => {
         .json({ message: "Mandatory fields must not be empty" });
     }
 
-    const rooms = await Cart.findOne({ userId: req.user._id });
-    if (!rooms) {
+    const built = await buildCartCheckoutTotals(req.user._id);
+    if (built.empty) {
       return res.status(400).json({ message: "Cart is empty" });
     }
-    let totalBookingPrice = 0;
-    const totalBreakDown = [];
-
-    for (const room of rooms.roomInfo) {
-      let { roomId, checkIn, checkOut, children, adults } = room;
-
-      const booking = {
-        roomId: roomId,
-        checkIn: checkIn.toISOString().split("T")[0],
-        checkOut: checkOut.toISOString().split("T")[0],
-      };
-
-      const isRoomAvailable = await checkAvailability(booking);
-      if (!Number(Object.keys(isRoomAvailable)[0])) {
-        return res.status(400).json({ message: isRoomAvailable[0] });
-      }
-
-      //guest validations and stuff not doing cos already done in cart
-
-      const { totalPrice, breakdown } = await calculateBookingPrice(
-        roomId,
-        checkIn.toISOString().split("T")[0],
-        checkOut.toISOString().split("T")[0]
-      );
-
-      //the total price for the whole cart
-      totalBookingPrice += totalPrice;
-
-      const roomName = await Room.findOne({ roomId });
-
-      //price for each room
-      const bookingInfo = {
-        roomId: roomId,
-        roomName: roomName.name,
-        price: totalPrice,
-        type: roomName.type,
-        priceBreakdown: breakdown,
-        adults: Number(adults),
-        children: Number(children),
-        checkIn: checkIn,
-        checkOut: checkOut,
-      };
-
-      totalBreakDown.push(bookingInfo);
+    if (built.error === "availability") {
+      return res.status(400).json({ message: built.message });
+    }
+    if (built.error === "calc") {
+      return res.status(500).json({ message: built.message });
     }
 
-    if (!totalBookingPrice) throw new Error("Unable to calculate total price ");
+    const { totalBookingPrice, totalBreakDown } = built;
 
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,

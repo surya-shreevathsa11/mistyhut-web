@@ -392,91 +392,6 @@ function buildPaymentFailedHtml(booking) {
   `;
 }
 
-// ─── Admin OTP Email ──────────────────────────────────────────────────────────
-
-function buildAdminOTPHtml(otp) {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login – Misty Hut Stays</title>
-</head>
-<body style="margin:0;padding:0;background-color:#ede8e0;font-family:Helvetica,Arial,sans-serif;">
-
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ede8e0;padding:40px 16px;">
-    <tr>
-      <td align="center">
-        <table width="520" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;width:100%;">
-
-          <!-- Header -->
-          <tr>
-            <td align="center" style="background:linear-gradient(160deg,#4a5f6b 0%,#5a7080 60%,#7a9aaa 100%);border-radius:12px 12px 0 0;padding:40px 40px 32px;">
-              <p style="margin:0 0 6px 0;font-size:11px;letter-spacing:4px;color:#8ba68f;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;">Boutique Retreat</p>
-              <h1 style="margin:0;font-family:'Georgia',serif;font-size:36px;color:#f5f4f0;font-weight:normal;letter-spacing:1px;">Misty Hut Stays</h1>
-              <div style="width:40px;height:2px;background:#8ba68f;margin:14px auto 0;"></div>
-            </td>
-          </tr>
-
-          <!-- Banner -->
-          <tr>
-            <td align="center" style="background:#8ba68f;padding:12px 40px;">
-              <p style="margin:0;font-size:11px;letter-spacing:3px;color:#4a5f6b;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;font-weight:bold;">&#128274; &nbsp; Admin Login Verification</p>
-            </td>
-          </tr>
-
-          <!-- Body -->
-          <tr>
-            <td style="background:#ffffff;padding:40px 40px 36px;">
-              <p style="margin:0 0 8px;font-family:'Georgia',serif;font-size:20px;color:#5a7080;">Hello, Admin</p>
-              <p style="margin:0 0 32px;font-size:14px;color:#5a5548;line-height:1.8;">
-                A login attempt was made to the Misty Hut Stays admin panel. Use the OTP below to complete verification. Do not share this code with anyone.
-              </p>
-
-              <!-- OTP Box -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center">
-                    <div style="display:inline-block;background:#f9f7f2;border:1px solid #ddd8cc;border-top:3px solid #8ba68f;border-radius:8px;padding:28px 48px;margin-bottom:28px;">
-                      <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;color:#a89878;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;">Your One-Time Password</p>
-                      <p style="margin:0;font-family:'Courier New',monospace;font-size:40px;font-weight:bold;letter-spacing:12px;color:#8ba68f;">${otp}</p>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fdf8ed;border:1px solid #e5d9a8;border-radius:8px;margin-bottom:8px;">
-                <tr>
-                  <td style="padding:14px 20px;">
-                    <p style="margin:0;font-size:12px;color:#7a6020;line-height:1.6;font-family:Helvetica,Arial,sans-serif;">
-                      &#9888;&nbsp; This OTP is valid for <strong>5 minutes</strong>. If you did not request this, please ignore this email and secure your account.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td align="center" style="background:linear-gradient(160deg,#4a5f6b 0%,#5a7080 100%);border-radius:0 0 12px 12px;padding:24px 40px;">
-              <p style="margin:0 0 4px;font-family:'Georgia',serif;font-size:15px;color:#f5f4f0;">Misty Hut Stays Boutique Retreat</p>
-              <p style="margin:0 0 8px;font-size:12px;color:#7aaa98;font-family:Helvetica,Arial,sans-serif;">Madikeri, Coorg, Karnataka</p>
-              <p style="margin:0;font-size:11px;color:#3a5a50;font-family:Helvetica,Arial,sans-serif;">support@mistyhutstays.com</p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
-  </table>
-
-</body>
-</html>
-  `;
-}
-
 // ─── Cancellation Email ───────────────────────────────────────────────────────
 
 function buildCancellationHtml(booking) {
@@ -689,20 +604,6 @@ export async function sendPaymentFailedMailToGuest(booking) {
     html: buildPaymentFailedHtml(booking),
   });
 }
-
-export const sendAdminOTPEmail = async (email, otp) => {
-  const { data, error } = await resend.emails.send({
-    from: "Misty Hut Stays <support@mistyhutstays.com>",
-    to: [email],
-    reply_to: "mistyhutstays@gmail.com",
-    subject: "Your Admin Login OTP – Misty Hut Stays",
-    html: buildAdminOTPHtml(otp),
-  });
-
-  if (error) {
-    throw new Error(error.message || "Failed to send OTP email");
-  }
-};
 
 export async function sendCancellationMailToGuest(booking) {
   await resend.emails.send({

@@ -22,7 +22,7 @@ const capacitySchema = new Schema(
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const roomSchema = new Schema({
@@ -30,7 +30,11 @@ const roomSchema = new Schema({
     type: String,
     enum: roomIds,
     required: true,
-    unique: true,
+  },
+
+  propertyId: {
+    type: String,
+    required: true,
   },
 
   name: {
@@ -69,6 +73,11 @@ const variablePriceSchema = new Schema({
     required: true,
   },
 
+  propertyId: {
+    type: String,
+    required: true,
+  },
+
   pricePerNight: {
     type: Number,
     required: true,
@@ -94,7 +103,7 @@ variablePriceSchema.index({ roomId: 1, from: 1, to: 1 });
 
 export const VariablePrice = mongoose.model(
   "VariablePrice",
-  variablePriceSchema
+  variablePriceSchema,
 );
 
 export const Room = mongoose.model("Room", roomSchema);

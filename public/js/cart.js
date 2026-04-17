@@ -1,6 +1,10 @@
 (function () {
   "use strict";
   var POST_LOGIN_REDIRECT_KEY = "summer-green-post-login";
+  var A = window.MistyApi;
+  if (!A) {
+    console.warn("MistyApi missing — load /js/api-config.js before cart.js");
+  }
 
   var $ = function (sel) {
     return document.querySelector(sel);
@@ -34,17 +38,14 @@
   }
 
   function checkAuth(cb) {
-    fetch("/api/auth/status", { credentials: "same-origin" })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(function (data) {
-        currentUser = data.loggedIn ? data.user : null;
-        if (cb) cb(currentUser);
-      })
-      .catch(function () {
-        if (cb) cb(null);
-      });
+    if (!A) {
+      if (cb) cb(null);
+      return;
+    }
+    var tok = A.getToken();
+    var u = A.getStoredUser();
+    currentUser = tok && u ? u : null;
+    if (cb) cb(currentUser);
   }
 
   function updateNavCartCount(count) {
@@ -56,15 +57,20 @@
   }
 
   function fetchCart() {
-    return fetch("/api/booking/cart", { credentials: "same-origin" })
+    if (!A || !A.getToken()) {
+      serverCart = [];
+      return Promise.resolve({ unauthorized: true });
+    }
+    return A.guestCartGet()
       .then(function (res) {
         if (res.status === 401) return { unauthorized: true };
         return res.json().then(function (data) {
-          if (data.message && Array.isArray(data.message)) {
-            serverCart = data.message;
-          } else {
-            serverCart = [];
-          }
+          var lines = Array.isArray(data.roomInfo)
+            ? data.roomInfo
+            : Array.isArray(data.message)
+              ? data.message
+              : [];
+          serverCart = lines;
           return { ok: res.ok, unauthorized: res.status === 401 };
         });
       })
@@ -107,7 +113,7 @@
           : room.children && room.children.children != null
             ? room.children.children
             : 0;
-      var roomName = room.roomId || "Room";
+      var roomName = room.roomName || room.roomId || "Room";
       var breakdownHtml = "";
       if (room.priceBreakdown && Array.isArray(room.priceBreakdown) && room.priceBreakdown.length > 0) {
         breakdownHtml =
@@ -175,15 +181,11 @@
   }
 
   function removeFromCart(roomId, checkIn, checkOut) {
-    fetch("/api/booking/cart", {
-      method: "DELETE",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomId: roomId,
-        checkIn: checkIn,
-        checkOut: checkOut,
-      }),
+    if (!A) return;
+    A.guestCartRemove({
+      roomId: roomId,
+      checkIn: checkIn,
+      checkOut: checkOut,
     })
       .then(function (res) {
         return res.json();
@@ -233,7 +235,7 @@
           try {
             sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, "cart");
           } catch (_) {}
-          window.location.href = "/api/auth/google";
+          window.location.href = "/?signin=1";
         });
       }
     }
@@ -307,26 +309,16 @@
 
         termsProceedBtn.disabled = true;
 
-        var rooms = serverCart.map(function (r) {
-          return {
-            roomId: r.roomId,
-            checkIn: formatDate(r.checkIn),
-            checkOut: formatDate(r.checkOut),
-            adults: r.adults != null ? r.adults : 1,
-            children: r.children != null ? r.children : 0,
-          };
-        });
+        if (!A) {
+          errEl.textContent = "Booking API not configured.";
+          termsProceedBtn.disabled = false;
+          return;
+        }
 
-        fetch("/api/booking/checkout", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            email: email,
-            phone: phone,
-            rooms: rooms,
-          }),
+        A.guestPaymentOrder({
+          name: name,
+          email: email,
+          phone: phone,
         })
           .then(function (res) {
             return res.json().then(function (data) {
@@ -352,10 +344,15 @@
               }
 
               var bookingData = result.data.data;
+              var payRupee =
+                bookingData.expectedPrepaidAmount != null
+                  ? Number(bookingData.expectedPrepaidAmount)
+                  : Number(bookingData.totalAmount);
+              if (isNaN(payRupee) || payRupee <= 0) payRupee = Number(bookingData.totalAmount) || 0;
 
               var options = {
                 key: bookingData.key,
-                amount: bookingData.totalAmount * 100, // paise
+                amount: Math.round(payRupee * 100), // paise
                 currency: "INR",
                 order_id: bookingData.razorpayOrderId,
                 name: "Summer Green",
@@ -368,16 +365,10 @@
 
                 // ✅ Called by Razorpay on successful payment
                 handler: function (response) {
-                  // Verify payment signature on backend before redirecting
-                  fetch("/api/payment/verify", {
-                    method: "POST",
-                    credentials: "same-origin",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      razorpay_order_id: response.razorpay_order_id,
-                      razorpay_payment_id: response.razorpay_payment_id,
-                      razorpay_signature: response.razorpay_signature,
-                    }),
+                  A.guestPaymentVerify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
                   })
                     .then(function (res) {
                       return res.json();

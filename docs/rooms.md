@@ -7,8 +7,7 @@ pre-pay = 50%;
 
 ---
 
-- admin panel - admin add images
-- change default prices
+- images / default prices: managed on the centralized backend (no local admin UI in this repo)
 
 ---
 

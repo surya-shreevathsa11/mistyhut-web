@@ -5,9 +5,16 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       unique: true,
+      sparse: true,
     },
     name: String,
-    email: String,
+    email: {
+      type: String,
+      unique: true,
+      sparse: true,
+      lowercase: true,
+      trim: true,
+    },
     avatar: String,
   },
   { timestamps: true },

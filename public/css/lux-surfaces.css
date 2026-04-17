@@ -626,22 +626,6 @@
   color: var(--lux-coral) !important;
 }
 
-/* ----- Admin (matches public site tokens) ----- */
-.lux-site .admin__header {
-  background: var(--lux-darker) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-}
-
-.lux-site .admin__header-title span,
-.lux-site .admin__back:hover,
-.lux-site .admin__header .admin__logout:hover {
-  color: var(--lux-coral) !important;
-}
-
-.lux-site.admin-body::after {
-  opacity: 0.02;
-}
-
 .lux-site .blob-cursor.is-over-header .blob-cursor__ring {
   border-color: var(--lux-coral) !important;
   box-shadow: 0 0 0 1px rgba(241, 225, 148, 0.2), 0 2px 14px rgba(241, 225, 148, 0.35) !important;

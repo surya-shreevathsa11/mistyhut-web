@@ -997,14 +997,3 @@ body.page-cart .nav .nav__inner {
   background: var(--color-green);
   box-shadow: 0 0 0 2px rgba(255, 248, 220, 0.95), 0 1px 5px rgba(0, 0, 0, 0.35);
 }
-
-/* ===== ADMIN — Green header ===== */
-.admin__header {
-  background: rgba(5, 56, 39, 0.92);
-  box-shadow: 0 1px 0 rgba(252, 199, 107, 0.15);
-}
-.admin__header-title span,
-.admin__back:hover,
-.admin__header .admin__logout:hover {
-  color: var(--color-orange);
-}

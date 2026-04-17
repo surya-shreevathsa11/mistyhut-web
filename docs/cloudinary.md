@@ -1,9 +1,3 @@
-Admin clicks Upload
-↓
-Frontend calls GET /api/admin/cloudinary-signature (protected by requireAdmin)
-↓
-Backend generates signature using Cloudinary API secret (never exposed)
-↓
-Frontend uses signature + timestamp to upload directly to Cloudinary
-↓
-Cloudinary validates signature — rejects anything without a valid one
+Room image uploads are **not** configured in this repo anymore (the local admin UI was removed). On the centralized backend, managers use the platform’s Cloudinary/signature flow (see that server’s `api.md` and manager `/api/manager/rooms/*` routes).
+
+Previously this repo used: admin UI → `GET /api/admin/cloud-signature` → signed upload to Cloudinary.

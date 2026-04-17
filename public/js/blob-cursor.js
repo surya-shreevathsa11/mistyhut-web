@@ -83,7 +83,7 @@
       updateClasses();
     });
 
-    var headerSelector = ".nav, .admin__header, .footer";
+    var headerSelector = ".nav, .footer";
 
     function isOverHeader(el) {
       return el && el.closest && el.closest(headerSelector);
