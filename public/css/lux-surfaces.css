@@ -335,6 +335,10 @@
   color: var(--lux-text-on-dark);
 }
 
+.lux-site .section--sanctuary .about-story__eyebrow {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
 /* About: editorial dark canvas (overrides .section--alt light) */
 .lux-site .section--about {
   background: var(--lux-dark) !important;

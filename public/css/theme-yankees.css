@@ -429,6 +429,10 @@ h1, h2, h3, h4 {
   font-family: 'Montserrat', sans-serif;
   color: var(--text-on-dark);
 }
+/* Match muted-gold eyebrow treatment on other dark sections */
+.section--sanctuary .about-story__eyebrow {
+  color: var(--color-orange);
+}
 .section--sanctuary .room-card__name,
 .section--sanctuary .room-card__desc {
   color: var(--color-teal);
