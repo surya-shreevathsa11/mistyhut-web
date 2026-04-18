@@ -378,6 +378,7 @@ button,
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .nav__inner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -461,6 +462,32 @@ button,
 .nav__links a:hover { color: var(--text-on-dark); }
 .nav.scrolled .nav__links a:hover { color: var(--text-on-dark); }
 .nav__links a:hover::after { width: 100%; }
+
+/* Desktop: center primary nav links in the pill; logo stays left, cart + auth stay grouped on the right */
+@media (min-width: 769px) {
+  .nav__inner {
+    justify-content: flex-start;
+  }
+  .nav__links {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    flex: none;
+    margin: 0;
+    max-width: min(65vw, calc(100% - 12rem));
+    justify-content: center;
+    z-index: 0;
+  }
+  .nav__cart {
+    margin-left: auto;
+  }
+  .nav__right {
+    margin-left: 0;
+    padding-left: 0.75rem;
+  }
+}
+
 .nav__auth {
   color: var(--text-on-dark);
   border-color: rgba(248, 248, 248, 0.6);
@@ -1684,11 +1711,15 @@ main > section.section {
   align-items: center;
   justify-content: center;
   gap: 0.35rem 0.25rem;
-  margin: 1.65rem 0 0;
+  margin: 4.25rem auto 0;
   padding: 0.8rem 1rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.05);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .terms-zen__contact-sep {
@@ -1721,7 +1752,8 @@ main > section.section {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  margin-top: 1.65rem;
+  margin-top: 2.85rem;
+  padding-top: 0.35rem;
   text-align: left;
 }
 
@@ -2897,12 +2929,15 @@ body.page-cart .nav {
     top: 100%;
     left: 0;
     width: 100%;
+    transform: none;
+    max-width: none;
     background: var(--color-obsidian);
     flex-direction: column;
     padding: 1.5rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
     gap: 0.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 20;
   }
   .nav__links.open {
     display: flex;
