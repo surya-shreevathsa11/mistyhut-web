@@ -37,8 +37,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--lux-lime-text, #5B0E14);
-  background-color: var(--lux-lime, #F1E194);
+  color: var(--lux-lime-text, #004643);
+  background-color: var(--lux-lime, #F0EDE5);
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow:
     0 0 0 1px rgba(241, 225, 148, 0.35),
@@ -66,8 +66,8 @@
   font-family: "Montserrat", system-ui, sans-serif;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--lux-lime-text, #5B0E14);
-  background-color: var(--lux-lime, #F1E194);
+  color: var(--lux-lime-text, #004643);
+  background-color: var(--lux-lime, #F0EDE5);
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow:
     0 0 0 1px rgba(241, 225, 148, 0.35),
@@ -90,7 +90,7 @@
 .lux-site .lux-card {
   overflow: hidden;
   border-radius: 18px;
-  background-color: #F1E194;
+  background-color: #F0EDE5;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }

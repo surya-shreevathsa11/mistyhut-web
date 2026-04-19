@@ -209,27 +209,27 @@ textarea {
 /* ========== URBAN EDITORIAL COLOR SYSTEM ========== */
 :root {
   /* Primary — architectural anchors (navbar, footer, strong sections) */
-  --color-obsidian: #5B0E14;
+  --color-obsidian: #004643;
   --color-steel-gray: #7a232b;
   /* Light backgrounds — cool, urban */
-  --color-gallery-white: #F1E194;
-  --color-urban-white: #F1E194;
-  --color-cool-mist: #F1E194;
+  --color-gallery-white: #F0EDE5;
+  --color-urban-white: #F0EDE5;
+  --color-cool-mist: #F0EDE5;
   /* Accent — urban warmth (buttons, links, highlights) */
-  --color-burnt-copper: #F1E194;
+  --color-burnt-copper: #F0EDE5;
   --color-copper-dark: #e4d37e;
   --color-copper-light: #f6eab0;
   /* Text */
-  --text-primary: #5B0E14;
+  --text-primary: #004643;
   --text-secondary: #7a232b;
   --text-muted: #934149;
-  --text-on-dark: #F1E194;
+  --text-on-dark: #F0EDE5;
   /* UI */
   --border-light: rgba(91, 14, 20, 0.12);
   --shadow-soft: rgba(91, 14, 20, 0.16);
   --overlay-dark: rgba(91, 14, 20, 0.28);
   /* Nav: dark background when scrolled */
-  --nav-scrolled-bg: #5B0E14;
+  --nav-scrolled-bg: #004643;
   /* Blob cursor — ring + dot */
   --cursor-ring-color: rgba(0, 0, 0, 0.88);
   --cursor-ring-color-hover: rgba(0, 0, 0, 1);
@@ -898,7 +898,7 @@ main > section.section {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #F1E194;
+  background: #F0EDE5;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
@@ -1097,7 +1097,7 @@ main > section.section {
   text-transform: uppercase;
   text-decoration: none;
   color: var(--lux-lime-text, #000000);
-  background: var(--lux-lime, #F1E194);
+  background: var(--lux-lime, #F0EDE5);
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
   box-shadow:
@@ -1118,7 +1118,7 @@ main > section.section {
     0 18px 40px rgba(0, 0, 0, 0.4);
 }
 .about-impact__cta:focus-visible {
-  outline: 2px solid var(--lux-lime, #F1E194);
+  outline: 2px solid var(--lux-lime, #F0EDE5);
   outline-offset: 4px;
 }
 @media (max-width: 768px) {
@@ -1277,15 +1277,15 @@ main > section.section {
 .room-card__actions .btn--outline {
   transition: none;
   border-radius: 999px;
-  background: var(--lux-dark, #5B0E14);
+  background: var(--lux-dark, #004643);
   color: #ffffff;
-  border-color: var(--lux-dark, #5B0E14);
+  border-color: var(--lux-dark, #004643);
 }
 .room-card__actions .btn--outline:hover {
   transform: none;
-  background: var(--lux-dark, #5B0E14);
+  background: var(--lux-dark, #004643);
   color: #ffffff;
-  border-color: var(--lux-dark, #5B0E14);
+  border-color: var(--lux-dark, #004643);
 }
 .room-card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);

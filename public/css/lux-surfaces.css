@@ -4,20 +4,20 @@
  */
 
 .lux-site {
-  --lux-dark: #5B0E14;
-  --lux-darker: #5B0E14;
-  --lux-light: #F1E194;
-  --lux-card: #F1E194;
-  --lux-brown: #F1E194;
-  --lux-coral: #F1E194;
-  --lux-text-dark: #5B0E14;
+  --lux-dark: #004643;
+  --lux-darker: #004643;
+  --lux-light: #F0EDE5;
+  --lux-card: #F0EDE5;
+  --lux-brown: #F0EDE5;
+  --lux-coral: #F0EDE5;
+  --lux-text-dark: #004643;
   --lux-text-muted: rgba(91, 14, 20, 0.68);
   --lux-text-on-dark: rgba(241, 225, 148, 0.94);
   /* Primary CTA — neon lime (hero / modals / booking) */
-  --lux-lime: #F1E194;
+  --lux-lime: #F0EDE5;
   --lux-lime-hover: #f6eab0;
   --lux-lime-active: #e4d37e;
-  --lux-lime-text: #5B0E14;
+  --lux-lime-text: #004643;
   --lux-lime-glow: rgba(241, 225, 148, 0.38);
 }
 
@@ -467,9 +467,9 @@
 }
 
 .lux-site .room-card__actions .btn--outline {
-  border-color: var(--lux-dark, #5B0E14) !important;
+  border-color: var(--lux-dark, #004643) !important;
   color: #ffffff !important;
-  background: var(--lux-dark, #5B0E14) !important;
+  background: var(--lux-dark, #004643) !important;
   transition: none !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -477,9 +477,9 @@
 }
 
 .lux-site .room-card__actions .btn--outline:hover {
-  background: var(--lux-dark, #5B0E14) !important;
+  background: var(--lux-dark, #004643) !important;
   color: #ffffff !important;
-  border-color: var(--lux-dark, #5B0E14) !important;
+  border-color: var(--lux-dark, #004643) !important;
 }
 
 .lux-site .room-card__overlay {
@@ -638,7 +638,7 @@
 
 /* ----- Modals & booking form ----- */
 .lux-site .modal__content {
-  background: #F1E194 !important;
+  background: #F0EDE5 !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2) !important;
 }

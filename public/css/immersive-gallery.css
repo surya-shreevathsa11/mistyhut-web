@@ -7,7 +7,7 @@
   padding: 0;
   overflow: hidden;
   scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 5rem);
-  background: var(--lux-light, #F1E194);
+  background: var(--lux-light, #F0EDE5);
 }
 
 main > section.section--gallery {
@@ -73,7 +73,7 @@ main > section.section--gallery {
   margin-bottom: 1.25rem;
   background: linear-gradient(
     90deg,
-    var(--lux-brown, #F1E194),
+    var(--lux-brown, #F0EDE5),
     rgba(255, 158, 109, 0.35)
   );
   opacity: 0.95;
@@ -175,7 +175,7 @@ main > section.section--gallery {
 }
 
 .gallery-marquee__slide.gallery-reel__slide:focus-visible {
-  outline: 2px solid var(--color-burnt-copper, #F1E194);
+  outline: 2px solid var(--color-burnt-copper, #F0EDE5);
   outline-offset: 3px;
 }
 

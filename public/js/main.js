@@ -633,8 +633,8 @@
             <span class="room-card__view-pill" aria-hidden="true">
               <svg class="room-card__view-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1.5 12C3.8 7.9 7.5 5.5 12 5.5C16.5 5.5 20.2 7.9 22.5 12C20.2 16.1 16.5 18.5 12 18.5C7.5 18.5 3.8 16.1 1.5 12Z" fill="currentColor"/>
-                <circle cx="12" cy="12" r="3.2" fill="#5B0E14"/>
-                <circle cx="12" cy="12" r="1.4" fill="#F1E194"/>
+                <circle cx="12" cy="12" r="3.2" fill="#004643"/>
+                <circle cx="12" cy="12" r="1.4" fill="#F0EDE5"/>
               </svg>
             </span>
           </div>
