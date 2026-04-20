@@ -4,6 +4,15 @@
   if (!A) {
     console.warn("MistyApi missing — load /js/api-config.js before main.js");
   }
+  const P = window.MistyPrepaid;
+
+  function clearBookRoomPrepaid() {
+    var el = $("#bookRoomPrepaid");
+    if (el) {
+      el.innerHTML = "";
+      el.hidden = true;
+    }
+  }
 
   let currentUser = null;
   /** Room limit: set from backend after validating rooms response. Only these room IDs are allowed for cart/booking. */
@@ -140,7 +149,7 @@
       "form__availability--ok",
       "form__availability--error",
     );
-    A.publicQuote({
+    A.quoteRoom({
       roomId: roomId,
       checkIn: checkIn,
       checkOut: checkOut,
@@ -155,7 +164,15 @@
           availEl.textContent = "Rooms are available.";
           availEl.classList.add("form__availability--ok");
           availEl.classList.remove("form__availability--error");
+          if (P) {
+            var norm = P.normalizeFromQuote(result.data);
+            P.render($("#bookRoomPrepaid"), norm, {
+              name: "misty-prepaid-book",
+              legend: "Payment option",
+            });
+          }
         } else {
+          clearBookRoomPrepaid();
           availEl.textContent =
             result.data && result.data.message
               ? result.data.message
@@ -165,6 +182,7 @@
         }
       })
       .catch(function () {
+        clearBookRoomPrepaid();
         availEl.textContent = "";
         availEl.classList.remove(
           "form__availability--ok",
@@ -206,19 +224,43 @@
       errEl.textContent = "";
       if (submitBtn) submitBtn.disabled = true;
       try {
-        var availRes = await A.publicQuote({
+        var availRes = await A.quoteRoom({
           roomId: roomId,
           checkIn: checkIn,
           checkOut: checkOut,
         });
+        var availData = await availRes.json().catch(function () {
+          return {};
+        });
         if (!availRes.ok) {
-          var availData = await availRes.json().catch(function () {
-            return {};
-          });
           errEl.textContent =
             availData.message || "Selected dates are not available.";
           return;
         }
+        if (P) {
+          var normSubmit = P.normalizeFromQuote(availData);
+          P.render($("#bookRoomPrepaid"), normSubmit, {
+            name: "misty-prepaid-book",
+            legend: "Payment option",
+          });
+        }
+        var sel = P ? P.getSelected($("#bookRoomPrepaid"), "misty-prepaid-book") : null;
+        try {
+          if (sel && sel.prepaidOptionId) {
+            sessionStorage.setItem(
+              "misty_checkout_prepaidOptionId",
+              sel.prepaidOptionId,
+            );
+            if (sel.prepaidPercent != null && !Number.isNaN(sel.prepaidPercent)) {
+              sessionStorage.setItem(
+                "misty_checkout_prepaidPercent",
+                String(sel.prepaidPercent),
+              );
+            } else {
+              sessionStorage.removeItem("misty_checkout_prepaidPercent");
+            }
+          }
+        } catch (_) {}
         var cartRes = await A.guestCartAdd({
           roomId: roomId,
           checkIn: checkIn,
@@ -267,6 +309,7 @@
       e.textContent = "";
       e.classList.remove("form__availability--ok", "form__availability--error");
     });
+    clearBookRoomPrepaid();
   }
 
   $$(".modal__overlay, .modal__close, [data-close]").forEach((el) => {
@@ -585,6 +628,7 @@
     const children = $("#bookRoomChildren");
     if (adults) adults.value = 1;
     if (children) children.value = 0;
+    clearBookRoomPrepaid();
     openModal("#bookRoomModal");
   }
 

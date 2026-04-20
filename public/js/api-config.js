@@ -176,6 +176,11 @@
     });
   }
 
+  /** Public quote if logged out, guest quote if Bearer token present. */
+  function quoteRoom(body) {
+    return getToken() ? guestQuote(body) : publicQuote(body);
+  }
+
   global.MistyApi = {
     base: base,
     url: url,
@@ -197,5 +202,6 @@
     guestBookingsList: guestBookingsList,
     guestPaymentOrder: guestPaymentOrder,
     guestPaymentVerify: guestPaymentVerify,
+    quoteRoom: quoteRoom,
   };
 })(typeof window !== "undefined" ? window : globalThis);

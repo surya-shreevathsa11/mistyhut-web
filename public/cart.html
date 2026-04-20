@@ -114,7 +114,7 @@
           </p>
           <div class="cart__footer" id="cartFooter" style="display: none">
             <p class="cart__total">
-              Total: <strong id="cartTotal">₹0</strong> / night
+              Total: <strong id="cartTotal">₹0</strong>
             </p>
             <button
               type="button"
@@ -159,6 +159,17 @@
                 required
               />
             </div>
+            <p
+              class="form__availability"
+              id="checkoutPrepaidHint"
+              aria-live="polite"
+            ></p>
+            <div
+              id="checkoutPrepaid"
+              class="prepaid-options-wrap"
+              hidden
+              aria-live="polite"
+            ></div>
             <p class="form__error" id="checkoutError"></p>
             <button
               type="submit"
@@ -251,6 +262,7 @@
       window.__MISTY_API_BASE__ = window.__MISTY_API_BASE__ || "http://localhost:3000";
     </script>
     <script src="/js/api-config.js"></script>
+    <script src="/js/prepaid-options.js"></script>
     <script src="/js/cart.js"></script>
   </body>
 </html>

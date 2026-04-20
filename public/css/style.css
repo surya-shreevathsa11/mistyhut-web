@@ -2704,7 +2704,10 @@ body.page-cart .nav {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 .cart-page .container:hover {
   transform: translateX(-50%) translateY(-6px) scale(1.02);
@@ -2714,14 +2717,14 @@ body.page-cart .nav {
 .cart-page .container .cart-page__title,
 .cart-page .container .divider { flex-shrink: 0; }
 .cart-page .container .cart-step {
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 .cart-page .container .cart__list {
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
 }
 .cart-page__title {
@@ -2737,6 +2740,12 @@ body.page-cart .nav {
 }
 .cart-step { margin-top: 2rem; }
 .cart-step--hidden { display: none !important; }
+/* Cart + checkout both visible: separate “Booking details” from selection above */
+#stepCart:not(.cart-step--hidden) + #stepCheckout:not(.cart-step--hidden) {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.12));
+}
 .cart-step__heading {
   font-size: 1.1rem;
   color: var(--text-primary);
@@ -3187,4 +3196,51 @@ body.page-cart .nav {
     padding: 0.75rem 1.25rem;
     font-size: 0.75rem;
   }
+}
+
+/* Dual prepaid options (central API) */
+.prepaid-options-wrap {
+  margin: 0.75rem 0 1rem;
+}
+.prepaid-options {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+.prepaid-options__legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 0.35rem;
+}
+.prepaid-options__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+.prepaid-options__card:first-of-type {
+  margin-top: 0.35rem;
+}
+.prepaid-options__card:has(input:checked) {
+  border-color: var(--color-burnt-copper, #b54a4a);
+  background: rgba(181, 74, 74, 0.06);
+}
+.prepaid-options__card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.prepaid-options__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.prepaid-options__meta {
+  font-size: 0.8rem;
+  opacity: 0.88;
+  line-height: 1.35;
 }

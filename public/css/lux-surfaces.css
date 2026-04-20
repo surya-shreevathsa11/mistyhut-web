@@ -728,6 +728,20 @@
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
+/* Cart accents use var(--color-burnt-copper) from base.css; on lux that matches the card (#F0EDE5), so Remove + total were invisible. */
+.lux-site.page-cart .cart__item-remove {
+  color: var(--lux-text-dark) !important;
+  border-color: rgba(0, 70, 67, 0.45) !important;
+}
+.lux-site.page-cart .cart__item-remove:hover {
+  background: var(--lux-text-dark) !important;
+  color: var(--lux-light) !important;
+  border-color: var(--lux-text-dark) !important;
+}
+.lux-site.page-cart .cart__total strong {
+  color: var(--lux-text-dark) !important;
+}
+
 /* ----- Reviews page banner ----- */
 .lux-site .lux-reviews-banner {
   position: relative;

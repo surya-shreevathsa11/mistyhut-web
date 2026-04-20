@@ -29,10 +29,21 @@
     return d.toISOString().slice(0, 10);
   }
 
+  /**
+   * Checkout step shows **both** cart (with Remove) and booking details.
+   * Only hiding the cart was why Remove disappeared after "Proceed to checkout".
+   */
   function showStep(stepId) {
     $$(".cart-step").forEach(function (el) {
       el.classList.add("cart-step--hidden");
     });
+    if (stepId === "stepCheckout") {
+      var cartSec = document.getElementById("stepCart");
+      var checkoutSec = document.getElementById("stepCheckout");
+      if (cartSec) cartSec.classList.remove("cart-step--hidden");
+      if (checkoutSec) checkoutSec.classList.remove("cart-step--hidden");
+      return;
+    }
     var step = document.getElementById(stepId);
     if (step) step.classList.remove("cart-step--hidden");
   }
@@ -200,8 +211,70 @@
       });
   }
 
+  function loadCheckoutPrepaidOptions() {
+    var hint = $("#checkoutPrepaidHint");
+    var container = $("#checkoutPrepaid");
+    var P = window.MistyPrepaid;
+    if (!A || !serverCart.length) {
+      if (container) {
+        container.innerHTML = "";
+        container.hidden = true;
+      }
+      if (hint) hint.textContent = "";
+      return Promise.resolve();
+    }
+    if (hint) hint.textContent = "Loading payment options…";
+    var first = serverCart[0];
+    return A.quoteRoom({
+      roomId: first.roomId,
+      checkIn: formatDate(first.checkIn),
+      checkOut: formatDate(first.checkOut),
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          return { ok: res.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        if (hint) hint.textContent = "";
+        if (!result.ok || !P) {
+          if (hint)
+            hint.textContent =
+              "Could not refresh payment options. The server will use its default if you continue.";
+          if (container) {
+            container.innerHTML = "";
+            container.hidden = true;
+          }
+          return;
+        }
+        var norm = P.normalizeFromQuote(result.data);
+        P.render(container, norm, {
+          name: "misty-prepaid-checkout",
+          legend: "Prepaid option",
+        });
+        try {
+          var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
+          if (sid && container) {
+            container.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+              if (radio.value === sid) radio.checked = true;
+            });
+          }
+        } catch (_) {}
+      })
+      .catch(function () {
+        if (hint)
+          hint.textContent =
+            "Could not load payment options. You can still continue.";
+        if (container) {
+          container.innerHTML = "";
+          container.hidden = true;
+        }
+      });
+  }
+
   function onProceedToCheckout() {
     showStep("stepCheckout");
+    loadCheckoutPrepaidOptions();
   }
 
   function openTermsModal() {
@@ -235,7 +308,7 @@
           try {
             sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, "cart");
           } catch (_) {}
-          window.location.href = "/?signin=1";
+          window.location.href = "index.html?signin=1";
         });
       }
     }
@@ -261,7 +334,10 @@
       try {
         if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
           sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
-          if (serverCart.length > 0) showStep("stepCheckout");
+          if (serverCart.length > 0) {
+            showStep("stepCheckout");
+            loadCheckoutPrepaidOptions();
+          }
         }
       } catch (_) {}
     });
@@ -309,17 +385,41 @@
 
         termsProceedBtn.disabled = true;
 
+        var checkoutErr = $("#checkoutError");
         if (!A) {
-          errEl.textContent = "Booking API not configured.";
+          if (checkoutErr)
+            checkoutErr.textContent = "Booking API not configured.";
           termsProceedBtn.disabled = false;
           return;
         }
 
-        A.guestPaymentOrder({
+        var orderBody = {
           name: name,
           email: email,
           phone: phone,
-        })
+        };
+        var P = window.MistyPrepaid;
+        var prep = P
+          ? P.getSelected($("#checkoutPrepaid"), "misty-prepaid-checkout")
+          : null;
+        if (prep && prep.prepaidOptionId) {
+          orderBody.prepaidOptionId = prep.prepaidOptionId;
+          if (
+            prep.prepaidPercent != null &&
+            !Number.isNaN(prep.prepaidPercent)
+          ) {
+            orderBody.prepaidPercent = prep.prepaidPercent;
+          }
+        } else {
+          try {
+            var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
+            if (sid) orderBody.prepaidOptionId = sid;
+            var sp = sessionStorage.getItem("misty_checkout_prepaidPercent");
+            if (sp) orderBody.prepaidPercent = Number(sp);
+          } catch (_) {}
+        }
+
+        A.guestPaymentOrder(orderBody)
           .then(function (res) {
             return res.json().then(function (data) {
               return { status: res.status, data: data };
