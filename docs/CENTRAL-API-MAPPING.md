@@ -8,6 +8,14 @@ This maps **current Misty Hut guest/public** routes to the contract in
 
 ---
 
+## What changed (incremental)
+
+- Quote endpoints now support **dual prepaid options** via `prepaidOptions[]` and `primaryPrepaidOptionId` (legacy `bookingPrepaidPercent` and `prepaidAmount` can still appear).
+- Guest payment order now supports explicit prepaid selection (`prepaidOptionId: "standard" | "primary"`, optional `prepaidPercent`) and returns prepaid option snapshot fields.
+- Refunds are now **manual actions** via staff endpoints; cancellation alone does not auto-trigger Razorpay refund.
+
+---
+
 ## Public (no auth)
 
 Browse and quote **before** guest sign-in. Same catalog/quote semantics as authenticated guest quote, scoped by slug.
@@ -71,7 +79,13 @@ Then send **`Authorization: Bearer <token>`** on all `/api/guest/*` calls.
 |------|-----------------|----------------------|
 | Cart GET | `{ "message": [ ...lines ] }` | `{ "roomInfo": [ ... ] }` |
 | List bookings | `{ "data": [ ... ] }` | `{ "data": [ ... ] }` ✓ |
-| Quote | no prepaid fields | includes `bookingPrepaidPercent`, `prepaidAmount` |
+| Quote | no prepaid fields | includes `prepaidOptions[]`, `primaryPrepaidOptionId` (legacy `bookingPrepaidPercent`, `prepaidAmount` may also be present) |
+
+**Quote mapping update (public + guest quote):**
+
+- Parse `prepaidOptions[]` and use `primaryPrepaidOptionId` as the default selected option in the UI.
+- Keep backward-compat parsing for `bookingPrepaidPercent` + `prepaidAmount` when `prepaidOptions[]` is absent.
+- Preserve the selected prepaid option through checkout so it can be sent in the order request.
 
 ---
 
@@ -83,9 +97,36 @@ Then send **`Authorization: Bearer <token>`** on all `/api/guest/*` calls.
 | `POST /api/payment/verify` | `POST http://localhost:3000/api/guest/payments/verify` |
 | `POST /api/payment/razorpay-webhook` | `POST http://localhost:3000/api/guest/payments/webhook` |
 
-**Checkout / order:** Body stays `{ "name", "email", "phone" }` on the central server; requires **Bearer** guest JWT.
+**Checkout / order:** Central request body supports prepaid option selection and requires **Bearer** guest JWT:
 
-**201 response:** Central includes **`prepaidPercentApplied`**, **`expectedPrepaidAmount`** in `data` (per `api.md`). Misty Hut today returns `totalAmount`, `amountPaid`, `razorpayOrderId`, `status`, `key` — align UI with the new fields if prepay rules apply.
+```json
+{
+  "name": "...",
+  "email": "...",
+  "phone": "...",
+  "prepaidOptionId": "standard",
+  "prepaidPercent": 30
+}
+```
+
+- `prepaidOptionId` (`"standard"` or `"primary"`) is the recommended selector.
+- `prepaidPercent` is optional override input.
+- If neither is sent, backend defaults to the **primary** prepaid option.
+
+**201 response:** Central includes prepaid snapshot metadata in `data`, including:
+
+- existing: `prepaidPercentApplied`, `expectedPrepaidAmount`
+- new: `prepaidOptionId`, `prepaidOptionLabel`, `prepaidRefundEligible`
+
+Misty Hut today returns `totalAmount`, `amountPaid`, `razorpayOrderId`, `status`, `key` — align UI with the new fields for prepaid selection + refund visibility.
+
+**Manual refunds (staff actions):**
+
+- `POST http://localhost:3000/api/admin/bookings/:bookingId/refund`
+- `POST http://localhost:3000/api/manager/bookings/:bookingId/refund`
+- Optional body: `{ "reason"?: string }`
+- Cancellation alone does **not** auto-trigger Razorpay refund.
+- Refund action is allowed only for **cancelled + refund-eligible prepaid** bookings.
 
 **Webhook:** Configure Razorpay to call the **central** full URL (e.g. `https://<your-api-host>/api/guest/payments/webhook`). Webhook secret is **per property** on the central backend — not the old single-env Misty Hut secret unless migrated.
 
@@ -113,6 +154,10 @@ GET    http://localhost:3000/api/guest/bookings
 POST http://localhost:3000/api/guest/payments/order
 POST http://localhost:3000/api/guest/payments/verify
 POST http://localhost:3000/api/guest/payments/webhook   # server-only
+
+# Staff/manual refund actions
+POST http://localhost:3000/api/admin/bookings/:bookingId/refund
+POST http://localhost:3000/api/manager/bookings/:bookingId/refund
 ```
 
 ---
@@ -124,5 +169,6 @@ POST http://localhost:3000/api/guest/payments/webhook   # server-only
 3. **Property record:** Is `misty-hut` already created in the central DB with Razorpay keys, Resend, and rooms seeded so `roomId` values match the old site?
 4. **CORS:** The browser origin for the Misty Hut static site must be allowed on the **central** API (`CORS_ORIGIN` / comma-separated list per `api.md`).
 5. **Staff / admin:** The local admin SPA and `/api/admin/*` were **removed** from this repo; use the centralized backend’s manager/admin APIs for operations.
+6. **Manual refunds ownership:** Who executes `.../bookings/:bookingId/refund` in practice — admin dashboard, manager dashboard, or both?
 
 If you want, the next step is a small checklist PR: replace `fetch`/`credentials` cart calls with Bearer token + new URLs, and rename `message` → `roomInfo` for cart parsing.
