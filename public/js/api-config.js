@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var DEFAULT_BASE = "http://localhost:3000";
+  var DEFAULT_BASE = "https://api.varalabs.in";
   var PROPERTY_SLUG = "misty-hut";
   var TOKEN_KEY = "misty_guest_jwt";
   var USER_KEY = "misty_guest_user";
