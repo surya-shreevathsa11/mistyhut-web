@@ -4,38 +4,40 @@
 (function () {
   "use strict";
 
-  var firstGroup = document.querySelector(
-    "#gallery .gallery-marquee__track > .gallery-marquee__group:first-child"
-  );
-  if (!firstGroup) return;
-
-  var slides = [].slice.call(firstGroup.querySelectorAll(".gallery-reel__slide"));
-  if (!slides.length) return;
+  var track = document.getElementById("galleryMarqueeTrack");
+  if (!track) return;
 
   var lightbox = document.getElementById("galleryLightbox");
   var lightboxImg = document.getElementById("galleryLightboxImg");
 
   if (lightbox && lightboxImg) {
-    slides.forEach(function (slide) {
-      function openLightbox(e) {
-        var img = slide.querySelector(".gallery-reel__img-wrap img");
-        if (!img || !img.src) return;
-        var src = img.src
-          .replace(/w=\d+/, "w=2400")
-          .replace(/h=\d+/, "h=1350");
-        lightboxImg.src = src;
-        lightboxImg.alt = img.alt || "";
-        lightbox.classList.add("active");
-        document.body.style.overflow = "hidden";
-      }
+    function openFromSlide(slide) {
+      if (!slide) return;
+      var img = slide.querySelector(".gallery-reel__img-wrap img");
+      if (!img || !img.src) return;
+      var src = img.src.replace(/w=\d+/, "w=2400").replace(/h=\d+/, "h=1350");
+      lightboxImg.src = src;
+      lightboxImg.alt = img.alt || "";
+      lightbox.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
 
-      slide.addEventListener("click", openLightbox);
-      slide.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openLightbox(e);
-        }
-      });
+    track.addEventListener("click", function (e) {
+      var slide = e.target.closest(
+        ".gallery-marquee__group:first-child .gallery-reel__slide"
+      );
+      if (!slide) return;
+      openFromSlide(slide);
+    });
+
+    track.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      var slide = e.target.closest(
+        ".gallery-marquee__group:first-child .gallery-reel__slide"
+      );
+      if (!slide) return;
+      e.preventDefault();
+      openFromSlide(slide);
     });
 
     function closeLightbox() {

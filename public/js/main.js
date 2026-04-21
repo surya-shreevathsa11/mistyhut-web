@@ -611,6 +611,72 @@
     return div.innerHTML;
   }
 
+  function renderSiteGallery(siteGalleryImages) {
+    var track = $("#galleryMarqueeTrack");
+    if (!track || !Array.isArray(siteGalleryImages) || !siteGalleryImages.length) return;
+
+    var cleaned = siteGalleryImages
+      .map(function (img) {
+        if (!img) return null;
+        if (typeof img === "string") {
+          return { url: img, alt: "Misty Hut gallery image" };
+        }
+        if (typeof img === "object") {
+          var url = img.url || img.src || img.imageUrl || "";
+          if (!url) return null;
+          return {
+            url: url,
+            alt: img.alt || img.title || "Misty Hut gallery image",
+            title: img.title || "",
+            label: img.label || "",
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    if (!cleaned.length) return;
+
+    function buildGroup(tabIndex, ariaHidden) {
+      var attrs = ariaHidden ? ' aria-hidden="true"' : "";
+      return (
+        '<div class="gallery-marquee__group"' +
+        attrs +
+        ">" +
+        cleaned
+          .map(function (img, idx) {
+            var title = img.title || "Misty Hut";
+            var label = img.label || "View " + (idx + 1);
+            return (
+              '<article class="gallery-reel__slide gallery-marquee__slide" tabindex="' +
+              tabIndex +
+              '" role="group">' +
+              '<div class="gallery-reel__img-wrap gallery-marquee__img-wrap">' +
+              '<img src="' +
+              escapeHtml(img.url) +
+              '" alt="' +
+              escapeHtml(img.alt) +
+              '" loading="lazy" decoding="async" width="1200" height="675" />' +
+              '<div class="gallery-marquee__top-cap">' +
+              '<span class="gallery-marquee__card-title">' +
+              escapeHtml(title) +
+              "</span>" +
+              '<span class="gallery-marquee__card-label">' +
+              escapeHtml(label) +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("") +
+        "</div>"
+      );
+    }
+
+    track.innerHTML = buildGroup("0", false) + buildGroup("-1", true);
+  }
+
   // --- Render rooms ---
   async function renderRooms() {
     if (!A) return;
@@ -618,6 +684,9 @@
       const res = await A.publicRooms();
       const data = await res.json();
       if (!data.success || !Array.isArray(data.rooms)) return;
+      if (data.siteGallery && Array.isArray(data.siteGallery.images)) {
+        renderSiteGallery(data.siteGallery.images);
+      }
       validRoomIdsFromBackend = data.rooms.map(function (r) {
         return r.roomId || (r.id != null ? "R" + r.id : "");
       }).filter(Boolean);
