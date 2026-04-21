@@ -15,6 +15,7 @@
 
   var serverCart = [];
   var currentUser = null;
+  var DEFAULT_AVATAR_URL = "/img/default-avatar.svg";
 
   function escapeHtml(s) {
     var div = document.createElement("div");
@@ -57,6 +58,41 @@
     var u = A.getStoredUser();
     currentUser = tok && u ? u : null;
     if (cb) cb(currentUser);
+  }
+
+  function updateAuthUI() {
+    var authBtn = $("#authBtn");
+    var navProfile = $("#navProfile");
+    var navProfileAvatar = $("#navProfileAvatar");
+    var navProfileDropdown = $("#navProfileDropdown");
+    if (!authBtn || !navProfile) return;
+    if (currentUser) {
+      authBtn.style.display = "none";
+      navProfile.style.display = "block";
+      navProfile.setAttribute("aria-hidden", "false");
+      if (navProfileAvatar) {
+        var imageUrl = (currentUser.avatar || currentUser.picture || "").trim();
+        navProfileAvatar.src = imageUrl ? imageUrl : DEFAULT_AVATAR_URL;
+        navProfileAvatar.alt = currentUser.name ? String(currentUser.name) : "Profile";
+      }
+      if (navProfileDropdown) navProfileDropdown.classList.remove("is-open");
+    } else {
+      authBtn.style.display = "";
+      navProfile.style.display = "none";
+      navProfile.setAttribute("aria-hidden", "true");
+      if (navProfileAvatar) navProfileAvatar.src = DEFAULT_AVATAR_URL;
+      if (navProfileDropdown) navProfileDropdown.classList.remove("is-open");
+    }
+  }
+
+  function openModal(id) {
+    var el = $(id);
+    if (el) el.classList.add("active");
+  }
+
+  function closeModal(id) {
+    var el = $(id);
+    if (el) el.classList.remove("active");
   }
 
   function updateNavCartCount(count) {
@@ -215,12 +251,28 @@
     var hint = $("#checkoutPrepaidHint");
     var container = $("#checkoutPrepaid");
     var P = window.MistyPrepaid;
+    var name = $("#checkoutName") ? $("#checkoutName").value.trim() : "";
+    var email = $("#checkoutEmail") ? $("#checkoutEmail").value.trim() : "";
+    var phone = $("#checkoutPhone") ? $("#checkoutPhone").value.trim() : "";
+    var detailsFilled = !!(name && email && phone);
+    if (!P || !detailsFilled) {
+      if (container) {
+        container.innerHTML = "";
+        container.hidden = true;
+      }
+      if (hint) {
+        hint.textContent = detailsFilled
+          ? ""
+          : "Fill full name, email and phone to choose advance payment option.";
+      }
+      return Promise.resolve();
+    }
     if (!A || !serverCart.length) {
       if (container) {
         container.innerHTML = "";
         container.hidden = true;
       }
-      if (hint) hint.textContent = "";
+      if (hint) hint.textContent = "No rooms selected yet.";
       return Promise.resolve();
     }
     if (hint) hint.textContent = "Loading payment options…";
@@ -238,9 +290,10 @@
       .then(function (result) {
         if (hint) hint.textContent = "";
         if (!result.ok || !P) {
-          if (hint)
+          if (hint) {
             hint.textContent =
-              "Could not refresh payment options. The server will use its default if you continue.";
+              "Could not refresh payment options. Please try again.";
+          }
           if (container) {
             container.innerHTML = "";
             container.hidden = true;
@@ -248,9 +301,21 @@
           return;
         }
         var norm = P.normalizeFromQuote(result.data);
+        if (norm && Array.isArray(norm.options) && norm.options.length) {
+          norm.options = norm.options.map(function (opt) {
+            var lowered = String(opt.label || "").toLowerCase();
+            return {
+              id: opt.id,
+              label: lowered.indexOf("50") !== -1 ? "Primary" : "Standard",
+              percent: opt.percent,
+              prepaidAmount: opt.prepaidAmount,
+              refundAvailable: lowered.indexOf("50") !== -1,
+            };
+          });
+        }
         P.render(container, norm, {
           name: "misty-prepaid-checkout",
-          legend: "Prepaid option",
+          legend: "Payment option",
         });
         try {
           var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
@@ -262,9 +327,9 @@
         } catch (_) {}
       })
       .catch(function () {
-        if (hint)
-          hint.textContent =
-            "Could not load payment options. You can still continue.";
+        if (hint) {
+          hint.textContent = "Could not load payment options. Please try again.";
+        }
         if (container) {
           container.innerHTML = "";
           container.hidden = true;
@@ -315,6 +380,133 @@
     updateNavCartCount(0);
   }
 
+  function wireSignInModal() {
+    var errEl = $("#signInError");
+    var stepEmail = $("#signInStepEmail");
+    var stepPin = $("#signInStepPin");
+    var sendBtn = $("#signInSendPin");
+    var verifyBtn = $("#signInVerifyPin");
+    var backBtn = $("#signInBackEmail");
+    if (!sendBtn || !stepEmail || !stepPin || !A) return;
+
+    function showEmailStep() {
+      if (errEl) errEl.textContent = "";
+      stepEmail.style.display = "";
+      stepPin.style.display = "none";
+    }
+
+    function showPinStep() {
+      if (errEl) errEl.textContent = "";
+      stepEmail.style.display = "none";
+      stepPin.style.display = "";
+      var pinInput = $("#signInPin");
+      if (pinInput) pinInput.focus();
+    }
+
+    sendBtn.addEventListener("click", function () {
+      if (errEl) errEl.textContent = "";
+      var name = ($("#signInName") && $("#signInName").value.trim()) || "";
+      var email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
+      if (!email) {
+        if (errEl) errEl.textContent = "Please enter your email.";
+        return;
+      }
+      sendBtn.disabled = true;
+      A.requestPin({
+        propertySlug: A.propertySlug,
+        email: email,
+        name: name || email.split("@")[0],
+      })
+        .then(function (res) {
+          return res
+            .json()
+            .catch(function () {
+              return {};
+            })
+            .then(function (data) {
+              return { ok: res.ok, data: data };
+            });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            if (errEl)
+              errEl.textContent =
+                (result.data && result.data.message) || "Could not send code.";
+            return;
+          }
+          showPinStep();
+        })
+        .catch(function () {
+          if (errEl) errEl.textContent = "Network error. Try again.";
+        })
+        .finally(function () {
+          sendBtn.disabled = false;
+        });
+    });
+
+    if (verifyBtn) {
+      verifyBtn.addEventListener("click", function () {
+        if (errEl) errEl.textContent = "";
+        var name = ($("#signInName") && $("#signInName").value.trim()) || "";
+        var email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
+        var pin = ($("#signInPin") && $("#signInPin").value.trim()) || "";
+        if (!pin) {
+          if (errEl) errEl.textContent = "Enter the code from your email.";
+          return;
+        }
+        verifyBtn.disabled = true;
+        A.verifyPin({
+          propertySlug: A.propertySlug,
+          email: email,
+          name: name || undefined,
+          pin: pin,
+        })
+          .then(function (res) {
+            return res
+              .json()
+              .catch(function () {
+                return {};
+              })
+              .then(function (data) {
+                return { ok: res.ok, data: data };
+              });
+          })
+          .then(function (result) {
+            if (
+              !result.ok ||
+              !result.data ||
+              !result.data.success ||
+              !result.data.token
+            ) {
+              if (errEl)
+                errEl.textContent =
+                  (result.data && result.data.message) || "Invalid code.";
+              return;
+            }
+            A.setSession(result.data.token, result.data.guest);
+            currentUser = result.data.guest;
+            updateAuthUI();
+            closeModal("#signInModal");
+            showEmailStep();
+            fetchCart().then(function () {
+              renderCartList();
+              loadCheckoutPrepaidOptions();
+            });
+          })
+          .catch(function () {
+            if (errEl) errEl.textContent = "Network error. Try again.";
+          })
+          .finally(function () {
+            verifyBtn.disabled = false;
+          });
+      });
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", showEmailStep);
+    }
+  }
+
   function init() {
     var navToggle = document.getElementById("navToggle");
     var navLinks = document.getElementById("navLinks");
@@ -323,32 +515,59 @@
         navLinks.classList.toggle("open");
       });
     }
-    $("#cartList").innerHTML = "";
-    fetchCart().then(function (result) {
-      if (result.unauthorized) {
-        serverCart = [];
-        showSignInRequired();
-        return;
-      }
-      renderCartList();
-      try {
-        if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
-          sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
-          if (serverCart.length > 0) {
-            showStep("stepCheckout");
-            loadCheckoutPrepaidOptions();
-          }
-        }
-      } catch (_) {}
-    });
-
-    var cartCheckoutBtn = $("#cartCheckoutBtn");
-    if (cartCheckoutBtn) {
-      cartCheckoutBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        onProceedToCheckout();
+    wireSignInModal();
+    var authBtn = $("#authBtn");
+    if (authBtn) {
+      authBtn.addEventListener("click", function () {
+        openModal("#signInModal");
       });
     }
+    var navProfileTrigger = $("#navProfileTrigger");
+    var navProfileDropdown = $("#navProfileDropdown");
+    if (navProfileTrigger && navProfileDropdown) {
+      navProfileTrigger.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var isOpen = navProfileDropdown.classList.toggle("is-open");
+        navProfileTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+      navProfileDropdown.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+      document.addEventListener("click", function () {
+        navProfileDropdown.classList.remove("is-open");
+        navProfileTrigger.setAttribute("aria-expanded", "false");
+      });
+    }
+    var navProfileLogout = $("#navProfileLogout");
+    if (navProfileLogout) {
+      navProfileLogout.addEventListener("click", function () {
+        if (A) A.clearSession();
+        currentUser = null;
+        updateAuthUI();
+        showSignInRequired();
+      });
+    }
+    $("#cartList").innerHTML = "";
+    checkAuth(function () {
+      updateAuthUI();
+      fetchCart().then(function (result) {
+        if (result.unauthorized) {
+          serverCart = [];
+          showSignInRequired();
+          return;
+        }
+        renderCartList();
+        try {
+          if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
+            sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+            if (serverCart.length > 0) {
+              showStep("stepCheckout");
+              loadCheckoutPrepaidOptions();
+            }
+          }
+        } catch (_) {}
+      });
+    });
 
     var checkoutForm = $("#checkoutForm");
     if (checkoutForm) {
@@ -363,7 +582,28 @@
           errEl.textContent = "Please fill in name, email and phone.";
           return;
         }
+        var prep = window.MistyPrepaid
+          ? window.MistyPrepaid.getSelected(
+              $("#checkoutPrepaid"),
+              "misty-prepaid-checkout",
+            )
+          : null;
+        if (!prep || !prep.prepaidOptionId) {
+          errEl.textContent = "Please choose a payment option.";
+          loadCheckoutPrepaidOptions();
+          return;
+        }
         openTermsModal();
+      });
+      ["#checkoutName", "#checkoutEmail", "#checkoutPhone"].forEach(function (sel) {
+        var field = $(sel);
+        if (!field) return;
+        field.addEventListener("input", function () {
+          loadCheckoutPrepaidOptions();
+        });
+        field.addEventListener("change", function () {
+          loadCheckoutPrepaidOptions();
+        });
       });
     }
 
@@ -533,6 +773,19 @@
     $$("[data-close-terms]").forEach(function (el) {
       el.addEventListener("click", closeTermsModal);
     });
+    $$("[data-close]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        closeModal("#signInModal");
+      });
+    });
+    var signInModal = $("#signInModal");
+    if (signInModal) {
+      signInModal.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal__overlay")) {
+          closeModal("#signInModal");
+        }
+      });
+    }
   }
 
   if (document.readyState === "loading") {

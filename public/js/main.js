@@ -6,13 +6,7 @@
   }
   const P = window.MistyPrepaid;
 
-  function clearBookRoomPrepaid() {
-    var el = $("#bookRoomPrepaid");
-    if (el) {
-      el.innerHTML = "";
-      el.hidden = true;
-    }
-  }
+  function clearBookRoomPrepaid() {}
 
   let currentUser = null;
   /** Room limit: set from backend after validating rooms response. Only these room IDs are allowed for cart/booking. */
@@ -164,13 +158,6 @@
           availEl.textContent = "Rooms are available.";
           availEl.classList.add("form__availability--ok");
           availEl.classList.remove("form__availability--error");
-          if (P) {
-            var norm = P.normalizeFromQuote(result.data);
-            P.render($("#bookRoomPrepaid"), norm, {
-              name: "misty-prepaid-book",
-              legend: "Payment option",
-            });
-          }
         } else {
           clearBookRoomPrepaid();
           availEl.textContent =
@@ -237,30 +224,6 @@
             availData.message || "Selected dates are not available.";
           return;
         }
-        if (P) {
-          var normSubmit = P.normalizeFromQuote(availData);
-          P.render($("#bookRoomPrepaid"), normSubmit, {
-            name: "misty-prepaid-book",
-            legend: "Payment option",
-          });
-        }
-        var sel = P ? P.getSelected($("#bookRoomPrepaid"), "misty-prepaid-book") : null;
-        try {
-          if (sel && sel.prepaidOptionId) {
-            sessionStorage.setItem(
-              "misty_checkout_prepaidOptionId",
-              sel.prepaidOptionId,
-            );
-            if (sel.prepaidPercent != null && !Number.isNaN(sel.prepaidPercent)) {
-              sessionStorage.setItem(
-                "misty_checkout_prepaidPercent",
-                String(sel.prepaidPercent),
-              );
-            } else {
-              sessionStorage.removeItem("misty_checkout_prepaidPercent");
-            }
-          }
-        } catch (_) {}
         var cartRes = await A.guestCartAdd({
           roomId: roomId,
           checkIn: checkIn,
