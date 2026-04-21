@@ -1,6 +1,6 @@
 /**
  * Central API (api.md).
- * Uses DEFAULT_BASE only (runtime overrides are intentionally ignored).
+ * Uses DEFAULT_BASE only merge it
  */
 (function (global) {
   "use strict";
