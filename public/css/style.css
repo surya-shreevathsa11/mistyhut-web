@@ -3,6 +3,8 @@
 html {
   height: 100%;
   scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 /* Mobile and tablet: ensure smooth scroll remains consistent (do not remove in future) */
 @media (max-width: 1024px) {
@@ -2969,7 +2971,7 @@ body.page-cart .modal__overlay {
   .footer__wrap {
     max-width: 100%;
     margin-left: auto;
-    margin-right: max(1.5rem, env(safe-area-inset-right));
+    margin-right: auto;
     min-height: 0;
   }
   .footer__wrap--grid {
