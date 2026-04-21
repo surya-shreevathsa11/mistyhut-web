@@ -1,6 +1,6 @@
 /**
- * Central API (api.md) — set origin before other scripts, e.g. in HTML:
- *   <script>window.__MISTY_API_BASE__ = "http://localhost:3000";</script>
+ * Central API (api.md).
+ * Uses DEFAULT_BASE only (runtime overrides are intentionally ignored).
  */
 (function (global) {
   "use strict";
@@ -11,8 +11,6 @@
   var USER_KEY = "misty_guest_user";
 
   function base() {
-    var b = global.__MISTY_API_BASE__;
-    if (b && typeof b === "string") return b.replace(/\/+$/, "");
     return DEFAULT_BASE;
   }
 
