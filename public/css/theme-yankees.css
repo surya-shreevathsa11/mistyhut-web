@@ -429,10 +429,6 @@ h1, h2, h3, h4 {
   font-family: 'Montserrat', sans-serif;
   color: var(--text-on-dark);
 }
-/* Match muted-gold eyebrow treatment on other dark sections */
-.section--sanctuary .about-story__eyebrow {
-  color: var(--color-orange);
-}
 .section--sanctuary .room-card__name,
 .section--sanctuary .room-card__desc {
   color: var(--color-teal);
@@ -813,7 +809,7 @@ h1, h2, h3, h4 {
   color: var(--color-green);
 }
 .form__availability--error {
-  color: var(--color-green);
+  color: #b54a4a;
 }
 
 /* ===== CART PAGE — Green nav ===== */
@@ -1000,15 +996,4 @@ body.page-cart .nav .nav__inner {
 .blob-cursor.is-over-header .blob-cursor__dot {
   background: var(--color-green);
   box-shadow: 0 0 0 2px rgba(255, 248, 220, 0.95), 0 1px 5px rgba(0, 0, 0, 0.35);
-}
-
-/* ===== ADMIN — Green header ===== */
-.admin__header {
-  background: rgba(5, 56, 39, 0.92);
-  box-shadow: 0 1px 0 rgba(252, 199, 107, 0.15);
-}
-.admin__header-title span,
-.admin__back:hover,
-.admin__header .admin__logout:hover {
-  color: var(--color-orange);
 }

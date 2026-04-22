@@ -16,11 +16,15 @@
   function initLenis() {
     if (typeof Lenis === "undefined") return null;
     try {
+      var mq = typeof window.matchMedia === "function" ? window.matchMedia.bind(window) : null;
+      /* Native-style scroll on phones/tablets: avoid Lenis touch smoothing (feels too fast/floaty). */
+      var nativeTouchLike =
+        (mq && mq("(max-width: 1024px)").matches) || (mq && mq("(pointer: coarse)").matches);
       var lenis = new Lenis({
-        duration: 0.8,
-        smoothWheel: true,
-        smoothTouch: true,
-        touchMultiplier: 2,
+        duration: nativeTouchLike ? 0.65 : 0.8,
+        smoothWheel: !nativeTouchLike,
+        smoothTouch: false,
+        touchMultiplier: 1,
         infinite: false,
       });
       document.documentElement.classList.add("lenis", "lenis-smooth");

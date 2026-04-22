@@ -124,7 +124,7 @@ main > section.section--reviews-showcase {
 }
 
 body.lux-site .reviews-showcase__line--2 {
-  color: var(--lux-brown, #F1E194);
+  color: var(--lux-brown, #F0EDE5);
   opacity: 1;
 }
 
@@ -272,7 +272,7 @@ body.lux-site .reviews-showcase__line--2 {
 .review-card__stars {
   font-size: 0.65rem;
   letter-spacing: 0.35em;
-  color: var(--lux-lime, #F1E194);
+  color: var(--lux-lime, #F0EDE5);
   text-shadow: 0 0 12px rgba(255, 158, 109, 0.35);
   margin-bottom: 0.65rem;
   line-height: 1;

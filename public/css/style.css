@@ -3,6 +3,8 @@
 html {
   height: 100%;
   scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 /* Mobile and tablet: ensure smooth scroll remains consistent (do not remove in future) */
 @media (max-width: 1024px) {
@@ -209,27 +211,27 @@ textarea {
 /* ========== URBAN EDITORIAL COLOR SYSTEM ========== */
 :root {
   /* Primary — architectural anchors (navbar, footer, strong sections) */
-  --color-obsidian: #5B0E14;
+  --color-obsidian: #004643;
   --color-steel-gray: #7a232b;
   /* Light backgrounds — cool, urban */
-  --color-gallery-white: #F1E194;
-  --color-urban-white: #F1E194;
-  --color-cool-mist: #F1E194;
+  --color-gallery-white: #F0EDE5;
+  --color-urban-white: #F0EDE5;
+  --color-cool-mist: #F0EDE5;
   /* Accent — urban warmth (buttons, links, highlights) */
-  --color-burnt-copper: #F1E194;
+  --color-burnt-copper: #F0EDE5;
   --color-copper-dark: #e4d37e;
   --color-copper-light: #f6eab0;
   /* Text */
-  --text-primary: #5B0E14;
+  --text-primary: #004643;
   --text-secondary: #7a232b;
   --text-muted: #934149;
-  --text-on-dark: #F1E194;
+  --text-on-dark: #F0EDE5;
   /* UI */
   --border-light: rgba(91, 14, 20, 0.12);
   --shadow-soft: rgba(91, 14, 20, 0.16);
   --overlay-dark: rgba(91, 14, 20, 0.28);
   /* Nav: dark background when scrolled */
-  --nav-scrolled-bg: #5B0E14;
+  --nav-scrolled-bg: #004643;
   /* Blob cursor — ring + dot */
   --cursor-ring-color: rgba(0, 0, 0, 0.88);
   --cursor-ring-color-hover: rgba(0, 0, 0, 1);
@@ -378,7 +380,6 @@ button,
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .nav__inner {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -462,32 +463,6 @@ button,
 .nav__links a:hover { color: var(--text-on-dark); }
 .nav.scrolled .nav__links a:hover { color: var(--text-on-dark); }
 .nav__links a:hover::after { width: 100%; }
-
-/* Desktop: center primary nav links in the pill; logo stays left, cart + auth stay grouped on the right */
-@media (min-width: 769px) {
-  .nav__inner {
-    justify-content: flex-start;
-  }
-  .nav__links {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    flex: none;
-    margin: 0;
-    max-width: min(65vw, calc(100% - 12rem));
-    justify-content: center;
-    z-index: 0;
-  }
-  .nav__cart {
-    margin-left: auto;
-  }
-  .nav__right {
-    margin-left: 0;
-    padding-left: 0.75rem;
-  }
-}
-
 .nav__auth {
   color: var(--text-on-dark);
   border-color: rgba(248, 248, 248, 0.6);
@@ -925,7 +900,7 @@ main > section.section {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #F1E194;
+  background: #F0EDE5;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
@@ -1124,7 +1099,7 @@ main > section.section {
   text-transform: uppercase;
   text-decoration: none;
   color: var(--lux-lime-text, #000000);
-  background: var(--lux-lime, #F1E194);
+  background: var(--lux-lime, #F0EDE5);
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
   box-shadow:
@@ -1145,7 +1120,7 @@ main > section.section {
     0 18px 40px rgba(0, 0, 0, 0.4);
 }
 .about-impact__cta:focus-visible {
-  outline: 2px solid var(--lux-lime, #F1E194);
+  outline: 2px solid var(--lux-lime, #F0EDE5);
   outline-offset: 4px;
 }
 @media (max-width: 768px) {
@@ -1304,15 +1279,15 @@ main > section.section {
 .room-card__actions .btn--outline {
   transition: none;
   border-radius: 999px;
-  background: var(--lux-dark, #5B0E14);
+  background: var(--lux-dark, #004643);
   color: #ffffff;
-  border-color: var(--lux-dark, #5B0E14);
+  border-color: var(--lux-dark, #004643);
 }
 .room-card__actions .btn--outline:hover {
   transform: none;
-  background: var(--lux-dark, #5B0E14);
+  background: var(--lux-dark, #004643);
   color: #ffffff;
-  border-color: var(--lux-dark, #5B0E14);
+  border-color: var(--lux-dark, #004643);
 }
 .room-card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -1711,15 +1686,11 @@ main > section.section {
   align-items: center;
   justify-content: center;
   gap: 0.35rem 0.25rem;
-  margin: 4.25rem auto 0;
+  margin: 1.65rem 0 0;
   padding: 0.8rem 1rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.05);
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  text-align: center;
 }
 
 .terms-zen__contact-sep {
@@ -1752,8 +1723,7 @@ main > section.section {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  margin-top: 2.85rem;
-  padding-top: 0.35rem;
+  margin-top: 1.65rem;
   text-align: left;
 }
 
@@ -2541,7 +2511,12 @@ main > section#terms {
   color: var(--color-forest, #2d5a27);
 }
 .form__availability--error {
-  color: var(--color-burnt-copper);
+  color: #8b1d2c;
+  font-weight: 700;
+  background: rgba(139, 29, 44, 0.1);
+  border: 1px solid rgba(139, 29, 44, 0.24);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
 }
 .form__success {
   color: var(--color-steel-gray);
@@ -2707,6 +2682,10 @@ body.page-cart .nav {
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
+body.page-cart .modal__overlay {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
 .cart-page {
   min-height: 100vh;
   padding: 0;
@@ -2719,41 +2698,37 @@ body.page-cart .nav {
   pointer-events: none;
 }
 .cart-page .container {
-  position: fixed;
-  left: 50%;
-  top: 8rem;
-  transform: translateX(-50%);
-  max-width: 520px;
-  width: calc(100% - 3rem);
-  max-height: calc(100vh - 11rem);
+  position: relative;
+  margin: 7.5rem auto 2rem;
+  max-width: min(94vw, 860px);
+  width: calc(100% - 2rem);
+  max-height: none;
   min-height: 0;
   background: var(--color-urban-white);
-  padding: 3rem clamp(1.25rem, 4vw, 2.5rem) 3.5rem;
+  padding: 2rem clamp(1.25rem, 3vw, 2.25rem) 2.25rem;
   border-radius: 1rem;
   border: 1px solid var(--border-light);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: box-shadow 0.25s ease;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 .cart-page .container:hover {
-  transform: translateX(-50%) translateY(-6px) scale(1.02);
-  box-shadow: 0 24px 56px rgba(26, 34, 56, 0.18), 0 0 0 1px rgba(255, 158, 109, 0.15);
-  border-color: rgba(255, 158, 109, 0.3);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 .cart-page .container .cart-page__title,
 .cart-page .container .divider { flex-shrink: 0; }
 .cart-page .container .cart-step {
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 .cart-page .container .cart__list {
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
 }
 .cart-page__title {
@@ -2769,6 +2744,18 @@ body.page-cart .nav {
 }
 .cart-step { margin-top: 2rem; }
 .cart-step--hidden { display: none !important; }
+/* Cart + checkout both visible: separate “Booking details” from selection above */
+#stepCart:not(.cart-step--hidden) + #stepCheckout:not(.cart-step--hidden) {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.12));
+}
+@media (min-width: 920px) {
+  #stepCart:not(.cart-step--hidden) + #stepCheckout:not(.cart-step--hidden) {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+}
 .cart-step__heading {
   font-size: 1.1rem;
   color: var(--text-primary);
@@ -2929,15 +2916,12 @@ body.page-cart .nav {
     top: 100%;
     left: 0;
     width: 100%;
-    transform: none;
-    max-width: none;
     background: var(--color-obsidian);
     flex-direction: column;
     padding: 1.5rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
     gap: 0.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    z-index: 20;
   }
   .nav__links.open {
     display: flex;
@@ -2952,7 +2936,9 @@ body.page-cart .nav {
     padding: 3rem 0 2.5rem;
   }
   .cart-page .container {
-    padding: 1.75rem clamp(1.25rem, 4vw, 2rem);
+    margin: 6.8rem auto 1.5rem;
+    width: calc(100% - 1.5rem);
+    padding: 1.5rem clamp(1rem, 4vw, 1.5rem);
   }
   .about__grid {
     grid-template-columns: 1fr;
@@ -2985,18 +2971,22 @@ body.page-cart .nav {
   .footer__wrap {
     max-width: 100%;
     margin-left: auto;
-    margin-right: max(1.5rem, env(safe-area-inset-right));
+    margin-right: auto;
     min-height: 0;
   }
   .footer__wrap--grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 3rem;
     text-align: center;
     align-items: center;
   }
   .footer__wrap--grid .footer__col--brand { display: flex; flex-direction: column; align-items: center; }
   .footer__wrap--grid .footer__links { text-align: center; }
   .footer__wrap--grid .footer__contact { text-align: center; margin-left: 0; }
+  .footer__vara-logo {
+    position: relative;
+    top: 53px;
+  }
   .footer__vara {
     order: 1;
     justify-content: center;
@@ -3164,7 +3154,9 @@ body.page-cart .nav {
     padding: 2rem 0 2.5rem;
   }
   .cart-page .container {
-    padding: 1.5rem 1.25rem;
+    margin: 6.4rem auto 1.25rem;
+    width: calc(100% - 1rem);
+    padding: 1.25rem 1rem;
   }
   .cart__item {
     flex-direction: column;
@@ -3222,4 +3214,51 @@ body.page-cart .nav {
     padding: 0.75rem 1.25rem;
     font-size: 0.75rem;
   }
+}
+
+/* Dual prepaid options (central API) */
+.prepaid-options-wrap {
+  margin: 0.75rem 0 1rem;
+}
+.prepaid-options {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+.prepaid-options__legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 0.35rem;
+}
+.prepaid-options__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+.prepaid-options__card:first-of-type {
+  margin-top: 0.35rem;
+}
+.prepaid-options__card:has(input:checked) {
+  border-color: var(--color-burnt-copper, #b54a4a);
+  background: rgba(181, 74, 74, 0.06);
+}
+.prepaid-options__card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.prepaid-options__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.prepaid-options__meta {
+  font-size: 0.8rem;
+  opacity: 0.88;
+  line-height: 1.35;
 }

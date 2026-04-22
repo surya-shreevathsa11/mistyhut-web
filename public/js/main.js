@@ -1,6 +1,15 @@
 (function () {
+  const POST_LOGIN_REDIRECT_KEY = "summer-green-post-login";
+  const A = window.MistyApi;
+  if (!A) {
+    console.warn("MistyApi missing — load /js/api-config.js before main.js");
+  }
+  const P = window.MistyPrepaid;
+
+  function clearBookRoomPrepaid() {}
+
   let currentUser = null;
-  /** Room limit: set from backend after validating /api/booking/rooms response. Only these room IDs are allowed for cart/booking. */
+  /** Room limit: set from backend after validating rooms response. Only these room IDs are allowed for cart/booking. */
   let validRoomIdsFromBackend = [];
 
   const $ = (sel) => document.querySelector(sel);
@@ -120,6 +129,7 @@
   });
 
   function checkDatesAvailability() {
+    if (!A) return;
     var checkIn = $("#bookRoomCheckIn") && $("#bookRoomCheckIn").value;
     var checkOut = $("#bookRoomCheckOut") && $("#bookRoomCheckOut").value;
     var availEl = $("#bookRoomAvailability");
@@ -133,14 +143,10 @@
       "form__availability--ok",
       "form__availability--error",
     );
-    fetch("/api/booking/checkAvailability", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomId: roomId,
-        checkIn: checkIn,
-        checkOut: checkOut,
-      }),
+    A.quoteRoom({
+      roomId: roomId,
+      checkIn: checkIn,
+      checkOut: checkOut,
     })
       .then(function (res) {
         return res.json().then(function (data) {
@@ -153,6 +159,7 @@
           availEl.classList.add("form__availability--ok");
           availEl.classList.remove("form__availability--error");
         } else {
+          clearBookRoomPrepaid();
           availEl.textContent =
             result.data && result.data.message
               ? result.data.message
@@ -162,6 +169,7 @@
         }
       })
       .catch(function () {
+        clearBookRoomPrepaid();
         availEl.textContent = "";
         availEl.classList.remove(
           "form__availability--ok",
@@ -187,6 +195,7 @@
   if (bookRoomForm) {
     bookRoomForm.addEventListener("submit", async function (e) {
       e.preventDefault();
+      if (!A) return;
       if (!pendingBookRoom) return;
       var errEl = $("#bookRoomError");
       var submitBtn = $("#bookRoomSubmitBtn");
@@ -202,35 +211,31 @@
       errEl.textContent = "";
       if (submitBtn) submitBtn.disabled = true;
       try {
-        var availRes = await fetch("/api/booking/checkAvailability", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            roomId: roomId,
-            checkIn: checkIn,
-            checkOut: checkOut,
-          }),
+        var availRes = await A.quoteRoom({
+          roomId: roomId,
+          checkIn: checkIn,
+          checkOut: checkOut,
+        });
+        var availData = await availRes.json().catch(function () {
+          return {};
         });
         if (!availRes.ok) {
-          var availData = await availRes.json().catch(function () {
-            return {};
-          });
           errEl.textContent =
             availData.message || "Selected dates are not available.";
           return;
         }
-        var cartRes = await fetch("/api/booking/cart", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            roomId: roomId,
-            checkIn: checkIn,
-            checkOut: checkOut,
-            adults: adults,
-            children: children,
-          }),
+        var cartRes = await A.guestCartAdd({
+          roomId: roomId,
+          checkIn: checkIn,
+          checkOut: checkOut,
+          adults: adults,
+          children: children,
         });
+        if (cartRes.status === 401) {
+          errEl.textContent = "Please sign in to add rooms to your cart.";
+          openModal("#signInModal");
+          return;
+        }
         if (!cartRes.ok) {
           var cartData = await cartRes.json().catch(function () {
             return {};
@@ -267,6 +272,7 @@
       e.textContent = "";
       e.classList.remove("form__availability--ok", "form__availability--error");
     });
+    clearBookRoomPrepaid();
   }
 
   $$(".modal__overlay, .modal__close, [data-close]").forEach((el) => {
@@ -331,10 +337,10 @@
   const navProfileLogout = $("#navProfileLogout");
   if (navProfileLogout) {
     navProfileLogout.addEventListener("click", () => {
-      fetch("/api/auth/logout", { method: "POST" }).then(() => {
-        currentUser = null;
-        updateAuthUI();
-      });
+      A.clearSession();
+      currentUser = null;
+      updateAuthUI();
+      fetchCartCount();
     });
   }
   const navProfileBookings = $("#navProfileBookings");
@@ -352,7 +358,7 @@
       if (emptyEl) { emptyEl.style.display = "none"; emptyEl.textContent = ""; }
       if (emptyMsgEl) emptyMsgEl.style.display = "none";
 
-      fetch("/api/booking/bookings", { credentials: "same-origin" })
+      A.guestBookingsList()
         .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
         .then(function (result) {
           if (!result.ok) {
@@ -397,32 +403,139 @@
     });
   }
 
-  // --- Google Sign In ---
-  $("#googleSignInBtn").addEventListener("click", () => {
-    window.location.href = "/api/auth/google";
-  });
+  // --- Magic PIN sign-in (central API) ---
+  function wireSignInModal() {
+    const errEl = $("#signInError");
+    const stepEmail = $("#signInStepEmail");
+    const stepPin = $("#signInStepPin");
+    const sendBtn = $("#signInSendPin");
+    const verifyBtn = $("#signInVerifyPin");
+    const backBtn = $("#signInBackEmail");
+    if (!sendBtn || !stepEmail || !stepPin) return;
 
-  // --- Auth check: used before booking and for redirect after sign-in ---
+    function showEmailStep() {
+      if (errEl) errEl.textContent = "";
+      stepEmail.style.display = "";
+      stepPin.style.display = "none";
+    }
+    function showPinStep() {
+      if (errEl) errEl.textContent = "";
+      stepEmail.style.display = "none";
+      stepPin.style.display = "";
+      const pinInput = $("#signInPin");
+      if (pinInput) pinInput.focus();
+    }
+
+    sendBtn.addEventListener("click", async function () {
+      if (errEl) errEl.textContent = "";
+      const name = ($("#signInName") && $("#signInName").value.trim()) || "";
+      const email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
+      if (!email) {
+        if (errEl) errEl.textContent = "Please enter your email.";
+        return;
+      }
+      sendBtn.disabled = true;
+      try {
+        const res = await A.requestPin({
+          propertySlug: A.propertySlug,
+          email: email,
+          name: name || email.split("@")[0],
+        });
+        const data = await res.json().catch(function () {
+          return {};
+        });
+        if (!res.ok) {
+          if (errEl) errEl.textContent = data.message || "Could not send code.";
+          return;
+        }
+        showPinStep();
+      } catch {
+        if (errEl) errEl.textContent = "Network error. Try again.";
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    if (verifyBtn) {
+      verifyBtn.addEventListener("click", async function () {
+        if (errEl) errEl.textContent = "";
+        const name = ($("#signInName") && $("#signInName").value.trim()) || "";
+        const email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
+        const pin = ($("#signInPin") && $("#signInPin").value.trim()) || "";
+        if (!pin) {
+          if (errEl) errEl.textContent = "Enter the code from your email.";
+          return;
+        }
+        verifyBtn.disabled = true;
+        try {
+          const res = await A.verifyPin({
+            propertySlug: A.propertySlug,
+            email: email,
+            name: name || undefined,
+            pin: pin,
+          });
+          const data = await res.json().catch(function () {
+            return {};
+          });
+          if (!res.ok || !data.success || !data.token) {
+            if (errEl) errEl.textContent = data.message || "Invalid code.";
+            return;
+          }
+          A.setSession(data.token, data.guest);
+          currentUser = data.guest;
+          updateAuthUI();
+          closeAllModals();
+          showEmailStep();
+          const pinInput = $("#signInPin");
+          if (pinInput) pinInput.value = "";
+          fetchCartCount();
+          try {
+            if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
+              sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+              window.location.href = "cart.html";
+            }
+          } catch (_) {}
+        } catch {
+          if (errEl) errEl.textContent = "Network error. Try again.";
+        } finally {
+          verifyBtn.disabled = false;
+        }
+      });
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", showEmailStep);
+    }
+
+    $("#signInModal").addEventListener("click", function (e) {
+      if (e.target.closest("[data-close]") || e.target.classList.contains("modal__overlay")) {
+        showEmailStep();
+      }
+    });
+  }
+
+  wireSignInModal();
+
+  // --- Auth: guest JWT in localStorage (central API) ---
   async function checkAuth(cb) {
     try {
-      const res = await fetch("/api/auth/status", {
-        credentials: "same-origin",
-      });
-      const data = await res.json();
-      if (data.loggedIn) {
-        currentUser = data.user;
+      const tok = A.getToken();
+      const u = A.getStoredUser();
+      if (tok && u) {
+        currentUser = u;
         updateAuthUI();
         fetchCartCount();
-      } else {
-        currentUser = null;
-        updateAuthUI();
-        const countEl = $("#navCartCount");
-        if (countEl) {
-          countEl.textContent = "0";
-          countEl.setAttribute("data-count", "0");
-        }
+        if (cb) cb(u);
+        return;
       }
-      if (cb) cb(data.loggedIn ? data.user : null);
+      currentUser = null;
+      updateAuthUI();
+      const countEl = $("#navCartCount");
+      if (countEl) {
+        countEl.textContent = "0";
+        countEl.setAttribute("data-count", "0");
+      }
+      if (cb) cb(null);
     } catch {
       if (cb) cb(null);
     }
@@ -430,12 +543,23 @@
 
   async function fetchCartCount() {
     try {
-      const res = await fetch("/api/booking/cart", {
-        credentials: "same-origin",
-      });
+      if (!A.getToken()) {
+        const countEl = $("#navCartCount");
+        if (countEl) {
+          countEl.textContent = "0";
+          countEl.setAttribute("data-count", "0");
+        }
+        return;
+      }
+      const res = await A.guestCartGet();
       if (!res.ok) return;
       const data = await res.json();
-      const count = Array.isArray(data.message) ? data.message.length : 0;
+      const lines = Array.isArray(data.roomInfo)
+        ? data.roomInfo
+        : Array.isArray(data.message)
+          ? data.message
+          : [];
+      const count = lines.length;
       const countEl = $("#navCartCount");
       if (countEl) {
         countEl.textContent = count;
@@ -467,6 +591,7 @@
     const children = $("#bookRoomChildren");
     if (adults) adults.value = 1;
     if (children) children.value = 0;
+    clearBookRoomPrepaid();
     openModal("#bookRoomModal");
   }
 
@@ -486,12 +611,82 @@
     return div.innerHTML;
   }
 
+  function renderSiteGallery(siteGalleryImages) {
+    var track = $("#galleryMarqueeTrack");
+    if (!track || !Array.isArray(siteGalleryImages) || !siteGalleryImages.length) return;
+
+    var cleaned = siteGalleryImages
+      .map(function (img) {
+        if (!img) return null;
+        if (typeof img === "string") {
+          return { url: img, alt: "Misty Hut gallery image" };
+        }
+        if (typeof img === "object") {
+          var url = img.url || img.src || img.imageUrl || "";
+          if (!url) return null;
+          return {
+            url: url,
+            alt: img.alt || img.title || "Misty Hut gallery image",
+            title: img.title || "",
+            label: img.label || "",
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    if (!cleaned.length) return;
+
+    function buildGroup(tabIndex, ariaHidden) {
+      var attrs = ariaHidden ? ' aria-hidden="true"' : "";
+      return (
+        '<div class="gallery-marquee__group"' +
+        attrs +
+        ">" +
+        cleaned
+          .map(function (img, idx) {
+            var title = img.title || "Misty Hut";
+            var label = img.label || "View " + (idx + 1);
+            return (
+              '<article class="gallery-reel__slide gallery-marquee__slide" tabindex="' +
+              tabIndex +
+              '" role="group">' +
+              '<div class="gallery-reel__img-wrap gallery-marquee__img-wrap">' +
+              '<img src="' +
+              escapeHtml(img.url) +
+              '" alt="' +
+              escapeHtml(img.alt) +
+              '" loading="lazy" decoding="async" width="1200" height="675" />' +
+              '<div class="gallery-marquee__top-cap">' +
+              '<span class="gallery-marquee__card-title">' +
+              escapeHtml(title) +
+              "</span>" +
+              '<span class="gallery-marquee__card-label">' +
+              escapeHtml(label) +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("") +
+        "</div>"
+      );
+    }
+
+    track.innerHTML = buildGroup("0", false) + buildGroup("-1", true);
+  }
+
   // --- Render rooms ---
   async function renderRooms() {
+    if (!A) return;
     try {
-      const res = await fetch("/api/booking/rooms");
+      const res = await A.publicRooms();
       const data = await res.json();
       if (!data.success || !Array.isArray(data.rooms)) return;
+      if (data.siteGallery && Array.isArray(data.siteGallery.images)) {
+        renderSiteGallery(data.siteGallery.images);
+      }
       validRoomIdsFromBackend = data.rooms.map(function (r) {
         return r.roomId || (r.id != null ? "R" + r.id : "");
       }).filter(Boolean);
@@ -514,8 +709,8 @@
             <span class="room-card__view-pill" aria-hidden="true">
               <svg class="room-card__view-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1.5 12C3.8 7.9 7.5 5.5 12 5.5C16.5 5.5 20.2 7.9 22.5 12C20.2 16.1 16.5 18.5 12 18.5C7.5 18.5 3.8 16.1 1.5 12Z" fill="currentColor"/>
-                <circle cx="12" cy="12" r="3.2" fill="#5B0E14"/>
-                <circle cx="12" cy="12" r="1.4" fill="#F1E194"/>
+                <circle cx="12" cy="12" r="3.2" fill="#004643"/>
+                <circle cx="12" cy="12" r="1.4" fill="#F0EDE5"/>
               </svg>
             </span>
           </div>
@@ -779,7 +974,7 @@
       "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .about-impact__headline, .section__title, .section__subtitle";
     var hoverSelector =
       'a, button, .btn, input, textarea, [role="button"], .room-card, .gallery__item, .gallery-card';
-    var headerSelector = ".nav, .admin__header, .footer";
+    var headerSelector = ".nav, .footer";
     function isOverHeader(el) {
       return el && el.closest && el.closest(headerSelector);
     }
@@ -836,11 +1031,18 @@
       try {
         if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
           sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
-          window.location.href = "/cart";
+          window.location.href = "cart.html";
         }
       } catch (_) {}
     }
   });
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("signin") === "1") {
+      openModal("#signInModal");
+      history.replaceState({}, "", window.location.pathname);
+    }
+  } catch (_) {}
   renderRooms();
 })();
 
