@@ -26,10 +26,11 @@ function getOrigin() {
 }
 
 function getPrimaryImage() {
-  return (
-    process.env.PUBLIC_PRIMARY_IMAGE_URL ||
-    "https://www.mistyhutstays.com/images/hero.jpg"
-  );
+  if (process.env.PUBLIC_PRIMARY_IMAGE_URL) {
+    return String(process.env.PUBLIC_PRIMARY_IMAGE_URL).replace(/\/+$/, "");
+  }
+  /* Square logo for social preview cards (WhatsApp/Instagram). */
+  return `${getOrigin()}/img/mistyhut%28logo%29.jpeg`;
 }
 
 function getPhone() {
@@ -53,6 +54,9 @@ function buildSocialMeta({ title, description, canonical, imageUrl }) {
     `<meta property="og:title" content="${t}" />`,
     `<meta property="og:description" content="${d}" />`,
     `<meta property="og:image" content="${i}" />`,
+    `<meta property="og:image:alt" content="Misty Hut logo" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="1200" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${t}" />`,
     `<meta name="twitter:description" content="${d}" />`,
@@ -254,7 +258,7 @@ export function renderIndexHtml(pathname) {
 
   const template = getTemplate();
   if (!template.includes(PLACEHOLDER)) {
-    throw new Error("index.html missing %%SEO_HEAD%% placeholder");
+    return template;
   }
   return template.replace(PLACEHOLDER, seoHead);
 }

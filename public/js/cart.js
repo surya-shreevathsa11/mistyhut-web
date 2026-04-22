@@ -345,6 +345,7 @@
   function openTermsModal() {
     var modal = $("#termsModal");
     if (modal) modal.classList.add("active");
+    document.body.classList.add("modal-open");
     var cb = $("#termsAccept");
     var btn = $("#termsProceedBtn");
     if (cb) cb.checked = false;
@@ -354,6 +355,7 @@
   function closeTermsModal() {
     var modal = $("#termsModal");
     if (modal) modal.classList.remove("active");
+    document.body.classList.remove("modal-open");
   }
 
   function showSignInRequired() {

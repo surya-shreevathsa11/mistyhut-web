@@ -260,6 +260,13 @@ main > section.section--gallery {
   }
 }
 
+@media (max-width: 768px) {
+  .gallery-marquee__img-wrap.gallery-reel__img-wrap {
+    aspect-ratio: auto;
+    height: calc((clamp(280px, 74vw, 440px) * 9 / 16) + 1cm);
+  }
+}
+
 @media (max-width: 600px) {
   .gallery-mast__title--hero {
     font-size: clamp(1.65rem, 6.5vw, 2.15rem);

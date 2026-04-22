@@ -223,8 +223,8 @@ textarea {
   --color-copper-light: #f6eab0;
   /* Text */
   --text-primary: #004643;
-  --text-secondary: #7a232b;
-  --text-muted: #934149;
+  --text-secondary: #000000;
+  --text-muted: #000000;
   --text-on-dark: #F0EDE5;
   /* UI */
   --border-light: rgba(91, 14, 20, 0.12);
@@ -1686,7 +1686,7 @@ main > section.section {
   align-items: center;
   justify-content: center;
   gap: 0.35rem 0.25rem;
-  margin: 1.65rem 0 0;
+  margin: calc(1.65rem + 1.2cm) 0 0;
   padding: 0.8rem 1rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -2519,7 +2519,7 @@ main > section#terms {
   padding: 0.45rem 0.55rem;
 }
 .form__success {
-  color: var(--color-steel-gray);
+  color: #000;
   font-size: 0.8rem;
   min-height: 1.25rem;
   margin-bottom: 0.5rem;
@@ -2763,16 +2763,46 @@ body.page-cart .modal__overlay {
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
 }
+#stepCart .cart-step__heading {
+  font-size: clamp(1.24rem, 2.2vw, 1.5rem);
+  font-weight: 600;
+}
+#stepCart .cart__item-name {
+  font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+  color: #000;
+}
+#stepCart .cart__item-meta,
+#stepCart .cart__item-price,
+#stepCart .cart__item-breakdown,
+#stepCart .cart__empty,
+#stepCart .cart__total,
+#stepCart .cart__total strong {
+  color: #000;
+}
+#stepCart .cart__item-remove {
+  color: #000;
+  border-color: #000;
+}
+#stepCart .cart__item-remove:hover {
+  background: #000;
+  color: #fff;
+}
 .terms__scroll--page { max-height: 280px; }
 
 .terms__scroll {
   max-height: 200px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding-right: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+body.modal-open {
+  overflow: hidden;
+  height: 100vh;
 }
 .terms__scroll ul { margin: 0.5rem 0 0 1.25rem; padding: 0; }
 .terms__scroll li { margin-bottom: 0.35rem; }
@@ -2906,6 +2936,14 @@ body.page-cart .modal__overlay {
 
 /* Tablet portrait / large phones */
 @media (max-width: 768px) {
+  html,
+  body,
+  .lux-site,
+  main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
   .nav {
     padding: 0.9rem 0;
     padding-top: max(0.9rem, env(safe-area-inset-top));
@@ -2916,7 +2954,7 @@ body.page-cart .modal__overlay {
     top: 100%;
     left: 0;
     width: 100%;
-    background: var(--color-obsidian);
+    background: #004643;
     flex-direction: column;
     padding: 1.5rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));

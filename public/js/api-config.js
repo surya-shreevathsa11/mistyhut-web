@@ -5,6 +5,11 @@
 (function (global) {
   "use strict";
 
+  var DEFAULT_BASE =
+    (typeof global._MISTY_API_BASE_ === "string" &&
+    global._MISTY_API_BASE_.trim()
+      ? global._MISTY_API_BASE_.trim()
+      : "https://api.varalabs.in");
   var DEFAULT_BASE = "https://api.varalabs.in";
   var PROPERTY_SLUG = "misty-hut";
   var TOKEN_KEY = "misty_guest_jwt";

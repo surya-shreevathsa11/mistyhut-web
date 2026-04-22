@@ -307,6 +307,22 @@ body.lux-site .reviews-showcase__line--2 {
   }
 }
 
+@media (max-width: 768px) {
+  .review-card--showcase .review-card__inner {
+    padding: 0.85rem 1rem 0.85rem;
+  }
+
+  .review-card--showcase .review-card__text {
+    font-size: 0.88rem;
+    line-height: 1.44;
+    margin-bottom: 0.6rem;
+  }
+
+  .review-card__stars {
+    margin-bottom: 0.4rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reviews-showcase__orb,
   .reviews-showcase__track,
