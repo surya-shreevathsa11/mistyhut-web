@@ -169,6 +169,11 @@ function buildHomeSchemas(origin, imageUrl, phone) {
     "@type": "WebSite",
     name: "Misty Hut",
     url: `${origin}/`,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${origin}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 
   const imageObject = {
