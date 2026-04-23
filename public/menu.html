@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/img/mistyhut%28logo%29.jpeg" />
+    <title>Menu | Misty Hut Homestay</title>
+    <meta
+      name="description"
+      content="Lunch and dinner menu at Misty Hut Home Stay, Hoskeri Village, Maragodu, Kathalekadu, Coorg."
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/luxury.css" />
+    <link rel="stylesheet" href="/css/lux-surfaces.css" />
+    <style>
+      .menu-page {
+        min-height: 100vh;
+        background: radial-gradient(circle at 12% 8%, rgba(56, 117, 101, 0.34), transparent 35%),
+          radial-gradient(circle at 88% 12%, rgba(66, 126, 107, 0.3), transparent 38%),
+          linear-gradient(180deg, #0e534b 0%, #0a4741 100%);
+        color: #f0ede5;
+      }
+      .menu-main {
+        padding: 7.5rem 0 4rem;
+      }
+      .menu-head {
+        text-align: center;
+        margin-bottom: 1.25rem;
+      }
+      .menu-head h1 {
+        font-family: "Playfair Display", serif;
+        color: #f4ead4;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+      }
+      .menu-head p {
+        color: rgba(244, 234, 212, 0.9);
+        margin-top: 0.4rem;
+        font-size: 0.95rem;
+      }
+      .menu-stick-nav {
+        position: sticky;
+        top: 5.2rem;
+        z-index: 20;
+        display: flex;
+        gap: 0.55rem;
+        overflow-x: auto;
+        padding: 0.7rem;
+        border-radius: 999px;
+        background: rgba(247, 236, 213, 0.14);
+        border: 1px solid rgba(240, 237, 229, 0.32);
+        margin-bottom: 1.2rem;
+        box-shadow: 0 8px 26px rgba(0, 0, 0, 0.22);
+      }
+      .menu-stick-nav a {
+        white-space: nowrap;
+        text-decoration: none;
+        color: #f7ecd5;
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(247, 236, 213, 0.35);
+        background: rgba(0, 70, 67, 0.28);
+      }
+      .menu-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .menu-card {
+        background: linear-gradient(180deg, rgba(246, 237, 216, 0.98), rgba(242, 231, 205, 0.97));
+        border: 1px solid rgba(247, 236, 213, 0.45);
+        border-radius: 18px;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.2);
+        padding: 1.15rem;
+      }
+      .menu-card h2 {
+        font-family: "Playfair Display", serif;
+        color: #004643;
+        font-size: 1.28rem;
+        margin-bottom: 0.25rem;
+      }
+      .menu-rate {
+        color: #7c6a2a;
+        font-weight: 600;
+        margin-bottom: 0.65rem;
+        font-size: 0.9rem;
+      }
+      .menu-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 0.38rem 0;
+        border-bottom: 1px dashed rgba(0, 70, 67, 0.2);
+      }
+      .menu-item:last-child {
+        border-bottom: 0;
+      }
+      .menu-item-name {
+        color: #2c302f;
+      }
+      .menu-item-price {
+        color: #004643;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .menu-note {
+        color: rgba(0, 70, 67, 0.82);
+        font-size: 0.86rem;
+        margin-bottom: 0.35rem;
+      }
+      .menu-back-home {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 25;
+        background: #f7ecd5;
+        color: #0b4f48;
+        text-decoration: none;
+        border-radius: 999px;
+        padding: 0.7rem 1rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+      }
+      @media (min-width: 980px) {
+        .menu-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media print {
+        .nav,
+        .menu-stick-nav,
+        .menu-back-home,
+        .whatsapp-float,
+        .footer {
+          display: none !important;
+        }
+        .menu-main {
+          padding: 0;
+        }
+        .menu-page,
+        .menu-card {
+          background: #fff !important;
+          color: #000 !important;
+          box-shadow: none !important;
+          border-color: #bbb !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="lux-site menu-page">
+    <nav class="nav nav--scrolled" id="nav">
+      <div class="nav__inner container lux-nav-pill">
+        <a href="/" class="nav__logo" aria-label="Misty Hut">
+          <img src="/img/mistyhut%28logo%29.jpeg" alt="Misty Hut homestay logo" class="nav__logo-img" />
+        </a>
+        <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav__links" id="navLinks">
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#rooms">Rooms</a></li>
+          <li><a href="/#gallery">Gallery</a></li>
+          <li><a href="/menu.html">Menu</a></li>
+          <li><a href="https://wa.me/918971425151" target="_blank" rel="noopener">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="menu-main">
+      <div class="container">
+        <header class="menu-head">
+          <h1>Misty Huts Home Stay</h1>
+          <p>Hoskeri Village, Maragodu, Kathalekadu — Coorg</p>
+          <p>Lunch &amp; Dinner Menu</p>
+        </header>
+
+        <nav class="menu-stick-nav" aria-label="Menu categories">
+          <a href="#nonveg">Non-Veg</a>
+          <a href="#veg">Veg</a>
+          <a href="#egg">Egg</a>
+          <a href="#fish">Fish</a>
+          <a href="#rice">Rice</a>
+          <a href="#curry">Curry</a>
+          <a href="#breads">Breads</a>
+        </nav>
+
+        <section class="menu-grid">
+          <article class="menu-card" id="nonveg">
+            <h2>Non-Veg Starters (Chicken)</h2>
+            <p class="menu-rate">1 kg – ₹800 | 1/2 kg – ₹600</p>
+            <div class="menu-item"><span class="menu-item-name">1. Coorg Style Pepper Chicken</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Chicken Kebab</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Chicken Curry Coorg Style</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Chicken Ghee Roast</span></div>
+            <div class="menu-item"><span class="menu-item-name">5. Chicken Lollipop</span></div>
+            <div class="menu-item"><span class="menu-item-name">6. Green Chicken Masala</span></div>
+            <div class="menu-item"><span class="menu-item-name">7. Chilli Chicken</span></div>
+            <div class="menu-item"><span class="menu-item-name">8. Chicken Sukka</span></div>
+          </article>
+
+          <article class="menu-card">
+            <h2>Pork</h2>
+            <p class="menu-rate">1 kg – ₹1200</p>
+            <div class="menu-item"><span class="menu-item-name">1. Chilly Pork</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Coorg Style Pork Masala</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Pork Chudals</span></div>
+          </article>
+
+          <article class="menu-card" id="veg">
+            <h2>Veg Starters</h2>
+            <p class="menu-rate">1 kg – ₹800 | 1/2 kg – ₹600</p>
+            <div class="menu-item"><span class="menu-item-name">1. Paneer Chilly / Manchurian</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Mushroom Chilly / Manchurian</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Baby Corn Chilly / Manchurian</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Paneer Gravy</span></div>
+            <div class="menu-item"><span class="menu-item-name">5. Mushroom Masala</span></div>
+            <div class="menu-item"><span class="menu-item-name">6. Gobi Manchurian</span><span class="menu-item-price">₹650/kg</span></div>
+          </article>
+
+          <article class="menu-card" id="egg">
+            <h2>Egg Items</h2>
+            <p class="menu-rate">4 eggs – ₹300 | Omelette – ₹50/piece</p>
+            <div class="menu-item"><span class="menu-item-name">1. Egg Curry</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Egg Masala</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Egg Omelette</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Egg Roast</span></div>
+          </article>
+
+          <article class="menu-card" id="fish">
+            <h2>Fish Items</h2>
+            <div class="menu-item"><span class="menu-item-name">1. Fish Curry</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Fish Fry</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Fish Rava Fry</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Fish Pulimunchi</span></div>
+          </article>
+
+          <article class="menu-card" id="rice">
+            <h2>Rice Items</h2>
+            <p class="menu-note">(1 kg serves 7–8 guests)</p>
+            <div class="menu-item"><span class="menu-item-name">1. Plain Rice</span><span class="menu-item-price">₹400/kg</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Chicken Biryani</span><span class="menu-item-price">₹1500/kg</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Veg Pulav</span><span class="menu-item-price">₹1200/kg</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Ghee Rice</span><span class="menu-item-price">₹1000/kg</span></div>
+            <div class="menu-item"><span class="menu-item-name">5. Mushroom Biryani</span><span class="menu-item-price">₹1000/kg</span></div>
+            <div class="menu-item"><span class="menu-item-name">6. Egg Biryani</span><span class="menu-item-price">Ask for price</span></div>
+          </article>
+
+          <article class="menu-card" id="curry">
+            <h2>Curry &amp; Sides</h2>
+            <div class="menu-item"><span class="menu-item-name">1. Veg Curry</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Dal</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Veg Kurma</span></div>
+            <div class="menu-item"><span class="menu-item-name">4. Rasam</span></div>
+          </article>
+
+          <article class="menu-card" id="breads">
+            <h2>Breads</h2>
+            <div class="menu-item"><span class="menu-item-name">1. Chapathi</span><span class="menu-item-price">₹25/piece</span></div>
+            <div class="menu-item"><span class="menu-item-name">2. Akki Roti</span><span class="menu-item-price">₹30/piece</span></div>
+            <div class="menu-item"><span class="menu-item-name">3. Pathal</span><span class="menu-item-price">₹20/piece</span></div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <a class="menu-back-home" href="/#home">Back to Home</a>
+
+    <script>
+      (function () {
+        var t = document.getElementById("navToggle");
+        var links = document.getElementById("navLinks");
+        if (t && links) {
+          t.addEventListener("click", function () {
+            links.classList.toggle("open");
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
