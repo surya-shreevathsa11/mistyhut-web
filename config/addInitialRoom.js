@@ -1,7 +1,7 @@
 import { Room } from "../models/pricing.model.js";
 import { rooms } from "./room.js";
 
-const PROPERTY_ID = "69e26a89365e90590ff740e5";
+const PROPERTY_ID = "69e9b49f54b20cd6c8b5ab3f";
 
 export const addInitalPrices = async () => {
   try {
