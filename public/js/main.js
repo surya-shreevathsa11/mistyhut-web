@@ -856,12 +856,12 @@
   function setupDirections() {
     const btn = $("#getDirectionsBtn");
     if (!btn) return;
-    const mapsUrl = "https://maps.app.goo.gl/zCGcK5uRbR7dLqbh7";
+    const mapsUrl = "https://maps.app.goo.gl/B6k7UDQxbQUnC6up6";
     btn.href = mapsUrl;
     btn.target = "_blank";
   }
 
-  // --- Hero slider (4 images, 5s) ---
+  // --- Hero background sequence (8 images, fade-only, 2s loop) ---
   function setupHeroSlider() {
     const slides = Array.from(document.querySelectorAll(".hero__slide"));
     if (slides.length < 2) return;
@@ -869,33 +869,54 @@
     const prefersReducedMotion =
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
 
-    let idx = Math.max(
-      0,
-      slides.findIndex((s) => s.classList.contains("is-active")),
-    );
-    function show(nextIdx) {
-      slides[idx].classList.remove("is-active");
-      slides[nextIdx].classList.add("is-active");
-      idx = nextIdx;
-    }
+    const imageUrls = slides.map((slide) => slide.dataset.image || "").filter(Boolean);
+    if (imageUrls.length !== slides.length) return;
 
-    let timer = setInterval(() => {
-      const next = (idx + 1) % slides.length;
-      show(next);
-    }, 5000);
+    const preload = imageUrls.map(function (url) {
+      return new Promise(function (resolve) {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = url;
+      });
+    });
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        clearInterval(timer);
-      } else {
-        clearInterval(timer);
-        timer = setInterval(() => {
-          const next = (idx + 1) % slides.length;
-          show(next);
-        }, 5000);
+    Promise.allSettled(preload).then(function () {
+      slides.forEach(function (slide, i) {
+        slide.style.backgroundImage = 'url("' + imageUrls[i] + '")';
+      });
+
+      let idx = Math.max(
+        0,
+        slides.findIndex((s) => s.classList.contains("is-active")),
+      );
+      if (idx < 0) idx = 0;
+
+      function show(nextIdx) {
+        slides[idx].classList.remove("is-active");
+        slides[nextIdx].classList.add("is-active");
+        idx = nextIdx;
       }
+
+      if (prefersReducedMotion) return;
+
+      let timer = setInterval(function () {
+        const next = (idx + 1) % slides.length;
+        show(next);
+      }, 3500);
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          clearInterval(timer);
+        } else {
+          clearInterval(timer);
+          timer = setInterval(function () {
+            const next = (idx + 1) % slides.length;
+            show(next);
+          }, 3500);
+        }
+      });
     });
   }
 
