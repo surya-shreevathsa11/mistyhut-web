@@ -856,8 +856,8 @@
   function setupDirections() {
     const btn = $("#getDirectionsBtn");
     if (!btn) return;
-    const address = "Via dei Cipressi 42, Tuscany, Italy";
-    btn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    const mapsUrl = "https://maps.app.goo.gl/zCGcK5uRbR7dLqbh7";
+    btn.href = mapsUrl;
     btn.target = "_blank";
   }
 

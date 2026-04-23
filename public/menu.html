@@ -41,32 +41,6 @@
         margin-top: 0.4rem;
         font-size: 0.95rem;
       }
-      .menu-stick-nav {
-        position: sticky;
-        top: 5.2rem;
-        z-index: 20;
-        display: flex;
-        gap: 0.55rem;
-        overflow-x: auto;
-        padding: 0.7rem;
-        border-radius: 999px;
-        background: rgba(247, 236, 213, 0.14);
-        border: 1px solid rgba(240, 237, 229, 0.32);
-        margin-bottom: 1.2rem;
-        box-shadow: 0 8px 26px rgba(0, 0, 0, 0.22);
-      }
-      .menu-stick-nav a {
-        white-space: nowrap;
-        text-decoration: none;
-        color: #f7ecd5;
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 0.45rem 0.8rem;
-        border-radius: 999px;
-        border: 1px solid rgba(247, 236, 213, 0.35);
-        background: rgba(0, 70, 67, 0.28);
-      }
       .menu-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -137,7 +111,6 @@
       }
       @media print {
         .nav,
-        .menu-stick-nav,
         .menu-back-home,
         .whatsapp-float,
         .footer {
@@ -183,16 +156,6 @@
           <p>Hoskeri Village, Maragodu, Kathalekadu — Coorg</p>
           <p>Lunch &amp; Dinner Menu</p>
         </header>
-
-        <nav class="menu-stick-nav" aria-label="Menu categories">
-          <a href="#nonveg">Non-Veg</a>
-          <a href="#veg">Veg</a>
-          <a href="#egg">Egg</a>
-          <a href="#fish">Fish</a>
-          <a href="#rice">Rice</a>
-          <a href="#curry">Curry</a>
-          <a href="#breads">Breads</a>
-        </nav>
 
         <section class="menu-grid">
           <article class="menu-card" id="nonveg">
