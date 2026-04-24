@@ -613,7 +613,7 @@
 
   function formatRoomDescription(description) {
     var raw = String(description || "");
-    var m = raw.match(/\bIdeally?\b/i);
+    var m = raw.match(/\bIdeal(?:ly)?\b/i);
     if (!m || m.index == null) return escapeHtml(raw);
     var splitAt = m.index;
     var before = raw.slice(0, splitAt).trimEnd();
