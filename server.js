@@ -94,8 +94,8 @@ app.use("/api/booking", bookingRouter);
 
 app.use("/api/payment", razorpayRouter);
 
-import { addInitalPrices } from "./config/addInitialRoom.js";
-addInitalPrices();
+import { modDesc } from "./config/addInitialRoom.js";
+modDesc();
 
 connectDB().then(() => {
   const port = process.env.PORT;
