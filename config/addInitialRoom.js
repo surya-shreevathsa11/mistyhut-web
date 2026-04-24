@@ -7,22 +7,22 @@ const rooms = [
   {
     roomId: "R1",
     description:
-      "A spacious ground floor retreat with a king and queen bed. Ideal for families or groups of up to 5 guests.",
+      "A spacious ground floor retreat with a king and queen bed, designed for comfort and ease. Ideal for families or groups of up to 5 guests.",
   },
   {
     roomId: "R2",
     description:
-      "An intimate ground floor suite with a queen bed and a private living area. Ideal for 2 adults and 1 child (max 3 guests).",
-  },
-  {
-    roomId: "R3",
-    description:
-      "An elevated first floor suite with a king bed, a single bed and a convertible sofa. Ideal for families or groups of up to 5 guests.",
+      "An intimate ground floor suite with a queen bed and a private living area for added comfort. Ideal for 2 adults and 1 child (max 3 guests).",
   },
   {
     roomId: "R4",
     description:
       "A refined first floor suite offering a king bed, a single bed and a convertible sofa. Ideal for families or groups of up to 5 guests.",
+  },
+  {
+    roomId: "R4",
+    description:
+      "A refined first floor suite offering a king bed, a single bed and a convertible sofa for a comfortable stay. Ideal for families or groups of up to 5 guests.",
   },
 ];
 
