@@ -690,15 +690,27 @@ body[data-auth-disabled] [data-auth-ui] {
   background-repeat: no-repeat;
   background-position: center center;
   opacity: 0;
-  transform: scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   transform-origin: center center;
-  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity;
+  transition:
+    opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 3.5s linear;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
   filter: saturate(0.95) contrast(1.05);
 }
 .hero__slide.is-active {
   opacity: 1;
-  transform: scale(1);
+  transform: translate3d(0, 0, 0) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide {
+    transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hero__slide.is-active {
+    transform: scale(1);
+  }
 }
 .hero::before {
   content: "";
