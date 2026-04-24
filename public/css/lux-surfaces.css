@@ -289,7 +289,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .lux-site .hero__slide.is-active {
-    animation: lux-hero-kenburns 32s ease-in-out infinite alternate;
+    animation: none !important;
   }
 
   .lux-site .hero__video video {
