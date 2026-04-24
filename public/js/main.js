@@ -611,6 +611,17 @@
     return div.innerHTML;
   }
 
+  function formatRoomDescription(description) {
+    var raw = String(description || "");
+    var m = raw.match(/\bIdeally?\b/i);
+    if (!m || m.index == null) return escapeHtml(raw);
+    var splitAt = m.index;
+    var before = raw.slice(0, splitAt).trimEnd();
+    var after = raw.slice(splitAt).trimStart();
+    if (!before) return escapeHtml(raw);
+    return escapeHtml(before) + "<br><br>" + escapeHtml(after);
+  }
+
   function renderSiteGallery(siteGalleryImages) {
     var track = $("#galleryMarqueeTrack");
     if (!track || !Array.isArray(siteGalleryImages) || !siteGalleryImages.length) return;
@@ -716,7 +727,7 @@
           </div>
           <span class="room-card__number">0${room.id}</span>
           <h3 class="room-card__name">${escapeHtml(room.name)}</h3>
-          <p class="room-card__desc">${escapeHtml(room.description)}</p>
+          <p class="room-card__desc">${formatRoomDescription(room.description)}</p>
           <p class="room-card__price"><span>₹${room.price}</span> / night</p>
           <div class="room-card__actions">
             <button type="button" class="btn btn--outline btn--sm" data-add-cart="${room.id}" data-name="${escapeHtml(room.name)}" data-price="${room.price}">Add to cart</button>
