@@ -301,18 +301,6 @@
           return;
         }
         var norm = P.normalizeFromQuote(result.data);
-        if (norm && Array.isArray(norm.options) && norm.options.length) {
-          norm.options = norm.options.map(function (opt) {
-            var lowered = String(opt.label || "").toLowerCase();
-            return {
-              id: opt.id,
-              label: lowered.indexOf("50") !== -1 ? "Primary" : "Standard",
-              percent: opt.percent,
-              prepaidAmount: opt.prepaidAmount,
-              refundAvailable: lowered.indexOf("50") !== -1,
-            };
-          });
-        }
         P.render(container, norm, {
           name: "misty-prepaid-checkout",
           legend: "Payment option",

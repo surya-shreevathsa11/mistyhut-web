@@ -92,6 +92,35 @@
     return d.innerHTML;
   }
 
+  function buildPlanPresentation(opt, ctx) {
+    var pct = opt && opt.percent != null && !Number.isNaN(opt.percent)
+      ? Number(opt.percent)
+      : null;
+    var hasDistinctPercents = ctx.minPercent != null && ctx.maxPercent != null && ctx.minPercent !== ctx.maxPercent;
+    var isMinPlan = hasDistinctPercents && pct != null && pct === ctx.minPercent;
+    var isMaxPlan = hasDistinctPercents && pct != null && pct === ctx.maxPercent;
+
+    // Global policy:
+    // - Lower percent plan: Saver Plan + Non-refundable
+    // - Higher percent plan: Flexi Plan + Free cancellation (15 days)
+    // If percent ordering is not available, fallback to backend refund flag.
+    var isFlexi = isMaxPlan || (!hasDistinctPercents && Boolean(opt.refundAvailable));
+    var isSaver = isMinPlan || (!hasDistinctPercents && !Boolean(opt.refundAvailable));
+
+    var title = opt.label || "Payment Plan";
+    if (isSaver && !isFlexi) title = "Saver Plan";
+    if (isFlexi) title = "Flexi Plan";
+
+    var policyText = isFlexi
+      ? "Free cancellation up to 15 days before check-in"
+      : "Non-refundable";
+
+    return {
+      title: title,
+      policyText: policyText,
+    };
+  }
+
   function render(container, normalized, opts) {
     opts = opts || {};
     var name = opts.name || "misty-prepaid";
@@ -111,6 +140,17 @@
     var primaryId =
       normalized.primaryId ||
       (list[0] ? list[0].id : null);
+    var numericPercents = list
+      .map(function (opt) {
+        return opt && opt.percent != null && !Number.isNaN(opt.percent)
+          ? Number(opt.percent)
+          : null;
+      })
+      .filter(function (v) {
+        return v != null;
+      });
+    var minPercent = numericPercents.length ? Math.min.apply(null, numericPercents) : null;
+    var maxPercent = numericPercents.length ? Math.max.apply(null, numericPercents) : null;
 
     var fieldset = document.createElement("fieldset");
     fieldset.className = "prepaid-options";
@@ -138,7 +178,11 @@
 
       var title = document.createElement("span");
       title.className = "prepaid-options__title";
-      title.textContent = opt.label;
+      var plan = buildPlanPresentation(opt, {
+        minPercent: minPercent,
+        maxPercent: maxPercent,
+      });
+      title.textContent = plan.title;
 
       var meta = document.createElement("span");
       meta.className = "prepaid-options__meta";
@@ -149,9 +193,7 @@
       if (opt.prepaidAmount != null && !Number.isNaN(opt.prepaidAmount)) {
         parts.push("₹" + opt.prepaidAmount.toLocaleString("en-IN"));
       }
-      parts.push(
-        opt.refundAvailable ? "Refunds may apply (per policy)" : "Refund rules apply per policy",
-      );
+      parts.push(plan.policyText);
       meta.textContent = parts.join(" · ");
 
       label.appendChild(input);
