@@ -915,7 +915,7 @@
       let timer = setInterval(function () {
         const next = (idx + 1) % slides.length;
         show(next);
-      }, 3500);
+      }, 5000);
 
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
@@ -925,7 +925,7 @@
           timer = setInterval(function () {
             const next = (idx + 1) % slides.length;
             show(next);
-          }, 3500);
+          }, 5000);
         }
       });
     });

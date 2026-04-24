@@ -694,7 +694,7 @@ body[data-auth-disabled] [data-auth-ui] {
   transform-origin: center center;
   transition:
     opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 3.5s linear;
+    transform 5s linear;
   will-change: opacity, transform;
   backface-visibility: hidden;
   filter: saturate(0.95) contrast(1.05);
@@ -1730,6 +1730,16 @@ main > section.section {
 .terms-zen__contact-link:hover {
   color: #ffffff;
   text-decoration: underline;
+}
+
+.terms-zen__contact-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+.terms-zen__contact-link--full {
+  flex-basis: 100%;
+  text-align: center;
 }
 
 /* Hook for scroll animations (card-grid-reveal) */
