@@ -685,7 +685,7 @@
                 amount: Math.round(payRupee * 100), // paise
                 currency: "INR",
                 order_id: bookingData.razorpayOrderId,
-                name: "Summer Green",
+                name: "Misty Hut",
                 description: "Room Booking",
                 prefill: {
                   name: name,
