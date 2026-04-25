@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import connectDB from "./db.js";
-import { renderIndexHtml } from "./config/seo-index-pages.js";
+import { renderIndexHtml, SEO_ROUTES } from "./config/seo.js";
 
 const app = express();
 app.use(cookieParser());
@@ -37,7 +37,11 @@ app.use(
 
 const publicDir = path.join(__dirname, "public");
 
-app.get(["/", "/about", "/rooms", "/gallery", "/contact"], (req, res, next) => {
+app.get("/index.html", (_req, res) => {
+  res.redirect(301, "/");
+});
+
+app.get(SEO_ROUTES, (req, res, next) => {
   try {
     const html = renderIndexHtml(req.path);
     if (html == null) return next();
@@ -45,11 +49,6 @@ app.get(["/", "/about", "/rooms", "/gallery", "/contact"], (req, res, next) => {
   } catch (e) {
     next(e);
   }
-});
-
-// Avoid serving public/index.html with unreplaced %%SEO_HEAD%%; canonical is /
-app.get("/index.html", (_req, res) => {
-  res.redirect(301, "/");
 });
 
 app.use(express.static(publicDir));

@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.mistyhutstays.com/sitemap.xml
+Disallow: /admin
+Disallow: /admin/
+
+Sitemap: https://mistyhutstays.com/sitemap.xml
