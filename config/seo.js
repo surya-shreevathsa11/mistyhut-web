@@ -16,6 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const PLACEHOLDER = "%%SEO_HEAD%%";
+const SEO_START_MARKER = "<!-- SEO_HEAD_START -->";
+const SEO_END_MARKER = "<!-- SEO_HEAD_END -->";
 
 const BUSINESS_NAME = "Misty Hut Stays";
 const BUSINESS_DESCRIPTION =
@@ -250,6 +252,12 @@ export function renderIndexHtml(pathname) {
 
   const template = getTemplate();
   if (!template.includes(PLACEHOLDER)) {
+    if (template.includes(SEO_START_MARKER) && template.includes(SEO_END_MARKER)) {
+      return template.replace(
+        new RegExp(`${SEO_START_MARKER}[\\s\\S]*?${SEO_END_MARKER}`),
+        `${SEO_START_MARKER}\n    ${seoHead}\n    ${SEO_END_MARKER}`,
+      );
+    }
     return template;
   }
   return template.replace(PLACEHOLDER, seoHead);
