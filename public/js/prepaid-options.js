@@ -5,6 +5,152 @@
 (function (global) {
   "use strict";
 
+  function toNumberOrNull(value) {
+    var n = Number(value);
+    return Number.isNaN(n) ? null : n;
+  }
+
+  function pickFirstTruthy() {
+    for (var i = 0; i < arguments.length; i += 1) {
+      if (arguments[i]) return arguments[i];
+    }
+    return null;
+  }
+
+  function normalizeOption(raw, fallbackId) {
+    if (!raw || typeof raw !== "object") return null;
+    var id = pickFirstTruthy(
+      raw.id,
+      raw.prepaidOptionId,
+      raw.prepaid_option_id,
+      fallbackId,
+    );
+    if (!id) return null;
+    return {
+      id: String(id),
+      label: raw.label || raw.name || raw.title || "Payment Plan",
+      percent: toNumberOrNull(
+        raw.percent != null ? raw.percent : raw.prepaidPercent,
+      ),
+      prepaidAmount: toNumberOrNull(
+        raw.prepaidAmount != null ? raw.prepaidAmount : raw.amount,
+      ),
+      refundAvailable: Boolean(
+        raw.refundAvailable || raw.refund_available || raw.refundEligible,
+      ),
+      isPrimary: Boolean(raw.isPrimary),
+    };
+  }
+
+  function normalizeFromCart(data) {
+    if (!data || typeof data !== "object") {
+      return { options: [], primaryId: null, legacy: true };
+    }
+
+    var topLevelOptions = Array.isArray(data.prepaidOptions)
+      ? data.prepaidOptions
+      : null;
+    if (topLevelOptions && topLevelOptions.length) {
+      var mapped = topLevelOptions
+        .map(function (opt, idx) {
+          return normalizeOption(opt, String(idx));
+        })
+        .filter(Boolean);
+      if (mapped.length) {
+        var primaryOption = mapped.find(function (opt) {
+          return opt.isPrimary;
+        });
+        return {
+          options: mapped,
+          primaryId: primaryOption
+            ? primaryOption.id
+            : data.primaryPrepaidOptionId || mapped[0].id,
+          legacy: false,
+        };
+      }
+    }
+
+    var lower = toNumberOrNull(data.lowerPayableTotal);
+    var upper = toNumberOrNull(data.upperPayableTotal);
+    if (lower != null || upper != null) {
+      var lowerPct = toNumberOrNull(data.lowerPercent);
+      var upperPct = toNumberOrNull(data.upperPercent);
+      var options = [];
+      if (lower != null) {
+        options.push({
+          id: "standard",
+          label: "Standard",
+          percent: lowerPct,
+          prepaidAmount: lower,
+          refundAvailable: false,
+          isPrimary: false,
+        });
+      }
+      if (upper != null) {
+        options.push({
+          id: "primary",
+          label: "Primary",
+          percent: upperPct,
+          prepaidAmount: upper,
+          refundAvailable: true,
+          isPrimary: true,
+        });
+      }
+      if (options.length) {
+        return {
+          options: options,
+          primaryId: options[options.length - 1].id,
+          legacy: false,
+        };
+      }
+    }
+
+    var fromRooms = Array.isArray(data.roomInfo) ? data.roomInfo : [];
+    if (fromRooms.length) {
+      var byId = {};
+      fromRooms.forEach(function (room) {
+        var roomOptions = Array.isArray(room.prepaidOptions) ? room.prepaidOptions : [];
+        roomOptions.forEach(function (opt, idx) {
+          var normalized = normalizeOption(opt, String(idx));
+          if (!normalized) return;
+          if (!byId[normalized.id]) {
+            byId[normalized.id] = {
+              id: normalized.id,
+              label: normalized.label,
+              percent: normalized.percent,
+              prepaidAmount: 0,
+              refundAvailable: normalized.refundAvailable,
+              isPrimary: normalized.isPrimary,
+            };
+          }
+          if (normalized.prepaidAmount != null) {
+            byId[normalized.id].prepaidAmount += normalized.prepaidAmount;
+          }
+          if (byId[normalized.id].percent == null && normalized.percent != null) {
+            byId[normalized.id].percent = normalized.percent;
+          }
+          if (normalized.isPrimary) byId[normalized.id].isPrimary = true;
+          if (normalized.refundAvailable) byId[normalized.id].refundAvailable = true;
+        });
+      });
+      var merged = Object.keys(byId).map(function (k) {
+        return byId[k];
+      });
+      if (merged.length) {
+        var prim = merged.find(function (opt) {
+          return opt.isPrimary;
+        });
+        return {
+          options: merged,
+          primaryId: prim ? prim.id : merged[0].id,
+          legacy: false,
+        };
+      }
+    }
+
+    return normalizeFromQuote(data);
+  }
+
   function normalizeFromQuote(data) {
     if (!data || typeof data !== "object") {
       return { options: [], primaryId: null, legacy: true };
@@ -19,34 +165,11 @@
       null;
 
     if (Array.isArray(raw) && raw.length > 0) {
-      var options = raw.map(function (o, i) {
-        var id =
-          o.id ||
-          o.prepaidOptionId ||
-          o.prepaid_option_id ||
-          String(i);
-        return {
-          id: String(id),
-          label: o.label || o.name || o.title || "Option",
-          percent:
-            o.percent != null
-              ? Number(o.percent)
-              : o.prepaidPercent != null
-                ? Number(o.prepaidPercent)
-                : null,
-          prepaidAmount:
-            o.prepaidAmount != null
-              ? Number(o.prepaidAmount)
-              : o.amount != null
-                ? Number(o.amount)
-                : null,
-          refundAvailable: Boolean(
-            o.refundAvailable ||
-              o.refund_available ||
-              o.refundEligible,
-          ),
-        };
-      });
+      var options = raw
+        .map(function (o, i) {
+          return normalizeOption(o, String(i));
+        })
+        .filter(Boolean);
       var primaryResolved =
         primary != null
           ? String(primary)
@@ -196,13 +319,44 @@
       parts.push(plan.policyText);
       meta.textContent = parts.join(" · ");
 
+      var amount = document.createElement("span");
+      amount.className = "prepaid-options__amount";
+      amount.textContent =
+        opt.prepaidAmount != null && !Number.isNaN(opt.prepaidAmount)
+          ? "Pay now: ₹" + Number(opt.prepaidAmount).toLocaleString("en-IN")
+          : "";
+
       label.appendChild(input);
       label.appendChild(title);
       label.appendChild(meta);
+      if (amount.textContent) {
+        label.appendChild(amount);
+      }
       fieldset.appendChild(label);
     });
 
     container.appendChild(fieldset);
+    fieldset.addEventListener("change", function (event) {
+      var target = event.target;
+      if (!target || target.type !== "radio") return;
+      try {
+        sessionStorage.setItem("misty_checkout_prepaidOptionId", target.value);
+        var p = target.getAttribute("data-prepaid-percent");
+        if (p != null && p !== "") {
+          sessionStorage.setItem("misty_checkout_prepaidPercent", String(p));
+        }
+      } catch (_) {}
+    });
+    try {
+      var preselected = fieldset.querySelector('input[type="radio"]:checked');
+      if (preselected) {
+        sessionStorage.setItem("misty_checkout_prepaidOptionId", preselected.value);
+        var pp = preselected.getAttribute("data-prepaid-percent");
+        if (pp != null && pp !== "") {
+          sessionStorage.setItem("misty_checkout_prepaidPercent", String(pp));
+        }
+      }
+    } catch (_) {}
     container.hidden = false;
   }
 
@@ -221,6 +375,7 @@
   }
 
   global.MistyPrepaid = {
+    normalizeFromCart: normalizeFromCart,
     normalizeFromQuote: normalizeFromQuote,
     render: render,
     getSelected: getSelected,

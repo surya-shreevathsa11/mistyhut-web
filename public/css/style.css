@@ -3283,10 +3283,11 @@ body.modal-open {
   margin: 0.75rem 0 1rem;
 }
 .prepaid-options {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem 1rem 1rem;
   margin: 0;
+  background: #fff;
 }
 .prepaid-options__legend {
   font-size: 0.85rem;
@@ -3296,19 +3297,22 @@ body.modal-open {
 .prepaid-options__card {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(20, 20, 20, 0.12);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .prepaid-options__card:first-of-type {
   margin-top: 0.35rem;
 }
 .prepaid-options__card:has(input:checked) {
-  border-color: var(--color-burnt-copper, #b54a4a);
-  background: rgba(181, 74, 74, 0.06);
+  border-color: #1b1b1b;
+  background: #faf7f2;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 .prepaid-options__card input {
   position: absolute;
@@ -3317,10 +3321,47 @@ body.modal-open {
 }
 .prepaid-options__title {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
+  color: #161616;
 }
 .prepaid-options__meta {
-  font-size: 0.8rem;
-  opacity: 0.88;
+  font-size: 0.82rem;
+  color: #454545;
   line-height: 1.35;
+}
+.prepaid-options__amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #151515;
+}
+.checkout-pricing-summary {
+  margin: 0.25rem 0 0.65rem;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf8f2 100%);
+  padding: 0.8rem 0.95rem;
+}
+.checkout-pricing-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.36rem 0;
+  font-size: 0.9rem;
+  color: #2f2f2f;
+}
+.checkout-pricing-summary__row strong {
+  color: #131313;
+  font-weight: 700;
+}
+@media (max-width: 540px) {
+  .prepaid-options__card {
+    padding: 0.72rem 0.75rem;
+  }
+  .prepaid-options__meta {
+    line-height: 1.5;
+  }
+  .checkout-pricing-summary__row {
+    font-size: 0.84rem;
+  }
 }

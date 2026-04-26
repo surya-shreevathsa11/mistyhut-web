@@ -14,6 +14,7 @@
   };
 
   var serverCart = [];
+  var serverCartPricing = null;
   var currentUser = null;
   var DEFAULT_AVATAR_URL = "/img/default-avatar.svg";
 
@@ -28,6 +29,56 @@
     var d = new Date(dateStr);
     if (isNaN(d.getTime())) return dateStr;
     return d.toISOString().slice(0, 10);
+  }
+
+  function asNumber(value) {
+    var n = Number(value);
+    return Number.isNaN(n) ? null : n;
+  }
+
+  function computeFallbackPricing(roomList) {
+    var totalPrice = roomList.reduce(function (sum, room) {
+      return sum + (Number(room.price) || 0);
+    }, 0);
+    return {
+      totalPrice: totalPrice,
+      lowerPayableTotal: null,
+      upperPayableTotal: null,
+      lowerPercent: null,
+      upperPercent: null,
+      prepaidOptions: [],
+      roomInfo: roomList,
+    };
+  }
+
+  function parseCartPricing(data, roomList) {
+    var fallback = computeFallbackPricing(roomList);
+    if (!data || typeof data !== "object") return fallback;
+    return {
+      totalPrice: asNumber(data.totalPrice) != null ? Number(data.totalPrice) : fallback.totalPrice,
+      lowerPayableTotal: asNumber(data.lowerPayableTotal),
+      upperPayableTotal: asNumber(data.upperPayableTotal),
+      lowerPercent: asNumber(data.lowerPercent),
+      upperPercent: asNumber(data.upperPercent),
+      prepaidOptions: Array.isArray(data.prepaidOptions) ? data.prepaidOptions : [],
+      roomInfo: roomList,
+    };
+  }
+
+  function getRoomIds() {
+    return serverCart
+      .map(function (room) {
+        return room && room.roomId ? String(room.roomId) : "";
+      })
+      .filter(Boolean);
+  }
+
+  function createGuestPaymentOrder(orderBody) {
+    return A.guestPaymentOrder(orderBody).then(function (res) {
+      return res.json().then(function (data) {
+        return { status: res.status, data: data };
+      });
+    });
   }
 
   /**
@@ -106,6 +157,7 @@
   function fetchCart() {
     if (!A || !A.getToken()) {
       serverCart = [];
+      serverCartPricing = computeFallbackPricing([]);
       return Promise.resolve({ unauthorized: true });
     }
     return A.guestCartGet()
@@ -118,11 +170,13 @@
               ? data.message
               : [];
           serverCart = lines;
+          serverCartPricing = parseCartPricing(data, lines);
           return { ok: res.ok, unauthorized: res.status === 401 };
         });
       })
       .catch(function () {
         serverCart = [];
+        serverCartPricing = computeFallbackPricing([]);
         return { ok: false };
       });
   }
@@ -223,8 +277,54 @@
         removeFromCart(roomId, checkIn, checkOut);
       });
     });
-    if (totalEl) totalEl.textContent = "₹" + total;
+    if (totalEl) {
+      var resolvedTotal =
+        serverCartPricing && serverCartPricing.totalPrice != null
+          ? Number(serverCartPricing.totalPrice)
+          : total;
+      totalEl.textContent = "₹" + resolvedTotal.toLocaleString("en-IN");
+    }
     updateNavCartCount(serverCart.length);
+  }
+
+  function renderCheckoutPricingSummary() {
+    var summaryEl = $("#checkoutPricingSummary");
+    if (!summaryEl) return;
+    if (!serverCart.length) {
+      summaryEl.hidden = true;
+      summaryEl.innerHTML = "";
+      return;
+    }
+    var pricing = serverCartPricing || computeFallbackPricing(serverCart);
+    var total = pricing.totalPrice != null ? Number(pricing.totalPrice) : 0;
+    var lower = pricing.lowerPayableTotal;
+    var upper = pricing.upperPayableTotal;
+    var lowerPctText =
+      pricing.lowerPercent != null ? " (" + Number(pricing.lowerPercent) + "%)" : "";
+    var upperPctText =
+      pricing.upperPercent != null ? " (" + Number(pricing.upperPercent) + "%)" : "";
+    summaryEl.hidden = false;
+    summaryEl.innerHTML =
+      '<div class="checkout-pricing-summary__row"><span>Selected rooms</span><strong>' +
+      serverCart.length +
+      "</strong></div>" +
+      '<div class="checkout-pricing-summary__row"><span>Total booking amount</span><strong>₹' +
+      total.toLocaleString("en-IN") +
+      "</strong></div>" +
+      (lower != null
+        ? '<div class="checkout-pricing-summary__row"><span>Non-refundable payable' +
+          lowerPctText +
+          '</span><strong>₹' +
+          Number(lower).toLocaleString("en-IN") +
+          "</strong></div>"
+        : "") +
+      (upper != null
+        ? '<div class="checkout-pricing-summary__row"><span>Refundable payable' +
+          upperPctText +
+          '</span><strong>₹' +
+          Number(upper).toLocaleString("en-IN") +
+          "</strong></div>"
+        : "");
   }
 
   function removeFromCart(roomId, checkIn, checkOut) {
@@ -249,6 +349,7 @@
 
   function loadCheckoutPrepaidOptions() {
     var hint = $("#checkoutPrepaidHint");
+    var summaryEl = $("#checkoutPricingSummary");
     var container = $("#checkoutPrepaid");
     var P = window.MistyPrepaid;
     var name = $("#checkoutName") ? $("#checkoutName").value.trim() : "";
@@ -259,6 +360,10 @@
       if (container) {
         container.innerHTML = "";
         container.hidden = true;
+      }
+      if (summaryEl) {
+        summaryEl.hidden = true;
+        summaryEl.innerHTML = "";
       }
       if (hint) {
         hint.textContent = detailsFilled
@@ -276,17 +381,7 @@
       return Promise.resolve();
     }
     if (hint) hint.textContent = "Loading payment options…";
-    var first = serverCart[0];
-    return A.quoteRoom({
-      roomId: first.roomId,
-      checkIn: formatDate(first.checkIn),
-      checkOut: formatDate(first.checkOut),
-    })
-      .then(function (res) {
-        return res.json().then(function (data) {
-          return { ok: res.ok, data: data };
-        });
-      })
+    return fetchCart()
       .then(function (result) {
         if (hint) hint.textContent = "";
         if (!result.ok || !P) {
@@ -300,10 +395,24 @@
           }
           return;
         }
-        var norm = P.normalizeFromQuote(result.data);
+        renderCartList();
+        renderCheckoutPricingSummary();
+        var pricingPayload = {
+          roomInfo: serverCart,
+          totalPrice: serverCartPricing ? serverCartPricing.totalPrice : null,
+          lowerPayableTotal: serverCartPricing ? serverCartPricing.lowerPayableTotal : null,
+          upperPayableTotal: serverCartPricing ? serverCartPricing.upperPayableTotal : null,
+          lowerPercent: serverCartPricing ? serverCartPricing.lowerPercent : null,
+          upperPercent: serverCartPricing ? serverCartPricing.upperPercent : null,
+          prepaidOptions: serverCartPricing ? serverCartPricing.prepaidOptions : [],
+        };
+        var norm =
+          typeof P.normalizeFromCart === "function"
+            ? P.normalizeFromCart(pricingPayload)
+            : P.normalizeFromQuote(pricingPayload);
         P.render(container, norm, {
           name: "misty-prepaid-checkout",
-          legend: "Payment option",
+          legend: "Choose your payment option",
         });
         try {
           var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
@@ -627,12 +736,14 @@
           name: name,
           email: email,
           phone: phone,
+          roomIds: getRoomIds(),
         };
         var P = window.MistyPrepaid;
         var prep = P
           ? P.getSelected($("#checkoutPrepaid"), "misty-prepaid-checkout")
           : null;
         if (prep && prep.prepaidOptionId) {
+          orderBody.selectedPrepaidId = prep.prepaidOptionId;
           orderBody.prepaidOptionId = prep.prepaidOptionId;
           if (
             prep.prepaidPercent != null &&
@@ -643,18 +754,16 @@
         } else {
           try {
             var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
-            if (sid) orderBody.prepaidOptionId = sid;
+            if (sid) {
+              orderBody.selectedPrepaidId = sid;
+              orderBody.prepaidOptionId = sid;
+            }
             var sp = sessionStorage.getItem("misty_checkout_prepaidPercent");
             if (sp) orderBody.prepaidPercent = Number(sp);
           } catch (_) {}
         }
 
-        A.guestPaymentOrder(orderBody)
-          .then(function (res) {
-            return res.json().then(function (data) {
-              return { status: res.status, data: data };
-            });
-          })
+        createGuestPaymentOrder(orderBody)
           .then(function (result) {
             if (
               result.status === 201 &&
