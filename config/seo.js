@@ -23,12 +23,15 @@ const BUSINESS_NAME = "Misty Hut Stays";
 const BUSINESS_DESCRIPTION =
   "Tucked away in a coffee estate near Madikeri, Misty Hut offers a stay shaped by stillness, fresh air, and quiet surroundings. As the day slows, a gentle mist settles across the landscape, giving each evening a calm and unspoken charm. Designed for those who prefer simplicity over crowds, it is a comfortable and grounded homestay in Coorg for couples, families, and small groups.";
 const ADDRESS = {
-  street: "Heggeri Hoskeri Road, Hulithala",
+  street: "Heggeri Hoskeri Road",
   locality: "Madikeri",
   region: "Karnataka",
   postalCode: "571252",
   country: "India",
 };
+const FORMATTED_ADDRESS = `${BUSINESS_NAME}, ${ADDRESS.street}, ${ADDRESS.locality}, ${ADDRESS.region} ${ADDRESS.postalCode}, ${ADDRESS.country}`;
+const GOOGLE_MAPS_URL =
+  "https://www.google.com/maps/place/Misty+Hut+Stays/@12.3619015,75.786533,1797m/data=!3m1!1e3!4m9!3m8!1s0x3ba5abbbbe2940b3:0x8ef45f64b56a132f!5m2!4m1!1i2!8m2!3d12.3670316!4d75.7923271!16s%2Fg%2F11z4qkzz80?entry=ttu";
 const SERVICE_REGION = "Kodagu";
 const PHONE = "+918971425151";
 const LATITUDE = 12.3670316;
@@ -69,7 +72,7 @@ const PAGE_META = {
   "/about": {
     title: "About Misty Hut Stays | Madikeri Homestay in Coorg",
     description:
-      "Learn about Misty Hut Stays, a quiet coffee estate homestay in Hulithala near Madikeri, Coorg, designed for travellers who prefer stillness over crowds.",
+      "Learn about Misty Hut Stays, a quiet coffee estate homestay on Heggeri Hoskeri Road, Madikeri, Coorg, designed for travellers who prefer stillness over crowds.",
     includeJsonLd: false,
   },
   "/rooms": {
@@ -81,13 +84,13 @@ const PAGE_META = {
   "/gallery": {
     title: "Gallery | Misty Hut Stays Coorg Homestay near Madikeri",
     description:
-      "Photos of Misty Hut Stays, Hulithala, Madikeri, Coorg: the coffee estate, misty views, room interiors, shared areas, and calm green outdoor spaces for guests.",
+      "Photos of Misty Hut Stays, Heggeri Hoskeri Road, Madikeri, Coorg: the coffee estate, misty views, room interiors, shared areas, and calm green outdoor spaces for guests.",
     includeJsonLd: false,
   },
   "/contact": {
     title: "Contact Misty Hut Stays | Coorg Homestay near Madikeri",
     description:
-      "Reach Misty Hut Stays for bookings, directions and queries. Coffee estate homestay in Hulithala near Madikeri, Coorg, set in quiet, mist filled surroundings.",
+      "Reach Misty Hut Stays for bookings, directions and queries. Coffee estate homestay on Heggeri Hoskeri Road, Madikeri, Coorg, set in quiet, mist filled surroundings.",
     includeJsonLd: false,
   },
 };
@@ -139,6 +142,8 @@ function buildHomeSchemas(origin, imageUrl) {
     image: imageUrl,
     telephone: PHONE,
     priceRange: "₹₹",
+    hasMap: GOOGLE_MAPS_URL,
+    sameAs: [GOOGLE_MAPS_URL],
     geo: {
       "@type": "GeoCoordinates",
       latitude: LATITUDE,
@@ -155,7 +160,7 @@ function buildHomeSchemas(origin, imageUrl) {
         name: `Where is ${BUSINESS_NAME} located?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `${BUSINESS_NAME} is located in ${ADDRESS.locality}, ${SERVICE_REGION}, ${ADDRESS.region}, ${ADDRESS.country}.`,
+          text: `${BUSINESS_NAME} is located at ${FORMATTED_ADDRESS}.`,
         },
       },
       {

@@ -867,7 +867,7 @@
   function setupDirections() {
     const btn = $("#getDirectionsBtn");
     if (!btn) return;
-    const mapsUrl = "https://maps.app.goo.gl/B6k7UDQxbQUnC6up6";
+    const mapsUrl = "https://www.google.com/maps/place/Misty+Hut+Stays/@12.3619015,75.786533,1797m/data=!3m1!1e3!4m9!3m8!1s0x3ba5abbbbe2940b3:0x8ef45f64b56a132f!5m2!4m1!1i2!8m2!3d12.3670316!4d75.7923271!16s%2Fg%2F11z4qkzz80?entry=ttu";
     btn.href = mapsUrl;
     btn.target = "_blank";
   }

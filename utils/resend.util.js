@@ -90,7 +90,7 @@ function buildEmailHtml(booking) {
               <p style="margin:0 0 8px 0;font-size:11px;letter-spacing:4px;color:#8ba68f;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;">Boutique Retreat</p>
               <h1 style="margin:0;font-family:'Georgia',serif;font-size:42px;color:#f5f4f0;font-weight:normal;letter-spacing:1px;">Misty Hut Stays</h1>
               <div style="width:48px;height:2px;background:#8ba68f;margin:16px auto 20px;"></div>
-              <p style="margin:0;font-size:13px;color:#a0b8b0;font-family:Helvetica,Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;">Madikeri, Coorg</p>
+              <p style="margin:0;font-size:13px;color:#a0b8b0;font-family:Helvetica,Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;">Heggeri Hoskeri Road, Madikeri, Karnataka 571252</p>
             </td>
           </tr>
 
@@ -261,7 +261,7 @@ function buildEmailHtml(booking) {
           <tr>
             <td align="center" style="background:linear-gradient(160deg,#4a5f6b 0%,#5a7080 100%);border-radius:0 0 12px 12px;padding:28px 40px;">
               <p style="margin:0 0 8px;font-family:'Georgia',serif;font-size:16px;color:#f5f4f0;">Misty Hut Stays Boutique Retreat</p>
-              <p style="margin:0 0 4px;font-size:12px;color:#7aaa98;font-family:Helvetica,Arial,sans-serif;">Madikeri, Coorg, Karnataka</p>
+              <p style="margin:0 0 4px;font-size:12px;color:#7aaa98;font-family:Helvetica,Arial,sans-serif;">Heggeri Hoskeri Road, Madikeri, Karnataka 571252, India</p>
               <p style="margin:12px 0 0;font-size:11px;color:#3a5a50;font-family:Helvetica,Arial,sans-serif;">This is an automated confirmation. Please do not reply to this email.</p>
             </td>
           </tr>
@@ -381,7 +381,7 @@ function buildPaymentFailedHtml(booking) {
           <tr>
             <td align="center" style="background:linear-gradient(160deg,#4a5f6b 0%,#5a7080 100%);border-radius:0 0 12px 12px;padding:24px 40px;">
               <p style="margin:0;font-family:'Georgia',serif;font-size:15px;color:#f5f4f0;">Misty Hut Stays Boutique Retreat</p>
-              <p style="margin:6px 0 0;font-size:12px;color:#3a5a50;font-family:Helvetica,Arial,sans-serif;">Madikeri, Coorg, Karnataka</p>
+              <p style="margin:6px 0 0;font-size:12px;color:#3a5a50;font-family:Helvetica,Arial,sans-serif;">Heggeri Hoskeri Road, Madikeri, Karnataka 571252, India</p>
             </td>
           </tr>
         </table>
@@ -461,7 +461,7 @@ function buildCancellationHtml(booking) {
               <p style="margin:0 0 8px 0;font-size:11px;letter-spacing:4px;color:#8ba68f;text-transform:uppercase;font-family:Helvetica,Arial,sans-serif;">Boutique Retreat</p>
               <h1 style="margin:0;font-family:'Georgia',serif;font-size:42px;color:#f5f4f0;font-weight:normal;letter-spacing:1px;">Misty Hut Stays</h1>
               <div style="width:48px;height:2px;background:#8ba68f;margin:16px auto 24px;"></div>
-              <p style="margin:0;font-size:13px;color:#a0b8b0;font-family:Helvetica,Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;">Madikeri, Coorg</p>
+              <p style="margin:0;font-size:13px;color:#a0b8b0;font-family:Helvetica,Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;">Heggeri Hoskeri Road, Madikeri, Karnataka 571252</p>
             </td>
           </tr>
 
@@ -562,7 +562,7 @@ function buildCancellationHtml(booking) {
           <tr>
             <td align="center" style="background:linear-gradient(160deg,#4a5f6b 0%,#5a7080 100%);border-radius:0 0 12px 12px;padding:28px 40px;">
               <p style="margin:0 0 8px;font-family:'Georgia',serif;font-size:16px;color:#f5f4f0;">Misty Hut Stays Boutique Retreat</p>
-              <p style="margin:0 0 4px;font-size:12px;color:#7aaa98;font-family:Helvetica,Arial,sans-serif;">Madikeri, Coorg, Karnataka</p>
+              <p style="margin:0 0 4px;font-size:12px;color:#7aaa98;font-family:Helvetica,Arial,sans-serif;">Heggeri Hoskeri Road, Madikeri, Karnataka 571252, India</p>
               <p style="margin:12px 0 0;font-size:11px;color:#3a5a50;font-family:Helvetica,Arial,sans-serif;">This is an automated notification. Please do not reply to this email.</p>
             </td>
           </tr>
