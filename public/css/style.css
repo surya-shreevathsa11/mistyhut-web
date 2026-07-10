@@ -3255,3 +3255,253 @@ body.modal-open {
     font-size: 0.84rem;
   }
 }
+
+/* ========== MOBILE UX POLISH ========== */
+@media (max-width: 768px) {
+  .lux-site .nav .nav__inner.container {
+    position: relative;
+    width: calc(100% - 1rem);
+    max-width: 100%;
+    padding: 0.45rem 0.7rem;
+    gap: 0.4rem;
+  }
+
+  .nav__logo-img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .nav__right {
+    padding-left: 0.35rem;
+    gap: 0.25rem;
+    margin-left: 0;
+  }
+
+  .nav__auth {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .nav__links {
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 0 0 1rem 1rem;
+  }
+
+  main > section.section {
+    min-height: auto;
+    justify-content: flex-start;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4.75rem);
+    padding-bottom: max(2.75rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  main > section.section--reviews-showcase {
+    min-height: auto;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4.75rem);
+    padding-bottom: max(2.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .about-impact__inner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .about-impact__headline {
+    font-size: clamp(1.95rem, 9.5vw, 2.85rem);
+    margin-bottom: 1.25rem;
+  }
+
+  .about-impact__subhead,
+  .about-impact__subhead--secondary {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 100%;
+  }
+
+  .about-impact__cta-wrap {
+    margin-top: 1.5rem;
+  }
+
+  .about-story--compact .container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .about-story--compact .about-story__title {
+    font-size: clamp(1.75rem, 7vw, 2.35rem);
+  }
+
+  .about-story--compact .about-story__dek {
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .about-story__photo-inner {
+    max-height: min(46vh, 300px);
+    border-radius: 14px;
+  }
+
+  .room-card {
+    min-height: 0;
+    height: auto;
+  }
+
+  .room-card__desc {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .room-card__actions .btn {
+    width: 100%;
+    max-width: none;
+    display: block;
+  }
+
+  .section__desc {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    line-height: 1.6;
+  }
+
+  .directions__content {
+    text-align: left;
+    padding: 0 0.25rem;
+  }
+
+  .directions__heading {
+    font-size: 1.2rem;
+  }
+
+  .directions__text {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .directions__map-wrap {
+    min-height: 240px;
+    border-radius: 0.85rem;
+  }
+
+  .footer__vara-logo {
+    top: 0;
+  }
+
+  .form__row--split-labels .form__group label[for="bookRoomAdults"],
+  .form__row--split-labels .form__group label[for="bookRoomChildren"] {
+    font-size: 0;
+    line-height: 0;
+    min-height: auto;
+    margin-bottom: 0.4rem;
+    white-space: normal;
+  }
+
+  .form__row--split-labels .form__group label[for="bookRoomAdults"]::before {
+    content: "Number of adults";
+    display: block;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .form__row--split-labels .form__group label[for="bookRoomChildren"]::before {
+    content: "Number of kids";
+    display: block;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .form__row--split-labels .form__group label br {
+    display: none;
+  }
+
+  .modal__content--sm,
+  #bookRoomModal .modal__content {
+    width: min(100%, calc(100vw - 1.5rem));
+    max-width: min(100%, calc(100vw - 1.5rem));
+  }
+
+  .gallery-mast {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .gallery-mast__desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .reviews-showcase__headline {
+    font-size: clamp(1.65rem, 7vw, 2.25rem);
+    line-height: 1.1;
+  }
+
+  .terms-panel__summary {
+    font-size: 0.88rem;
+    padding: 0.85rem 1rem;
+  }
+
+  body.page-cart,
+  .lux-site.page-cart {
+    background-attachment: scroll !important;
+  }
+
+  .cart-page__title {
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+  }
+
+  .cart-step__heading {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lux-site .nav .nav__inner.container {
+    width: calc(100% - 0.75rem);
+    padding: 0.4rem 0.55rem;
+    gap: 0.3rem;
+  }
+
+  .nav__auth {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.62rem;
+  }
+
+  .about-impact__cta {
+    width: 100%;
+    max-width: 18rem;
+    justify-content: center;
+  }
+
+  .form__row--split-labels {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-pricing-summary__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .prepaid-options__amount {
+    font-size: 1rem;
+  }
+
+  .room-card__number {
+    font-size: 1.65rem;
+  }
+
+  .section__actions .btn {
+    max-width: 100%;
+  }
+}

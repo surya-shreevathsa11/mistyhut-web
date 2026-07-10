@@ -4,13 +4,13 @@ export const rooms = {
     name: "ROOM-1",
     type: "Room",
     description:
-      "A spacious ground floor retreat with a king and queen bed, designed for up to five guests.",
+      "A spacious ground floor retreat with a king and queen bed, designed for comfort and ease. Ideal for families or groups of up to 4 guests.",
     price: 4000,
     capacity: {
       minAdults: 1,
-      maxAdults: 5,
-      maxChildren: 5,
-      maxTotal: 5,
+      maxAdults: 4,
+      maxChildren: 4,
+      maxTotal: 4,
     },
   },
 
@@ -34,13 +34,13 @@ export const rooms = {
     name: "ROOM-3",
     type: "Room",
     description:
-      "An elevated first floor suite with a king bed, a single bed and a convertible sofa, ideal for up to five guests.",
+      "An elevated first floor suite with a king bed, a single bed and a convertible sofa. Ideal for families or groups of up to 4 guests.",
     price: 4000,
     capacity: {
       minAdults: 1,
-      maxAdults: 5,
-      maxChildren: 5,
-      maxTotal: 5,
+      maxAdults: 4,
+      maxChildren: 4,
+      maxTotal: 4,
     },
   },
 
@@ -49,13 +49,13 @@ export const rooms = {
     name: "ROOM-4",
     type: "Room",
     description:
-      "A refined first floor suite offering a king bed, a single bed and a convertible sofa for up to five guests.",
+      "A refined first floor suite offering a king bed, a single bed and a convertible sofa for a comfortable stay. Ideal for families or groups of up to 4 guests.",
     price: 4000,
     capacity: {
       minAdults: 1,
-      maxAdults: 5,
-      maxChildren: 5,
-      maxTotal: 5,
+      maxAdults: 4,
+      maxChildren: 4,
+      maxTotal: 4,
     },
   },
 };

@@ -197,6 +197,25 @@
     bookRoomCheckOut.addEventListener("change", checkDatesAvailability);
   }
 
+  var bookRoomAdultsEl = $("#bookRoomAdults");
+  if (bookRoomAdultsEl) {
+    bookRoomAdultsEl.addEventListener("input", function () {
+      if (pendingBookRoom) applyGuestLimits(pendingBookRoom.id);
+    });
+    bookRoomAdultsEl.addEventListener("change", function () {
+      if (pendingBookRoom) applyGuestLimits(pendingBookRoom.id);
+    });
+  }
+  var bookRoomChildrenEl = $("#bookRoomChildren");
+  if (bookRoomChildrenEl) {
+    bookRoomChildrenEl.addEventListener("input", function () {
+      if (pendingBookRoom) applyGuestLimits(pendingBookRoom.id);
+    });
+    bookRoomChildrenEl.addEventListener("change", function () {
+      if (pendingBookRoom) applyGuestLimits(pendingBookRoom.id);
+    });
+  }
+
   var bookRoomForm = $("#bookRoomForm");
   if (bookRoomForm) {
     bookRoomForm.addEventListener("submit", async function (e) {
@@ -214,6 +233,12 @@
       var checkOut = $("#bookRoomCheckOut").value;
       var adults = parseInt($("#bookRoomAdults").value, 10) || 1;
       var children = parseInt($("#bookRoomChildren").value, 10) || 0;
+      var limits = clampGuestInputs(pendingBookRoom.id);
+      if (adults + children > limits.maxTotal) {
+        errEl.textContent =
+          "This room allows up to " + limits.maxTotal + " guest(s).";
+        return;
+      }
       errEl.textContent = "";
       if (submitBtn) submitBtn.disabled = true;
       try {
@@ -574,6 +599,56 @@
     } catch (_) {}
   }
 
+  /** Per-room guest caps (must match room descriptions). */
+  var ROOM_GUEST_LIMITS = {
+    1: { minAdults: 1, maxAdults: 4, maxChildren: 4, maxTotal: 4 },
+    2: { minAdults: 1, maxAdults: 2, maxChildren: 2, maxTotal: 3 },
+    3: { minAdults: 1, maxAdults: 4, maxChildren: 4, maxTotal: 4 },
+    4: { minAdults: 1, maxAdults: 4, maxChildren: 4, maxTotal: 4 },
+  };
+
+  function getRoomGuestLimits(roomNumericId) {
+    return (
+      ROOM_GUEST_LIMITS[Number(roomNumericId)] || {
+        minAdults: 1,
+        maxAdults: 20,
+        maxChildren: 20,
+        maxTotal: 20,
+      }
+    );
+  }
+
+  function clampGuestInputs(roomNumericId) {
+    var limits = getRoomGuestLimits(roomNumericId);
+    var adultsEl = $("#bookRoomAdults");
+    var childrenEl = $("#bookRoomChildren");
+    if (!adultsEl || !childrenEl) return limits;
+
+    var adults = parseInt(adultsEl.value, 10);
+    var children = parseInt(childrenEl.value, 10);
+    if (Number.isNaN(adults)) adults = limits.minAdults;
+    if (Number.isNaN(children)) children = 0;
+
+    adults = Math.min(Math.max(adults, limits.minAdults), limits.maxAdults);
+    var maxKids = Math.min(
+      limits.maxChildren,
+      Math.max(0, limits.maxTotal - adults),
+    );
+    children = Math.min(Math.max(children, 0), maxKids);
+
+    adultsEl.min = String(limits.minAdults);
+    adultsEl.max = String(limits.maxAdults);
+    childrenEl.min = "0";
+    childrenEl.max = String(maxKids);
+    adultsEl.value = String(adults);
+    childrenEl.value = String(children);
+    return limits;
+  }
+
+  function applyGuestLimits(roomNumericId) {
+    clampGuestInputs(roomNumericId);
+  }
+
   let pendingBookRoom = null;
 
   function openBookRoomModal(roomId, roomName, roomPrice) {
@@ -597,6 +672,7 @@
     const children = $("#bookRoomChildren");
     if (adults) adults.value = 1;
     if (children) children.value = 0;
+    applyGuestLimits(roomId);
     clearBookRoomPrepaid();
     openModal("#bookRoomModal");
   }
@@ -617,8 +693,17 @@
     return div.innerHTML;
   }
 
-  function formatRoomDescription(description) {
+  function formatRoomDescription(description, room) {
     var raw = String(description || "");
+    var roomId =
+      room && room.roomId
+        ? String(room.roomId)
+        : room && room.id != null
+          ? "R" + room.id
+          : "";
+    if (roomId === "R1" || roomId === "R3" || roomId === "R4") {
+      raw = raw.replace(/up to 5 guests/gi, "up to 4 guests");
+    }
     var m = raw.match(/\bIdeal(?:ly)?\b/i);
     if (!m || m.index == null) return escapeHtml(raw);
     var splitAt = m.index;
@@ -733,7 +818,7 @@
           </div>
           <span class="room-card__number">0${room.id}</span>
           <h3 class="room-card__name">${escapeHtml(room.name)}</h3>
-          <p class="room-card__desc">${formatRoomDescription(room.description)}</p>
+          <p class="room-card__desc">${formatRoomDescription(room.description, room)}</p>
           <p class="room-card__price"><span>₹${room.price}</span> / night</p>
           <div class="room-card__actions">
             <button type="button" class="btn btn--outline btn--sm" data-add-cart="${room.id}" data-name="${escapeHtml(room.name)}" data-price="${room.price}">Add to cart</button>
