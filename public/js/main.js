@@ -18,9 +18,16 @@
   // --- Nav scroll + contrast by section (cream vs dark green) ---
   var navEl = $("#nav");
   if (navEl) {
-    window.addEventListener("scroll", () => {
-      navEl.classList.toggle("scrolled", window.scrollY > 60);
-    });
+    var navScrollTicking = false;
+    function onNavScroll() {
+      if (navScrollTicking) return;
+      navScrollTicking = true;
+      requestAnimationFrame(function () {
+        navEl.classList.toggle("scrolled", window.scrollY > 60);
+        updateNavTheme();
+        navScrollTicking = false;
+      });
+    }
 
     var sections = $$("section[data-nav-theme], footer[data-nav-theme]");
     var heroEl = $(".hero");
@@ -52,9 +59,9 @@
         navEl.classList.add("nav--over-dark");
       }
     }
-    window.addEventListener("scroll", updateNavTheme, { passive: true });
+    window.addEventListener("scroll", onNavScroll, { passive: true });
     window.addEventListener("resize", updateNavTheme);
-    updateNavTheme();
+    onNavScroll();
   }
 
   // --- Mobile nav toggle ---
@@ -66,16 +73,15 @@
     });
   }
 
-  // --- Smooth scroll for nav links (Rooms and other # anchors scroll to section; page stays scrollable) ---
+  // --- Smooth scroll for nav links (native browser scroll — no Lenis) ---
   function scrollToSection(selector, offset) {
     var el = typeof selector === "string" ? $(selector) : selector;
     if (!el) return;
-    var lenis = typeof window.getLenis === "function" ? window.getLenis() : null;
-    if (lenis && typeof lenis.scrollTo === "function") {
-      lenis.scrollTo(el, { offset: offset != null ? offset : -80, duration: 1.2 });
-    } else {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    var top =
+      el.getBoundingClientRect().top +
+      window.pageYOffset +
+      (offset != null ? offset : -80);
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   }
 
   $$(
@@ -931,133 +937,9 @@
     });
   }
 
-  // --- Blob cursor (site-wide) — single blob, small, transparent ---
-  function setupBlobCursor() {
-    const container = $("#blobCursor");
-    const blob = container
-      ? container.querySelector(".blob-cursor__blob")
-      : null;
-    if (!container || !blob) return;
-
-    const isCoarse =
-      window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-    if (isCoarse) return;
-
-    document.documentElement.classList.add("custom-cursor-active");
-    document.body.classList.add("custom-cursor-active");
-
-    let x = 0,
-      y = 0;
-    let visible = false;
-    let hovering = false;
-    let down = false;
-    let activeHoverEl = null;
-
-    function scale() {
-      return down ? 0.9 : hovering ? 1.24 : 1;
-    }
-
-    function paintBlob() {
-      if (!visible) return;
-      blob.style.transform =
-        "translate3d(" +
-        x +
-        "px," +
-        y +
-        "px,0) translate(-50%,-50%) scale(" +
-        scale() +
-        ")";
-    }
-
-    function setVisible(v) {
-      visible = v;
-      container.classList.toggle("is-visible", v);
-      if (v) paintBlob();
-    }
-
-    function updateClasses() {
-      container.classList.toggle("is-hover", hovering);
-      container.classList.toggle("is-down", down);
-      paintBlob();
-    }
-
-    window.addEventListener(
-      "mousemove",
-      (e) => {
-        x = e.clientX;
-        y = e.clientY;
-        setVisible(true);
-        paintBlob();
-      },
-      { passive: true },
-    );
-
-    window.addEventListener("mouseleave", () => setVisible(false));
-    window.addEventListener("mousedown", () => {
-      down = true;
-      updateClasses();
-    });
-    window.addEventListener("mouseup", () => {
-      down = false;
-      updateClasses();
-    });
-
-    var textSelector =
-      "h1, h2, h3, h4, h5, h6, p, .hero__title, .hero__subtitle, .hero__desc, .about-impact__headline, .section__title, .section__subtitle";
-    var hoverSelector =
-      'a, button, .btn, input, textarea, [role="button"], .room-card, .gallery__item, .gallery-card';
-    var headerSelector = ".nav, .footer";
-    function isOverHeader(el) {
-      return el && el.closest && el.closest(headerSelector);
-    }
-    document.addEventListener("mouseover", (e) => {
-      const target =
-        e.target && e.target.closest && e.target.closest(hoverSelector);
-      const textEl =
-        e.target && e.target.closest && e.target.closest(textSelector);
-      hovering = Boolean(target);
-      container.classList.toggle("is-hover-text", Boolean(textEl));
-      container.classList.toggle("is-over-header", isOverHeader(e.target));
-      if (activeHoverEl && activeHoverEl !== target) {
-        activeHoverEl.classList.remove("cursor-target");
-      }
-      activeHoverEl = target || null;
-      if (activeHoverEl) {
-        activeHoverEl.classList.add("cursor-target");
-      }
-      updateClasses();
-    });
-
-    document.addEventListener("mouseout", (e) => {
-      if (!e.relatedTarget) {
-        hovering = false;
-        container.classList.remove("is-hover-text");
-        container.classList.remove("is-over-header");
-        if (activeHoverEl) activeHoverEl.classList.remove("cursor-target");
-        activeHoverEl = null;
-        updateClasses();
-        return;
-      }
-      const stillHover =
-        e.relatedTarget.closest && e.relatedTarget.closest(hoverSelector);
-      const stillText =
-        e.relatedTarget.closest && e.relatedTarget.closest(textSelector);
-      hovering = Boolean(stillHover);
-      container.classList.toggle("is-hover-text", Boolean(stillText));
-      container.classList.toggle("is-over-header", isOverHeader(e.relatedTarget));
-      if (!hovering && activeHoverEl) {
-        activeHoverEl.classList.remove("cursor-target");
-        activeHoverEl = null;
-      }
-      updateClasses();
-    });
-
-  }
-
   // --- Init ---
   setupDirections();
   setupHeroSlider();
-  setupBlobCursor();
   checkAuth(function (user) {
     if (user) {
       try {

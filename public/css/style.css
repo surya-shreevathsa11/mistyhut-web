@@ -6,19 +6,6 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-/* Mobile and tablet: ensure smooth scroll remains consistent (do not remove in future) */
-@media (max-width: 1024px) {
-  html.lenis,
-  html.lenis body {
-    -webkit-overflow-scrolling: touch;
-  }
-}
-/* Lenis smooth scroll */
-html.lenis { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-.lenis.lenis-stopped { overflow: hidden; }
-.lenis.lenis-smooth iframe { pointer-events: none; }
 
 @font-face {
   font-family: "Saudagar";
@@ -50,142 +37,20 @@ body {
 
 /* Hero copy stays visible — do not gate with opacity (GSAP + CSS race caused blank hero). */
 
-/* ========== BLOB CURSOR (ring + center dot — precise hotspot) ========== */
-@keyframes blob-cursor-ring-spin {
-  to { transform: rotate(360deg); }
-}
-
+/* ========== CURSOR: native system pointer (custom blob cursor removed) ========== */
 .blob-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.blob-cursor.is-visible { opacity: 1; }
-
-.blob-cursor__main {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+  display: none !important;
 }
 
-.blob-cursor__blob {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-.blob-cursor__ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 26px;
-  height: 26px;
-  margin: -13px 0 0 -13px;
-  border-radius: 50%;
-  border: 2px solid var(--cursor-ring-color, rgba(0, 0, 0, 0.88));
-  background: transparent;
-  box-shadow: var(--cursor-ring-glow, 0 0 0 1px rgba(0, 0, 0, 0.12)),
-    0 2px 10px rgba(0, 0, 0, 0.12);
-  transform: rotate(0deg);
-  transform-origin: 50% 50%;
-  animation: blob-cursor-ring-spin 18s linear infinite;
-  transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
-    border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.blob-cursor__dot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
-  border-radius: 50%;
-  background: var(--cursor-dot-fill, #000000);
-  box-shadow: var(--cursor-dot-halo, 0 0 0 2px rgba(255, 255, 255, 0.92)),
-    0 1px 4px rgba(0, 0, 0, 0.35);
-  z-index: 1;
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.blob-cursor.is-hover .blob-cursor__ring {
-  width: 32px;
-  height: 32px;
-  margin: -16px 0 0 -16px;
-  border-color: var(--cursor-ring-color-hover, rgba(0, 0, 0, 1));
-  box-shadow: var(--cursor-ring-glow-hover, 0 0 0 1px rgba(0, 0, 0, 0.16)),
-    0 4px 16px rgba(0, 0, 0, 0.18);
-}
-
-.blob-cursor.is-hover-text .blob-cursor__ring {
-  border-color: var(--cursor-ring-color-text, rgba(0, 0, 0, 0.72));
-}
-
-.blob-cursor.is-hover-text .blob-cursor__dot {
-  transform: scale(1.08);
-}
-
-/* Keep cursor color fixed across sections */
-.blob-cursor.is-over-header .blob-cursor__ring {
-  border-color: rgba(0, 0, 0, 0.92);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 12px rgba(0, 0, 0, 0.25);
-}
-
-.blob-cursor.is-over-header.is-hover .blob-cursor__ring {
-  border-color: #000000;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 4px 18px rgba(0, 0, 0, 0.3);
-}
-
-.blob-cursor.is-over-header .blob-cursor__dot {
-  background: rgba(0, 0, 0, 0.95);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 1px 5px rgba(0, 0, 0, 0.35);
-}
-
-.blob-cursor.is-over-header.is-hover-text .blob-cursor__ring {
-  border-color: rgba(0, 0, 0, 0.88);
-}
-
-.blob-cursor.is-over-header.is-hover-text .blob-cursor__dot {
-  background: rgba(0, 0, 0, 1);
-}
-
-@media (pointer: coarse) {
-  .blob-cursor { display: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .blob-cursor__ring {
-    animation: none;
-  }
-}
-
-/* Hide default arrow when blob cursor is active (desktop only) */
-@media (pointer: fine) {
-  html.custom-cursor-active,
-  html.custom-cursor-active body,
-  html.custom-cursor-active body * {
-    cursor: none !important;
-  }
+html.custom-cursor-active,
+html.custom-cursor-active body,
+html.custom-cursor-active body * {
+  cursor: auto !important;
 }
 
 /* Hover lift for interactive elements */
 .cursor-target {
   transition: transform 0.18s ease, color 0.18s ease;
-  transform: translateY(-1px);
-}
-.cursor-target.btn,
-.cursor-target[role="button"] {
-  transform: translateY(-2px);
 }
 a {
   text-decoration: none;
@@ -823,7 +688,7 @@ main > section.section {
 }
 
 /* Section reveals: GSAP-driven (animations.js), transform + opacity only */
-[data-reveal] { will-change: transform, opacity; backface-visibility: hidden; }
+[data-reveal] { backface-visibility: hidden; }
 
 /* ========== ABOUT ========== */
 .about__grid {
@@ -1220,11 +1085,20 @@ main > section.section {
     max-height: min(62vh, 620px);
   }
 }
-.about-story__photo-inner img {
+.about-story__photo-inner img,
+.about-story__photo-inner .about-story__video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+}
+.about-story__photo-inner .about-story__video {
+  /* Keep native resolution crisp — no filters/scaling softens the frame */
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 .about-story__caption {
   font-family: "Montserrat", sans-serif;

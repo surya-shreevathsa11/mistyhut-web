@@ -64,27 +64,12 @@
     <link rel="stylesheet" href="/css/animations-premium.css" />
     <link rel="stylesheet" href="/css/scroll-animations.css" />
     <link rel="stylesheet" href="/css/reviews-showcase.css" />
-    <!-- Lenis Smooth Scroll -->
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
     <!-- GSAP + Flip (for immersive gallery) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
-    <script>
-      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    </script>
   </head>
   <body class="lux-site">
-    <!-- Blob cursor (desktop only) -->
-    <div class="blob-cursor" id="blobCursor" aria-hidden="true">
-      <div class="blob-cursor__main">
-        <div class="blob-cursor__blob">
-          <span class="blob-cursor__ring" aria-hidden="true"></span>
-          <span class="blob-cursor__dot" aria-hidden="true"></span>
-        </div>
-      </div>
-    </div>
-
     <!-- Navigation -->
     <nav class="nav" id="nav">
       <div class="nav__inner container lux-nav-pill">
@@ -250,14 +235,18 @@
             </div>
             <figure class="about-story__photo" data-reveal="fade-up" data-reveal-delay="80">
               <div class="about-story__photo-inner">
-                <img
-                  src="/img/about_section.jpeg"
-                  alt="Misty Hut homestay near Madikeri—misty hills and forest in Coorg coffee country"
-                  loading="lazy"
-                  decoding="async"
-                  width="960"
-                  height="720"
-                />
+                <video
+                  class="about-story__video"
+                  src="/img/misty_hut_vid.mp4"
+                  poster="/img/about_section.jpeg"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="auto"
+                  disablepictureinpicture
+                  aria-label="Glimpse of Misty Hut Stays—misty hills and coffee estate views near Madikeri"
+                ></video>
               </div>
               <figcaption class="about-story__caption"></figcaption>
             </figure>

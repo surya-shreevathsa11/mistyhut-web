@@ -121,7 +121,6 @@ main > section.section--gallery {
   display: flex;
   width: max-content;
   animation: gallery-marquee-scroll 55s linear infinite;
-  will-change: transform;
 }
 
 .gallery-marquee:hover .gallery-marquee__track {

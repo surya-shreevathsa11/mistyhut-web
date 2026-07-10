@@ -1,114 +1,20 @@
 /**
- * Scroll-driven premium animations.
- * Section reveal, card slide, parallax, cinematic zoom, counter, card stack.
- * Only attaches animation classes; does not change layout or structure.
+ * Lightweight scroll helpers only.
+ * Heavy section transforms + JS parallax were removed to keep native scroll smooth.
  */
 (function () {
   "use strict";
 
   var prefersReducedMotion =
-    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (prefersReducedMotion) return;
 
-  var easeOutExpo = "cubic-bezier(0.22, 1, 0.36, 1)";
-  var PARALLAX_PX = 40;
-  var COUNTER_DURATION = 1200;
-
-  /* ----- 1. Section reveal (IntersectionObserver) ----- */
-  var sections = document.querySelectorAll("main .section");
-  sections.forEach(function (section) {
-    section.classList.add("section-reveal");
-  });
-
-  var sectionObserver = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-        }
-      });
-    },
-    { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.02 }
-  );
-  sections.forEach(function (el) {
-    sectionObserver.observe(el);
-  });
-
-  /* ----- 2. Card grid horizontal slide ----- */
-  var cardGrids = document.querySelectorAll(
-    ".terms-cards, .reviews__grid, .rooms__grid"
-  );
-  cardGrids.forEach(function (grid) {
-    grid.classList.add("card-grid-reveal");
-  });
-
-  var cardGridObserver = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-        }
-      });
-    },
-    { root: null, rootMargin: "0px 0px -5% 0px", threshold: 0.05 }
-  );
-  cardGrids.forEach(function (el) {
-    cardGridObserver.observe(el);
-  });
-
-  /* Dynamically added room cards: observe #roomsGrid for new children */
-  var roomsGrid = document.getElementById("roomsGrid");
-  if (roomsGrid && roomsGrid.classList.contains("card-grid-reveal")) {
-    var roomObserver = new MutationObserver(function () {
-      roomsGrid.querySelectorAll(".room-card").forEach(function (card) {
-        if (!card.dataset.slideInAttached) {
-          card.dataset.slideInAttached = "1";
-        }
-      });
-    });
-    roomObserver.observe(roomsGrid, { childList: true, subtree: true });
-  }
-
-  /* ----- 3. Image parallax (hero handled by hero-cinematic.js; only non-hero here) ----- */
-  var parallaxEls = document.querySelectorAll(".about__img-wrap, .about-impact__bg-parallax");
-  parallaxEls.forEach(function (el) {
-    el.classList.add("parallax-img");
-  });
-  if (parallaxEls.length) {
-    var ticking = false;
-
-    function updateParallax() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var vh = window.innerHeight;
-      parallaxEls.forEach(function (el) {
-        var rect = el.getBoundingClientRect();
-        var center = rect.top + rect.height / 2;
-        var progress = (scrollTop + center - vh / 2) / (vh * 1.5);
-        progress = Math.max(-0.5, Math.min(1, progress));
-        var y = progress * -PARALLAX_PX;
-        el.style.setProperty("transform", "translateY(" + y + "px)");
-      });
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateParallax);
-        ticking = true;
-      }
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    requestAnimationFrame(updateParallax);
-  }
-
-  /* ----- 4. Cinematic zoom — about images only (hero stays full-bleed) ----- */
-  document.querySelectorAll(".about__img, .about-impact__bg-photo").forEach(function (img) {
-    img.classList.add("cinematic-zoom-scroll");
-  });
-
-  /* ----- 5. Statistics counter (0 → target when in view) ----- */
+  /* Statistics counter (0 → target when in view) — cheap, once-only */
+  var COUNTER_DURATION = 1000;
   var statNums = document.querySelectorAll(".stat__num");
+  if (!statNums.length) return;
+
   function parseStatValue(text) {
     if (!text || !text.trim()) return { value: 0, suffix: "", isK: false };
     var t = String(text).trim();
@@ -150,8 +56,7 @@
       var elapsed = timestamp - startTime;
       var progress = Math.min(elapsed / duration, 1);
       var eased = easeOutCubic(progress);
-      var current = eased * endVal;
-      el.textContent = formatStat(current, suffix, isK);
+      el.textContent = formatStat(eased * endVal, suffix, isK);
       if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -166,14 +71,12 @@
         el.dataset.counterDone = "1";
         var parsed = parseStatValue(el.textContent);
         el.textContent = "0" + (parsed.displaySuffix || "");
-        el.classList.add("stat__num--animate");
         animateCounter(el, parsed, COUNTER_DURATION);
       });
     },
-    { root: null, rootMargin: "0px", threshold: 0.3 }
+    { root: null, rootMargin: "0px", threshold: 0.3 },
   );
   statNums.forEach(function (el) {
     counterObserver.observe(el);
   });
-
 })();
