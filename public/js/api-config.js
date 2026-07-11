@@ -6,17 +6,40 @@
   "use strict";
 
   var DEFAULT_BASE =
-    (typeof global._MISTY_API_BASE_ === "string" &&
-    global._MISTY_API_BASE_.trim()
-      ? global._MISTY_API_BASE_.trim()
+    (typeof global.__MISTY_API_BASE__ === "string" &&
+    global.__MISTY_API_BASE__.trim()
+      ? global.__MISTY_API_BASE__.trim()
       : "https://api.varalabs.in");
-  var DEFAULT_BASE = "https://api.varalabs.in";
+  var GOOGLE_CLIENT_ID =
+    typeof global.__MISTY_GOOGLE_CLIENT_ID__ === "string" &&
+    global.__MISTY_GOOGLE_CLIENT_ID__.trim()
+      ? global.__MISTY_GOOGLE_CLIENT_ID__.trim()
+      : "";
   var PROPERTY_SLUG = "misty-hut";
   var TOKEN_KEY = "misty_guest_jwt";
   var USER_KEY = "misty_guest_user";
 
   function base() {
     return DEFAULT_BASE;
+  }
+
+  function getGoogleClientId() {
+    return GOOGLE_CLIENT_ID;
+  }
+
+  /** Pull guest JWT from Vara guest-auth success payloads. */
+  function extractGuestAuthToken(payload) {
+    if (!payload || typeof payload !== "object") return null;
+    var nested =
+      payload.data && typeof payload.data === "object" ? payload.data : null;
+    if (typeof payload.token === "string" && payload.token) return payload.token;
+    if (typeof payload.accessToken === "string" && payload.accessToken)
+      return payload.accessToken;
+    if (nested && typeof nested.token === "string" && nested.token)
+      return nested.token;
+    if (nested && typeof nested.accessToken === "string" && nested.accessToken)
+      return nested.accessToken;
+    return null;
   }
 
   function url(path) {
@@ -116,18 +139,14 @@
     );
   }
 
-  /** Guest auth */
-  function requestPin(body) {
-    return fetchNoAuth("/api/guest-auth/request-pin", {
+  /** Guest auth — Google Identity Services credential → Vara JWT */
+  function googleSignIn(credential) {
+    return fetchNoAuth("/api/guest-auth/google", {
       method: "POST",
-      body: JSON.stringify(body),
-    });
-  }
-
-  function verifyPin(body) {
-    return fetchNoAuth("/api/guest-auth/verify-pin", {
-      method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        propertySlug: PROPERTY_SLUG,
+        credential: credential,
+      }),
     });
   }
 
@@ -195,8 +214,9 @@
     apiFetch: apiFetch,
     publicRooms: publicRooms,
     publicQuote: publicQuote,
-    requestPin: requestPin,
-    verifyPin: verifyPin,
+    getGoogleClientId: getGoogleClientId,
+    extractGuestAuthToken: extractGuestAuthToken,
+    googleSignIn: googleSignIn,
     guestQuote: guestQuote,
     guestRooms: guestRooms,
     guestCartGet: guestCartGet,

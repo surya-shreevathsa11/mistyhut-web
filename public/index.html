@@ -142,6 +142,7 @@
                   alt="User profile photo"
                   width="36"
                   height="36"
+                  referrerpolicy="no-referrer"
                 />
                 <svg
                   class="nav__profile-chevron"
@@ -837,59 +838,34 @@
       </div>
     </div>
 
-    <!-- Sign In Modal (magic PIN — central API /api/guest-auth/*) -->
+    <!-- Sign In Modal (Google OAuth — central API /api/guest-auth/google) -->
     <div class="modal" id="signInModal" data-auth-ui>
       <div class="modal__overlay"></div>
       <div class="modal__content">
         <button class="modal__close" data-close>&times;</button>
         <h3>Welcome</h3>
         <div class="divider"></div>
-        <p
-          style="
-            text-align: center;
-            margin-bottom: 1.5rem;
-            opacity: 0.7;
-            font-size: 0.9rem;
-          "
-        >
-          Enter your email — we’ll send a one-time code to continue booking.
+        <p class="signin-copy">
+          Sign in with Google to continue booking.
         </p>
         <p id="signInError" class="form__error" style="margin-bottom: 0.75rem"></p>
-        <div id="signInStepEmail">
-          <div class="form__group" style="margin-bottom: 0.75rem">
-            <label for="signInName">Name</label>
-            <input type="text" id="signInName" autocomplete="name" />
-          </div>
-          <div class="form__group" style="margin-bottom: 0.75rem">
-            <label for="signInEmail">Email</label>
-            <input type="email" id="signInEmail" autocomplete="email" required />
-          </div>
-          <button type="button" class="btn btn--primary" id="signInSendPin" style="width: 100%">
-            Send code
-          </button>
-        </div>
-        <div id="signInStepPin" style="display: none">
-          <p style="font-size: 0.9rem; margin-bottom: 0.75rem; opacity: 0.85">
-            Enter the 6-digit code sent to your email.
-          </p>
-          <div class="form__group" style="margin-bottom: 0.75rem">
-            <label for="signInPin">Code</label>
-            <input type="text" id="signInPin" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
-          </div>
-          <button type="button" class="btn btn--primary" id="signInVerifyPin" style="width: 100%">
-            Verify &amp; continue
-          </button>
-          <button type="button" class="btn btn--ghost btn--sm" id="signInBackEmail" style="width: 100%; margin-top: 0.5rem">
-            Use a different email
-          </button>
-        </div>
+        <p id="signInGoogleStatus" class="signin-google-status" aria-live="polite"></p>
+        <div
+          id="signInGoogleBtn"
+          class="signin-google-btn-wrap"
+          aria-label="Sign in with Google"
+        ></div>
       </div>
     </div>
 
     <script>
       window.__MISTY_API_BASE__ = window.__MISTY_API_BASE__ || "http://localhost:3000";
+      window.__MISTY_GOOGLE_CLIENT_ID__ =
+        window.__MISTY_GOOGLE_CLIENT_ID__ ||
+        "237703802735-daoeopf7qskj1g7ei2jc5eqdm4e0mu5u.apps.googleusercontent.com";
     </script>
     <script src="/js/api-config.js"></script>
+    <script src="/js/google-signin.js"></script>
     <script src="/js/prepaid-options.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/animations.js"></script>

@@ -324,6 +324,11 @@
       navProfile.setAttribute("aria-hidden", "false");
       if (navProfileAvatar) {
         var imageUrl = (currentUser.avatar || currentUser.picture || "").trim();
+        navProfileAvatar.referrerPolicy = "no-referrer";
+        navProfileAvatar.onerror = function () {
+          navProfileAvatar.onerror = null;
+          navProfileAvatar.src = DEFAULT_AVATAR_URL;
+        };
         navProfileAvatar.src = imageUrl ? imageUrl : DEFAULT_AVATAR_URL;
         navProfileAvatar.alt = currentUser.name
           ? String(currentUser.name)
@@ -434,114 +439,22 @@
     });
   }
 
-  // --- Magic PIN sign-in (central API) ---
+  // --- Google OAuth sign-in (central API /api/guest-auth/google) ---
   function wireSignInModal() {
-    const errEl = $("#signInError");
-    const stepEmail = $("#signInStepEmail");
-    const stepPin = $("#signInStepPin");
-    const sendBtn = $("#signInSendPin");
-    const verifyBtn = $("#signInVerifyPin");
-    const backBtn = $("#signInBackEmail");
-    if (!sendBtn || !stepEmail || !stepPin) return;
-
-    function showEmailStep() {
-      if (errEl) errEl.textContent = "";
-      stepEmail.style.display = "";
-      stepPin.style.display = "none";
-    }
-    function showPinStep() {
-      if (errEl) errEl.textContent = "";
-      stepEmail.style.display = "none";
-      stepPin.style.display = "";
-      const pinInput = $("#signInPin");
-      if (pinInput) pinInput.focus();
-    }
-
-    sendBtn.addEventListener("click", async function () {
-      if (errEl) errEl.textContent = "";
-      const name = ($("#signInName") && $("#signInName").value.trim()) || "";
-      const email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
-      if (!email) {
-        if (errEl) errEl.textContent = "Please enter your email.";
-        return;
-      }
-      sendBtn.disabled = true;
-      try {
-        const res = await A.requestPin({
-          propertySlug: A.propertySlug,
-          email: email,
-          name: name || email.split("@")[0],
-        });
-        const data = await res.json().catch(function () {
-          return {};
-        });
-        if (!res.ok) {
-          if (errEl) errEl.textContent = data.message || "Could not send code.";
-          return;
-        }
-        showPinStep();
-      } catch {
-        if (errEl) errEl.textContent = "Network error. Try again.";
-      } finally {
-        sendBtn.disabled = false;
-      }
-    });
-
-    if (verifyBtn) {
-      verifyBtn.addEventListener("click", async function () {
-        if (errEl) errEl.textContent = "";
-        const name = ($("#signInName") && $("#signInName").value.trim()) || "";
-        const email = ($("#signInEmail") && $("#signInEmail").value.trim()) || "";
-        const pin = ($("#signInPin") && $("#signInPin").value.trim()) || "";
-        if (!pin) {
-          if (errEl) errEl.textContent = "Enter the code from your email.";
-          return;
-        }
-        verifyBtn.disabled = true;
+    if (!window.MistyGoogleSignIn || !A) return;
+    window.MistyGoogleSignIn.wireSignInModal({
+      onSuccess: function (guest) {
+        currentUser = guest;
+        updateAuthUI();
+        closeAllModals();
+        fetchCartCount();
         try {
-          const res = await A.verifyPin({
-            propertySlug: A.propertySlug,
-            email: email,
-            name: name || undefined,
-            pin: pin,
-          });
-          const data = await res.json().catch(function () {
-            return {};
-          });
-          if (!res.ok || !data.success || !data.token) {
-            if (errEl) errEl.textContent = data.message || "Invalid code.";
-            return;
+          if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
+            sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+            window.location.href = "cart.html";
           }
-          A.setSession(data.token, data.guest);
-          currentUser = data.guest;
-          updateAuthUI();
-          closeAllModals();
-          showEmailStep();
-          const pinInput = $("#signInPin");
-          if (pinInput) pinInput.value = "";
-          fetchCartCount();
-          try {
-            if (sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY) === "cart") {
-              sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
-              window.location.href = "cart.html";
-            }
-          } catch (_) {}
-        } catch {
-          if (errEl) errEl.textContent = "Network error. Try again.";
-        } finally {
-          verifyBtn.disabled = false;
-        }
-      });
-    }
-
-    if (backBtn) {
-      backBtn.addEventListener("click", showEmailStep);
-    }
-
-    $("#signInModal").addEventListener("click", function (e) {
-      if (e.target.closest("[data-close]") || e.target.classList.contains("modal__overlay")) {
-        showEmailStep();
-      }
+        } catch (_) {}
+      },
     });
   }
 
