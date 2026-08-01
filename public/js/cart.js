@@ -73,9 +73,9 @@
       .filter(Boolean);
   }
 
-  function createGuestPaymentOrder(orderBody) {
-    return A.guestPaymentOrder(orderBody).then(function (res) {
-      return res.json().then(function (data) {
+  function createBookingRequest(body) {
+    return A.guestBookingRequest(body).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
         return { status: res.status, data: data };
       });
     });
@@ -356,87 +356,189 @@
     var hint = $("#checkoutPrepaidHint");
     var summaryEl = $("#checkoutPricingSummary");
     var container = $("#checkoutPrepaid");
-    var P = window.MistyPrepaid;
-    var name = $("#checkoutName") ? $("#checkoutName").value.trim() : "";
-    var email = $("#checkoutEmail") ? $("#checkoutEmail").value.trim() : "";
-    var phone = $("#checkoutPhone") ? $("#checkoutPhone").value.trim() : "";
-    var detailsFilled = !!(name && email && phone);
-    if (!P || !detailsFilled) {
-      if (container) {
-        container.innerHTML = "";
-        container.hidden = true;
-      }
+    /* Prepaid is chosen at pay-after-approval — hide options at request checkout. */
+    if (container) {
+      container.innerHTML = "";
+      container.hidden = true;
+    }
+    if (!A || !serverCart.length) {
       if (summaryEl) {
         summaryEl.hidden = true;
         summaryEl.innerHTML = "";
       }
-      if (hint) {
-        hint.textContent = detailsFilled
-          ? ""
-          : "Fill full name, email and phone to choose advance payment option.";
-      }
-      return Promise.resolve();
-    }
-    if (!A || !serverCart.length) {
-      if (container) {
-        container.innerHTML = "";
-        container.hidden = true;
-      }
       if (hint) hint.textContent = "No rooms selected yet.";
       return Promise.resolve();
     }
-    if (hint) hint.textContent = "Loading payment options…";
+    if (hint) hint.textContent = "Loading booking summary…";
     return fetchCart()
       .then(function (result) {
-        if (hint) hint.textContent = "";
-        if (!result.ok || !P) {
-          if (hint) {
-            hint.textContent =
-              "Could not refresh payment options. Please try again.";
-          }
-          if (container) {
-            container.innerHTML = "";
-            container.hidden = true;
-          }
-          return;
-        }
         renderCartList();
         renderCheckoutPricingSummary();
-        var pricingPayload = {
-          roomInfo: serverCart,
-          totalPrice: serverCartPricing ? serverCartPricing.totalPrice : null,
-          lowerPayableTotal: serverCartPricing ? serverCartPricing.lowerPayableTotal : null,
-          upperPayableTotal: serverCartPricing ? serverCartPricing.upperPayableTotal : null,
-          lowerPercent: serverCartPricing ? serverCartPricing.lowerPercent : null,
-          upperPercent: serverCartPricing ? serverCartPricing.upperPercent : null,
-          prepaidOptions: serverCartPricing ? serverCartPricing.prepaidOptions : [],
-        };
-        var norm =
-          typeof P.normalizeFromCart === "function"
-            ? P.normalizeFromCart(pricingPayload)
-            : P.normalizeFromQuote(pricingPayload);
-        P.render(container, norm, {
-          name: "misty-prepaid-checkout",
-          legend: "Choose your payment option",
-        });
-        try {
-          var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
-          if (sid && container) {
-            container.querySelectorAll('input[type="radio"]').forEach(function (radio) {
-              if (radio.value === sid) radio.checked = true;
-            });
+        if (hint) {
+          hint.textContent =
+            "Review your total below, then submit a request. You'll pay only after the property approves.";
+        }
+        if (!result || !result.ok) {
+          if (hint) {
+            hint.textContent =
+              "Could not refresh pricing. You can still submit a request.";
           }
-        } catch (_) {}
+        }
       })
       .catch(function () {
         if (hint) {
-          hint.textContent = "Could not load payment options. Please try again.";
-        }
-        if (container) {
-          container.innerHTML = "";
-          container.hidden = true;
+          hint.textContent =
+            "Could not refresh pricing. You can still submit a request.";
         }
       });
+  }
+
+  function showRequestSuccess(message) {
+    serverCart = [];
+    serverCartPricing = null;
+    renderCartList();
+    updateNavCartCount(0);
+    showStep("stepRequestSuccess");
+    var textEl = $("#requestSuccessText");
+    if (textEl && message) textEl.textContent = message;
+    var errEl = $("#requestSuccessError");
+    if (errEl) {
+      errEl.style.display = "none";
+      errEl.textContent = "";
+    }
+  }
+
+  var bookingsPollTimer = null;
+
+  function stopBookingsPoll() {
+    if (bookingsPollTimer) {
+      clearInterval(bookingsPollTimer);
+      bookingsPollTimer = null;
+    }
+  }
+
+  function startBookingsPoll() {
+    stopBookingsPoll();
+    bookingsPollTimer = setInterval(function () {
+      var modal = $("#myBookingsModal");
+      if (modal && modal.classList.contains("active")) {
+        loadMyBookings({ silent: true });
+      } else {
+        stopBookingsPoll();
+      }
+    }, 30000);
+  }
+
+  function openMyBookingsModal() {
+    openModal("#myBookingsModal");
+    loadMyBookings();
+    startBookingsPoll();
+  }
+
+  function closeMyBookingsModal() {
+    closeModal("#myBookingsModal");
+    stopBookingsPoll();
+  }
+
+  function loadMyBookings(opts) {
+    opts = opts || {};
+    var listEl = $("#myBookingsList");
+    var emptyEl = $("#myBookingsError");
+    var emptyMsgEl = $("#myBookingsEmpty");
+    var Flow = window.MistyBookingFlow;
+    if (!opts.silent) {
+      if (listEl) listEl.innerHTML = "";
+      if (emptyEl) {
+        emptyEl.style.display = "none";
+        emptyEl.textContent = "";
+      }
+      if (emptyMsgEl) emptyMsgEl.style.display = "none";
+    }
+    if (!A) {
+      if (emptyEl) {
+        emptyEl.textContent = "Booking API not configured.";
+        emptyEl.style.display = "block";
+      }
+      return Promise.resolve();
+    }
+    return A.guestBookingsList()
+      .then(function (res) {
+        return res
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          if (emptyEl) {
+            emptyEl.textContent =
+              (result.data && result.data.message) ||
+              "Please sign in to view bookings.";
+            emptyEl.style.display = "block";
+          }
+          if (listEl) listEl.innerHTML = "";
+          return;
+        }
+        var bookings = Flow
+          ? Flow.extractBookingsList(result.data)
+          : (result.data && result.data.data) || [];
+        if (!bookings.length) {
+          if (emptyMsgEl) emptyMsgEl.style.display = "block";
+          if (listEl) listEl.innerHTML = "";
+          return;
+        }
+        if (emptyMsgEl) emptyMsgEl.style.display = "none";
+        if (listEl && Flow) {
+          listEl.innerHTML = bookings.map(Flow.renderBookingCardHtml).join("");
+        }
+      })
+      .catch(function () {
+        if (emptyEl) {
+          emptyEl.textContent = "Could not load bookings.";
+          emptyEl.style.display = "block";
+        }
+      });
+  }
+
+  function handlePayBookingClick(bookingId, btn) {
+    var Flow = window.MistyBookingFlow;
+    if (!Flow || !bookingId) return;
+    if (btn) btn.disabled = true;
+    var prefill = {
+      name:
+        ($("#checkoutName") && $("#checkoutName").value.trim()) ||
+        (currentUser && currentUser.name) ||
+        "",
+      email:
+        ($("#checkoutEmail") && $("#checkoutEmail").value.trim()) ||
+        (currentUser && currentUser.email) ||
+        "",
+      phone: ($("#checkoutPhone") && $("#checkoutPhone").value.trim()) || "",
+    };
+    Flow.payForApprovedBooking({
+      bookingId: bookingId,
+      prefill: prefill,
+      onSuccess: function () {
+        alert("Payment successful. Your booking is confirmed.");
+        loadMyBookings();
+        if (btn) btn.disabled = false;
+      },
+      onError: function (err) {
+        alert((err && err.message) || "Payment failed. Please try again.");
+        if (btn) btn.disabled = false;
+      },
+      onDismiss: function () {
+        if (btn) btn.disabled = false;
+      },
+    }).catch(function (err) {
+      if (err && err.message === "Payment dismissed") return;
+      alert((err && err.message) || "Could not start payment.");
+      if (btn) btn.disabled = false;
+    });
   }
 
   function onProceedToCheckout() {
@@ -574,28 +676,11 @@
           errEl.textContent = "Please fill in name, email and phone.";
           return;
         }
-        var prep = window.MistyPrepaid
-          ? window.MistyPrepaid.getSelected(
-              $("#checkoutPrepaid"),
-              "misty-prepaid-checkout",
-            )
-          : null;
-        if (!prep || !prep.prepaidOptionId) {
-          errEl.textContent = "Please choose a payment option.";
-          loadCheckoutPrepaidOptions();
+        if (!serverCart.length) {
+          errEl.textContent = "Your cart is empty. Add rooms before requesting.";
           return;
         }
         openTermsModal();
-      });
-      ["#checkoutName", "#checkoutEmail", "#checkoutPhone"].forEach(function (sel) {
-        var field = $(sel);
-        if (!field) return;
-        field.addEventListener("input", function () {
-          loadCheckoutPrepaidOptions();
-        });
-        field.addEventListener("change", function () {
-          loadCheckoutPrepaidOptions();
-        });
       });
     }
 
@@ -624,136 +709,38 @@
           termsProceedBtn.disabled = false;
           return;
         }
-
-        var orderBody = {
-          name: name,
-          email: email,
-          phone: phone,
-          roomIds: getRoomIds(),
-        };
-        var P = window.MistyPrepaid;
-        var prep = P
-          ? P.getSelected($("#checkoutPrepaid"), "misty-prepaid-checkout")
-          : null;
-        if (prep && prep.prepaidOptionId) {
-          orderBody.selectedPrepaidId = prep.prepaidOptionId;
-          orderBody.prepaidOptionId = prep.prepaidOptionId;
-          if (
-            prep.prepaidPercent != null &&
-            !Number.isNaN(prep.prepaidPercent)
-          ) {
-            orderBody.prepaidPercent = prep.prepaidPercent;
-          }
-        } else {
-          try {
-            var sid = sessionStorage.getItem("misty_checkout_prepaidOptionId");
-            if (sid) {
-              orderBody.selectedPrepaidId = sid;
-              orderBody.prepaidOptionId = sid;
-            }
-            var sp = sessionStorage.getItem("misty_checkout_prepaidPercent");
-            if (sp) orderBody.prepaidPercent = Number(sp);
-          } catch (_) {}
+        if (!name || !email || !phone) {
+          if (checkoutErr)
+            checkoutErr.textContent = "Please fill in name, email and phone.";
+          termsProceedBtn.disabled = false;
+          closeTermsModal();
+          return;
         }
 
-        createGuestPaymentOrder(orderBody)
+        createBookingRequest({ name: name, email: email, phone: phone })
           .then(function (result) {
-            if (
-              result.status === 201 &&
-              result.data &&
-              result.data.data &&
-              result.data.data.razorpayOrderId &&
-              result.data.data.key
-            ) {
+            var ok =
+              result.status === 200 ||
+              result.status === 201 ||
+              (result.data && result.data.success);
+            if (ok) {
               closeTermsModal();
-
-              if (!window.Razorpay) {
-                alert(
-                  "Razorpay checkout script not loaded. Please refresh the page and try again."
-                );
-                termsProceedBtn.disabled = false;
-                return;
-              }
-
-              var bookingData = result.data.data;
-              var payRupee =
-                bookingData.expectedPrepaidAmount != null
-                  ? Number(bookingData.expectedPrepaidAmount)
-                  : Number(bookingData.totalAmount);
-              if (isNaN(payRupee) || payRupee <= 0) payRupee = Number(bookingData.totalAmount) || 0;
-
-              var options = {
-                key: bookingData.key,
-                amount: Math.round(payRupee * 100), // paise
-                currency: "INR",
-                order_id: bookingData.razorpayOrderId,
-                name: "Misty Hut",
-                description: "Room Booking",
-                prefill: {
-                  name: name,
-                  email: email,
-                  contact: phone,
-                },
-
-                // ✅ Called by Razorpay on successful payment
-                handler: function (response) {
-                  A.guestPaymentVerify({
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature,
-                  })
-                    .then(function (res) {
-                      return res.json();
-                    })
-                    .then(function (data) {
-                      if (data.success) {
-                        // Clear cart then redirect to success page
-                        window.location.href = "/?payment=success";
-                      } else {
-                        alert(
-                          "Payment verification failed. Please contact support with your payment ID: " +
-                            response.razorpay_payment_id
-                        );
-                        termsProceedBtn.disabled = false;
-                      }
-                    })
-                    .catch(function () {
-                      alert(
-                        "Could not verify payment. Please contact support with your payment ID: " +
-                          response.razorpay_payment_id
-                      );
-                      termsProceedBtn.disabled = false;
-                    });
-                },
-
-                modal: {
-                  // User closed modal without paying — re-enable button
-                  ondismiss: function () {
-                    termsProceedBtn.disabled = false;
-                  },
-                },
-              };
-
-              var rzp = new window.Razorpay(options);
-
-              // Handle payment failure inside the modal (e.g. wrong card)
-              rzp.on("payment.failed", function (response) {
-                console.error("Payment failed:", response.error);
-                alert(
-                  "Payment failed: " +
-                    (response.error.description || "Please try again.")
-                );
-                termsProceedBtn.disabled = false;
-              });
-
-              rzp.open();
-            } else {
-              alert(
-                result.data.message ||
-                  "Could not create payment order. Please try again."
-              );
+              try {
+                sessionStorage.removeItem("misty_checkout_prepaidOptionId");
+                sessionStorage.removeItem("misty_checkout_prepaidPercent");
+              } catch (_) {}
+              var msg =
+                (result.data && result.data.message) ||
+                "Your booking request has been sent. We’ll email you when the property confirms.";
+              showRequestSuccess(msg);
               termsProceedBtn.disabled = false;
+              return;
             }
+            alert(
+              (result.data && result.data.message) ||
+                "Could not submit booking request. Please try again.",
+            );
+            termsProceedBtn.disabled = false;
           })
           .catch(function () {
             alert("Something went wrong. Please try again.");
@@ -762,8 +749,37 @@
       });
     }
 
+    var requestSuccessBookingsBtn = $("#requestSuccessBookingsBtn");
+    if (requestSuccessBookingsBtn) {
+      requestSuccessBookingsBtn.addEventListener("click", function () {
+        openMyBookingsModal();
+      });
+    }
+
+    var navProfileBookings = $("#navProfileBookings");
+    if (navProfileBookings) {
+      navProfileBookings.addEventListener("click", function (e) {
+        e.preventDefault();
+        var dropdown = $("#navProfileDropdown");
+        if (dropdown) dropdown.classList.remove("is-open");
+        openMyBookingsModal();
+      });
+    }
+
+    var myBookingsList = $("#myBookingsList");
+    if (myBookingsList) {
+      myBookingsList.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-pay-booking]");
+        if (!btn) return;
+        handlePayBookingClick(btn.getAttribute("data-pay-booking"), btn);
+      });
+    }
+
     $$("[data-close-terms]").forEach(function (el) {
       el.addEventListener("click", closeTermsModal);
+    });
+    $$("[data-close-bookings]").forEach(function (el) {
+      el.addEventListener("click", closeMyBookingsModal);
     });
     $$("[data-close]").forEach(function (el) {
       el.addEventListener("click", function () {
@@ -778,6 +794,28 @@
         }
       });
     }
+    var myBookingsModal = $("#myBookingsModal");
+    if (myBookingsModal) {
+      myBookingsModal.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal__overlay")) {
+          closeMyBookingsModal();
+        }
+      });
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState !== "visible") return;
+      var modal = $("#myBookingsModal");
+      if (modal && modal.classList.contains("active")) {
+        loadMyBookings({ silent: true });
+      }
+    });
+    window.addEventListener("focus", function () {
+      var modal = $("#myBookingsModal");
+      if (modal && modal.classList.contains("active")) {
+        loadMyBookings({ silent: true });
+      }
+    });
   }
 
   if (document.readyState === "loading") {

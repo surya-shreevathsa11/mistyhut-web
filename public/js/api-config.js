@@ -184,6 +184,22 @@
     return apiFetch("/api/guest/bookings", { method: "GET" });
   }
 
+  /**
+   * Submit cart as a booking request (no Razorpay).
+   * Body: { name, email, phone }
+   */
+  function guestBookingRequest(body) {
+    return apiFetch("/api/guest/bookings/requests", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  /**
+   * Create Razorpay order for an approved booking.
+   * Body: { bookingId, prepaidOptionId?, prepaidPercent? }
+   * Do not send name/email/phone or rely on cart.
+   */
   function guestPaymentOrder(body) {
     return apiFetch("/api/guest/payments/order", {
       method: "POST",
@@ -223,6 +239,7 @@
     guestCartAdd: guestCartAdd,
     guestCartRemove: guestCartRemove,
     guestBookingsList: guestBookingsList,
+    guestBookingRequest: guestBookingRequest,
     guestPaymentOrder: guestPaymentOrder,
     guestPaymentVerify: guestPaymentVerify,
     quoteRoom: quoteRoom,

@@ -2512,9 +2512,48 @@ main > section#terms {
 .my-bookings__status { text-transform: capitalize; }
 .my-bookings__status--confirmed { color: var(--color-ok, #0a7); }
 .my-bookings__status--pending { color: var(--color-burnt-copper, #b8860b); }
+.my-bookings__status--requested { color: var(--color-burnt-copper, #b8860b); }
+.my-bookings__status--approved { color: #0a6b4a; font-weight: 600; }
+.my-bookings__status--rejected { color: #a33; }
 .my-bookings__status--cancelled { color: var(--text-muted, #999); }
+.my-bookings__msg {
+  grid-column: 1 / -1;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #555);
+  line-height: 1.4;
+}
+.my-bookings__actions {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+}
+.my-bookings__item--approved {
+  background: rgba(10, 107, 74, 0.04);
+}
+.my-bookings__item--rejected .my-bookings__msg {
+  color: #a33;
+}
 .my-bookings__empty,
 .my-bookings__error { margin: 1rem 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+.cart-step__note {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary, #555);
+  line-height: 1.45;
+}
+.cart-request-success__text {
+  margin: 0 0 1.25rem;
+  color: var(--text-secondary, #555);
+  line-height: 1.5;
+  max-width: 36rem;
+}
+.cart-request-success__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
 .modal__title {
   margin-bottom: 0.5rem;
 }

@@ -296,6 +296,7 @@
   }
 
   function closeAllModals() {
+    stopBookingsPoll();
     $$(".modal").forEach((m) => m.classList.remove("active"));
     $$(".form__error").forEach((e) => (e.textContent = ""));
     $$(".form__success").forEach((e) => (e.textContent = ""));
@@ -379,6 +380,128 @@
       fetchCartCount();
     });
   }
+  var bookingsPollTimer = null;
+
+  function stopBookingsPoll() {
+    if (bookingsPollTimer) {
+      clearInterval(bookingsPollTimer);
+      bookingsPollTimer = null;
+    }
+  }
+
+  function startBookingsPoll() {
+    stopBookingsPoll();
+    bookingsPollTimer = setInterval(function () {
+      var modal = $("#myBookingsModal");
+      if (modal && modal.classList.contains("active")) {
+        loadMyBookings({ silent: true });
+      } else {
+        stopBookingsPoll();
+      }
+    }, 30000);
+  }
+
+  function loadMyBookings(opts) {
+    opts = opts || {};
+    var listEl = $("#myBookingsList");
+    var emptyEl = $("#myBookingsError");
+    var emptyMsgEl = $("#myBookingsEmpty");
+    var Flow = window.MistyBookingFlow;
+    if (!opts.silent) {
+      if (listEl) listEl.innerHTML = "";
+      if (emptyEl) {
+        emptyEl.style.display = "none";
+        emptyEl.textContent = "";
+      }
+      if (emptyMsgEl) emptyMsgEl.style.display = "none";
+    }
+    if (!A) {
+      if (emptyEl) {
+        emptyEl.textContent = "Booking API not configured.";
+        emptyEl.style.display = "block";
+      }
+      return Promise.resolve();
+    }
+    return A.guestBookingsList()
+      .then(function (res) {
+        return res
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          if (emptyEl) {
+            emptyEl.textContent =
+              (result.data && result.data.message) ||
+              "Please sign in to view bookings.";
+            emptyEl.style.display = "block";
+          }
+          if (listEl) listEl.innerHTML = "";
+          return;
+        }
+        var bookings = Flow
+          ? Flow.extractBookingsList(result.data)
+          : (result.data && result.data.data) || [];
+        if (!bookings.length) {
+          if (emptyMsgEl) emptyMsgEl.style.display = "block";
+          if (listEl) listEl.innerHTML = "";
+          return;
+        }
+        if (emptyMsgEl) emptyMsgEl.style.display = "none";
+        if (listEl && Flow) {
+          listEl.innerHTML = bookings.map(Flow.renderBookingCardHtml).join("");
+        }
+      })
+      .catch(function () {
+        if (emptyEl) {
+          emptyEl.textContent = "Could not load bookings.";
+          emptyEl.style.display = "block";
+        }
+      });
+  }
+
+  function openMyBookingsModal() {
+    openModal("#myBookingsModal");
+    loadMyBookings();
+    startBookingsPoll();
+  }
+
+  function handlePayBookingClick(bookingId, btn) {
+    var Flow = window.MistyBookingFlow;
+    if (!Flow || !bookingId) return;
+    if (btn) btn.disabled = true;
+    var prefill = {
+      name: (currentUser && currentUser.name) || "",
+      email: (currentUser && currentUser.email) || "",
+      phone: "",
+    };
+    Flow.payForApprovedBooking({
+      bookingId: bookingId,
+      prefill: prefill,
+      onSuccess: function () {
+        alert("Payment successful. Your booking is confirmed.");
+        loadMyBookings();
+        if (btn) btn.disabled = false;
+      },
+      onError: function (err) {
+        alert((err && err.message) || "Payment failed. Please try again.");
+        if (btn) btn.disabled = false;
+      },
+      onDismiss: function () {
+        if (btn) btn.disabled = false;
+      },
+    }).catch(function (err) {
+      if (err && err.message === "Payment dismissed") return;
+      alert((err && err.message) || "Could not start payment.");
+      if (btn) btn.disabled = false;
+    });
+  }
+
   const navProfileBookings = $("#navProfileBookings");
   if (navProfileBookings) {
     navProfileBookings.addEventListener("click", (e) => {
@@ -386,58 +509,32 @@
       if (navProfileDropdown) navProfileDropdown.classList.remove("is-open");
       const navLinks = $("#navLinks");
       if (navLinks) navLinks.classList.remove("open");
-
-      var listEl = $("#myBookingsList");
-      var emptyEl = $("#myBookingsError");
-      var emptyMsgEl = $("#myBookingsEmpty");
-      if (listEl) listEl.innerHTML = "";
-      if (emptyEl) { emptyEl.style.display = "none"; emptyEl.textContent = ""; }
-      if (emptyMsgEl) emptyMsgEl.style.display = "none";
-
-      A.guestBookingsList()
-        .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
-        .then(function (result) {
-          if (!result.ok) {
-            if (emptyEl) {
-              emptyEl.textContent = result.data && result.data.message ? result.data.message : "Please sign in to view bookings.";
-              emptyEl.style.display = "block";
-            }
-            openModal("#myBookingsModal");
-            return;
-          }
-          var bookings = result.data && result.data.data ? result.data.data : [];
-          if (bookings.length === 0) {
-            if (emptyMsgEl) emptyMsgEl.style.display = "block";
-          } else if (listEl) {
-            listEl.innerHTML = bookings.map(function (b) {
-              var rooms = b.rooms || [];
-              var roomsSummary = rooms.map(function (r) { return r.roomName || r.roomId || "—"; }).join(", ");
-              var checkIn = rooms[0] && rooms[0].checkIn ? new Date(rooms[0].checkIn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
-              var checkOut = rooms[0] && rooms[0].checkOut ? new Date(rooms[0].checkOut).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
-              var status = (b.status || "pending").toLowerCase();
-              var guestName = (b.guest && b.guest.name) ? b.guest.name : "—";
-              return (
-                "<div class=\"my-bookings__item\">" +
-                "<span class=\"my-bookings__guest\">" + (guestName.replace(/</g, "&lt;").replace(/>/g, "&gt;")) + "</span>" +
-                "<span class=\"my-bookings__rooms\">" + (roomsSummary.replace(/</g, "&lt;").replace(/>/g, "&gt;")) + "</span>" +
-                "<span class=\"my-bookings__dates\">" + checkIn + " – " + checkOut + "</span>" +
-                "<span class=\"my-bookings__total\">₹" + (b.totalAmount != null ? Number(b.totalAmount).toLocaleString("en-IN") : "0") + "</span>" +
-                "<span class=\"my-bookings__status my-bookings__status--" + status + "\">" + status + "</span>" +
-                "</div>"
-              );
-            }).join("");
-          }
-          openModal("#myBookingsModal");
-        })
-        .catch(function () {
-          if (emptyEl) {
-            emptyEl.textContent = "Could not load bookings.";
-            emptyEl.style.display = "block";
-          }
-          openModal("#myBookingsModal");
-        });
+      openMyBookingsModal();
     });
   }
+
+  var myBookingsList = $("#myBookingsList");
+  if (myBookingsList) {
+    myBookingsList.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-pay-booking]");
+      if (!btn) return;
+      handlePayBookingClick(btn.getAttribute("data-pay-booking"), btn);
+    });
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "visible") return;
+    var modal = $("#myBookingsModal");
+    if (modal && modal.classList.contains("active")) {
+      loadMyBookings({ silent: true });
+    }
+  });
+  window.addEventListener("focus", function () {
+    var modal = $("#myBookingsModal");
+    if (modal && modal.classList.contains("active")) {
+      loadMyBookings({ silent: true });
+    }
+  });
 
   // --- Google OAuth sign-in (central API /api/guest-auth/google) ---
   function wireSignInModal() {
@@ -952,6 +1049,12 @@
     const sp = new URLSearchParams(window.location.search);
     if (sp.get("signin") === "1") {
       openModal("#signInModal");
+      history.replaceState({}, "", window.location.pathname);
+    }
+    if (sp.get("bookings") === "1" || sp.get("payment") === "success") {
+      if (A && A.getToken()) {
+        openMyBookingsModal();
+      }
       history.replaceState({}, "", window.location.pathname);
     }
   } catch (_) {}
