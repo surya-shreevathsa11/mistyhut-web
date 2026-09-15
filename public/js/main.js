@@ -973,9 +973,11 @@
     btn.target = "_blank";
   }
 
-  // --- Hero background sequence (8 images, fade-only, 2s loop) ---
+  // --- Hero background sequence (video → 8 images → video, loop) ---
   function setupHeroSlider() {
     const slides = Array.from(document.querySelectorAll(".hero__slide"));
+    const videoWrap = document.querySelector(".hero__video");
+    const videoEl = videoWrap && videoWrap.querySelector("video");
     if (slides.length < 2) return;
 
     const prefersReducedMotion =
@@ -984,6 +986,8 @@
 
     const imageUrls = slides.map((slide) => slide.dataset.image || "").filter(Boolean);
     if (imageUrls.length !== slides.length) return;
+
+    const SLIDE_FADE_MS = 1800;
 
     const preload = imageUrls.map(function (url) {
       return new Promise(function (resolve) {
@@ -999,36 +1003,137 @@
         slide.style.backgroundImage = 'url("' + imageUrls[i] + '")';
       });
 
-      let idx = Math.max(
-        0,
-        slides.findIndex((s) => s.classList.contains("is-active")),
-      );
-      if (idx < 0) idx = 0;
+      let idx = -1;
+      let timer = null;
+      let phase = "video";
+      let hideVideoTimer = null;
+
+      function clearSlideTimer() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function clearHideVideoTimer() {
+        if (hideVideoTimer) {
+          clearTimeout(hideVideoTimer);
+          hideVideoTimer = null;
+        }
+      }
+
+      function clearActiveSlides() {
+        slides.forEach(function (s) {
+          s.classList.remove("is-active");
+        });
+        idx = -1;
+      }
 
       function show(nextIdx) {
-        slides[idx].classList.remove("is-active");
+        if (idx >= 0) slides[idx].classList.remove("is-active");
         slides[nextIdx].classList.add("is-active");
         idx = nextIdx;
       }
 
-      if (prefersReducedMotion) return;
+      function setVideoVisible(visible) {
+        if (!videoWrap) return;
+        videoWrap.style.transition =
+          "opacity " + SLIDE_FADE_MS / 1000 + "s cubic-bezier(0.4, 0, 0.2, 1)";
+        videoWrap.style.opacity = visible ? "1" : "0";
+      }
 
-      let timer = setInterval(function () {
-        const next = (idx + 1) % slides.length;
-        show(next);
-      }, 5000);
+      function startImagePhase(fromIdx) {
+        phase = "images";
+        clearSlideTimer();
+        clearHideVideoTimer();
+        if (videoEl) {
+          try {
+            videoEl.pause();
+          } catch (_) {}
+        }
+        var startIdx =
+          typeof fromIdx === "number" && fromIdx >= 0 && fromIdx < slides.length
+            ? fromIdx
+            : 0;
+        show(startIdx);
+        /* Fade video out with the same timing as slides, then keep it hidden
+           so the end title card never flashes between image crossfades. */
+        setVideoVisible(false);
+        hideVideoTimer = setTimeout(function () {
+          hideVideoTimer = null;
+          if (phase !== "images" || !videoEl) return;
+          try {
+            videoEl.currentTime = 0;
+          } catch (_) {}
+        }, SLIDE_FADE_MS + 50);
+        timer = setInterval(function () {
+          if (idx >= slides.length - 1) {
+            clearSlideTimer();
+            startVideoPhase();
+            return;
+          }
+          show(idx + 1);
+        }, 5000);
+      }
+
+      function startVideoPhase() {
+        phase = "video";
+        clearSlideTimer();
+        clearHideVideoTimer();
+        if (!videoEl) {
+          startImagePhase();
+          return;
+        }
+        setVideoVisible(true);
+        clearActiveSlides();
+        try {
+          videoEl.currentTime = 0;
+        } catch (_) {}
+        var playPromise = videoEl.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {
+            startImagePhase();
+          });
+        }
+      }
+
+      if (prefersReducedMotion) {
+        clearActiveSlides();
+        setVideoVisible(false);
+        if (videoEl) {
+          try {
+            videoEl.pause();
+          } catch (_) {}
+        }
+        show(0);
+        return;
+      }
+
+      if (videoEl) {
+        videoEl.addEventListener("ended", function () {
+          if (phase !== "video") return;
+          startImagePhase();
+        });
+      }
 
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
-          clearInterval(timer);
+          clearSlideTimer();
+          if (videoEl) {
+            try {
+              videoEl.pause();
+            } catch (_) {}
+          }
+          return;
+        }
+        if (phase === "video") {
+          startVideoPhase();
         } else {
-          clearInterval(timer);
-          timer = setInterval(function () {
-            const next = (idx + 1) % slides.length;
-            show(next);
-          }, 5000);
+          startImagePhase(idx >= 0 ? idx : 0);
         }
       });
+
+      startVideoPhase();
     });
   }
 
